@@ -1,5 +1,5 @@
-import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { Animated, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 interface Props {
   currentStep: any;
@@ -7,16 +7,46 @@ interface Props {
 }
 
 export default function ControlPanel({ currentStep, onAction }: Props) {
+  const [isBlinking, setIsBlinking] = useState(false);
+  const [opacity, setOpacity] = useState(1);
+
+  useEffect(() => {
+    if (currentStep.expectedAction === 'click_initialize') {
+      console.log('Starting blink animation for initialize button');
+      setIsBlinking(true);
+      
+      // Simple blinking using setInterval
+      const blinkInterval = setInterval(() => {
+        setOpacity(prev => prev === 1 ? 0.3 : 1);
+      }, 800);
+
+      return () => {
+        clearInterval(blinkInterval);
+        setOpacity(1);
+        setIsBlinking(false);
+      };
+    } else {
+      setOpacity(1);
+      setIsBlinking(false);
+    }
+  }, [currentStep.expectedAction]);
+
   const getActionButton = () => {
     switch (currentStep.expectedAction) {
       case 'click_initialize':
         return (
-          <TouchableOpacity
-            style={[styles.button, styles.primaryButton]}
-            onPress={() => onAction('click_initialize')}
-          >
-            <Text style={styles.primaryButtonText}>🚀 Initialize Variables</Text>
-          </TouchableOpacity>
+          <View style={{ opacity: opacity }}>
+            <TouchableOpacity
+              style={[
+                styles.button, 
+                styles.primaryButton,
+                isBlinking && styles.blinkingButton
+              ]}
+              onPress={() => onAction('click_initialize')}
+            >
+              <Text style={styles.primaryButtonText}>🚀 Initialize Variables</Text>
+            </TouchableOpacity>
+          </View>
         );
       case 'add_element_to_window':
         return (
@@ -175,6 +205,19 @@ const styles = StyleSheet.create({
   primaryButton: {
     backgroundColor: '#F5D90A',
     borderColor: '#F5D90A',
+    shadowColor: '#F5D90A',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.8,
+    shadowRadius: 10,
+    elevation: 8,
+  },
+  blinkingButton: {
+    borderWidth: 3,
+    borderColor: '#FFD700',
+    shadowColor: '#FFD700',
+    shadowOpacity: 1,
+    shadowRadius: 20,
+    backgroundColor: '#FFD700',
   },
   primaryButtonText: {
     color: '#080A0D',
