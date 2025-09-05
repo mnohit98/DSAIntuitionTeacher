@@ -1,50 +1,195 @@
-# Welcome to your Expo app 👋
+# DSA Intuition Teacher
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A lightweight React Native/Expo app for learning Data Structures and Algorithms with interactive modules.
 
-## Get started
+## Project Structure
 
-1. Install dependencies
-
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+```
+DSAIntuitionTeacher/
+├── app/                    # Expo Router app directory
+│   ├── _layout.tsx        # Root layout and navigation configuration
+│   ├── index.tsx          # Landing page (redirects to /home)
+│   ├── home.tsx           # Home screen with module cards
+│   ├── module/            # Module-related screens
+│   │   ├── index.tsx      # Module index (shows all modules)
+│   │   └── [id].tsx       # Dynamic module detail screen
+│   └── problem/           # Problem-related screens
+│       └── [id].tsx       # Dynamic problem detail screen
+├── src/
+│   ├── modules.json       # Global module definitions
+│   └── modules/           # Module-level organization
+│       ├── basics/        # Basics module
+│       │   ├── module.json    # Module content and submodules
+│       │   └── problems/      # Module-specific problems
+│       │       └── b1.json    # Reverse an Array
+│       ├── patterns/      # Patterns module
+│       │   ├── module.json    # Module content and submodules
+│       │   └── problems/      # Module-specific problems
+│       │       └── p1.json    # Right Triangle Star Pattern
+│       ├── slidingWindow/ # Sliding Window module
+│       │   ├── module.json    # Module content and submodules
+│       │   └── problems/      # Module-specific problems
+│       │       ├── p1.json    # Maximum Sum Subarray of Size K
+│       │       ├── p2.json    # First Negative Number in Every Window
+│       │       ├── p3.json    # Count Occurrences of Anagrams
+│       │       └── p4.json    # Longest Substring Without Repeating
+│       └── twoPointers/   # Two Pointers module
+│           ├── module.json    # Module content and submodules
+│           └── problems/      # Module-specific problems
+│               └── tp1.json   # Two Sum in Sorted Array
+└── Essential config files
+    ├── package.json        # Dependencies
+    ├── app.json           # Expo configuration
+    ├── tsconfig.json      # TypeScript configuration
+    └── eslint.config.js   # Linting rules
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Features
 
-## Learn more
+- **Lightweight**: Minimal dependencies, focused on core functionality
+- **Module-based**: Each DSA concept is a separate module
+- **Collapsible UI**: Interactive submodule and problem lists
+- **Problem Details**: Individual problem screens with rich content
+- **Interactive Elements**: Collapsible description and aim sections
+- **User Playground**: Module-specific interactive learning area (placeholder)
+- **Understanding Mapping**: Visual learning tools (placeholder)
+- **Type-safe**: Full TypeScript support
+- **Cross-platform**: Works on iOS, Android, and Web
+- **Clean Architecture**: Proper separation of concerns and file organization
+- **Module-Level Development**: Each module is completely self-contained
 
-To learn more about developing your project with Expo, look at the following resources:
+## How It Works
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+1. **Landing Page** (`app/index.tsx`): Redirects to the home screen
+2. **Home Screen** (`app/home.tsx`): Beautiful landing page with module cards
+3. **Module Index** (`app/module/index.tsx`): Alternative view of all modules
+4. **Module Detail** (`app/module/[id].tsx`): Dynamic screen showing submodules and problems
+5. **Problem Detail** (`app/problem/[id].tsx`): Individual problem with description, aim, examples, and actions
+6. **Data Structure**: Each module has its own folder with module.json and problems/
 
-## Join the community
+## Problem Screen Features
 
-Join our community of developers creating universal apps.
+Each problem screen includes:
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- **Problem Title**: Clear problem statement
+- **Difficulty Badge**: Easy/Medium/Hard indicators
+- **Tags**: Relevant concepts and techniques
+- **Collapsible Description**: Click to show/hide problem details
+- **🎯 What Aim to Achieve**: Click to show/hide learning objectives
+- **Examples**: Input/output pairs with explanations
+- **🚀 User Playground**: Module-specific interactive area (placeholder)
+- **🧠 Map Your Understanding**: Learning visualization tools (placeholder)
+
+## File Organization Benefits
+
+- **`index.tsx`**: Clean landing page that redirects to home
+- **`home.tsx`**: Dedicated home screen with proper styling
+- **`module/index.tsx`**: Alternative module listing view
+- **`module/[id].tsx`**: Dynamic route for individual modules
+- **`problem/[id].tsx`**: Global problem screen (works for all modules)
+- **`_layout.tsx`**: Centralized navigation configuration
+
+## Adding New Problems
+
+1. Create a new JSON file in `src/modules/[moduleName]/problems/[problemId].json`:
+
+```json
+{
+  "problemId": "unique_id",
+  "title": "Problem Title",
+  "description": "Detailed problem description",
+  "aim": "What the user aims to achieve",
+  "moduleId": "module_id",
+  "submoduleId": "submodule_id",
+  "difficulty": "Easy|Medium|Hard",
+  "tags": ["Tag1", "Tag2"],
+  "examples": [
+    {
+      "input": "Sample input",
+      "output": "Expected output",
+      "explanation": "How to get the output"
+    }
+  ]
+}
+```
+
+2. Add the problem to the corresponding module's submodule in `src/modules/[moduleName]/module.json`
+3. The problem screen will automatically work with the new problem
+
+## Adding New Modules
+
+1. Create a new module folder: `src/modules/[moduleName]/`
+2. Create `module.json` in the module folder:
+
+```json
+{
+  "moduleId": "your_module_id",
+  "moduleName": "Your Module Name",
+  "description": "Module description",
+  "submodules": [
+    {
+      "submoduleId": "unique_id",
+      "title": "Submodule Title",
+      "description": "Submodule description",
+      "problems": [
+        {
+          "problemId": "unique_problem_id",
+          "title": "Problem Title"
+        }
+      ]
+    }
+  ]
+}
+```
+
+3. Create `problems/` folder and add problem JSON files
+4. Add the module to `src/modules.json`
+5. Import the data file in `app/module/[id].tsx`
+6. Add the case in the `getModuleData` function
+
+## Development
+
+- `npm start` - Start the Expo development server
+- `npm run web` - Run on web
+- `npm run ios` - Run on iOS simulator
+- `npm run android` - Run on Android emulator
+
+## Current Modules
+
+- **Basics**: Arrays, loops, and fundamental concepts
+- **Patterns**: Star patterns, number patterns
+- **Sliding Window**: Fixed, variable, and advanced sliding window techniques
+- **Two Pointers**: Basic and advanced two pointer problems
+
+## Dependencies
+
+This project uses only essential dependencies:
+
+- **Core**: React Native, Expo, Expo Router
+- **Navigation**: Built-in Expo Router navigation
+- **Styling**: React Native StyleSheet
+- **Type Safety**: TypeScript
+
+## Navigation Flow
+
+```
+/ → /home → /module/[id] → /problem/[id]
+     ↓
+/module/index → /module/[id] → /problem/[id]
+```
+
+- **Root** (`/`): Redirects to home
+- **Home** (`/home`): Main landing page with module cards
+- **Module Index** (`/module/index`): Alternative module listing
+- **Module Detail** (`/module/[id]`): Individual module with submodules
+- **Problem Detail** (`/problem/[id]`): Individual problem with full details
+
+## Module-Level Development
+
+- **Global Components**: Problem screen, navigation, layout, modules.json
+- **Module-Specific**: Each module has its own folder with:
+  - `module.json`: Module content and submodules
+  - `problems/`: Module-specific problem files
+- **Easy Extension**: Add new problems without touching global code
+- **Scalable**: Each module can have its own problem types and interactions
+- **Self-Contained**: Each module folder contains everything needed for that module

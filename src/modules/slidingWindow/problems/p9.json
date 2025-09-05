@@ -1,0 +1,385 @@
+{
+  "problemId": "p9",
+  "title": "Longest Repeating Character Replacement",
+  "description": "Given an integer k and a string s, you can select any character in the string and change it to any other uppercase English character. You can perform this operation up to k times. Return the length of the longest substring that contains the same letter after performing these changes.",
+  "aim": "Demonstrate variable-size sliding window with character frequency tracking; expand when replacements ≤ k and contract when replacements > k to find longest substring with same character.",
+  "moduleId": "slidingWindow",
+  "submoduleId": "sw_variable",
+  "difficulty": "Medium",
+  "tags": ["String", "Sliding Window", "Variable Size", "Character Replacement", "Frequency Counting", "Hash Map"],
+  "examples": [
+    { "input": "s = \"BAABAABBBAAA\", k = 2", "output": "6", "explanation": "We can change the 'B' at index 0 and 3 (0-based indexing) to 'A'. The new string is \"AAAAAABBBAAA\". The substring \"AAAAAA\" is the longest substring with the same letter, with length 6." },
+    { "input": "s = \"AABABBA\", k = 1", "output": "4", "explanation": "Change the 'A' at index 2 to 'B'. The new string becomes \"AABBBBA\". The substring \"BBBB\" has the maximum length = 4." }
+  ],
+  "playground": {
+    "initialState": {
+      "string": "AABABBA",
+      "k": 1,
+      "windowStart": 0,
+      "windowEnd": 0,
+      "maxLength": 0,
+      "currentLength": 0,
+      "charFrequency": {},
+      "maxRepeatLetterCount": 0,
+      "bestWindow": null
+    },
+    "steps": [
+      {
+        "stepId": 1,
+        "description": "Initialize variables. We'll track character frequencies and the most frequent character count in our window.",
+        "expectedAction": "click_initialize",
+        "uiState": {
+          "stringElements": [
+            {"value": "A", "state": "not_yet_reached", "index": 0},
+            {"value": "A", "state": "not_yet_reached", "index": 1},
+            {"value": "B", "state": "not_yet_reached", "index": 2},
+            {"value": "A", "state": "not_yet_reached", "index": 3},
+            {"value": "B", "state": "not_yet_reached", "index": 4},
+            {"value": "B", "state": "not_yet_reached", "index": 5},
+            {"value": "A", "state": "not_yet_reached", "index": 6}
+          ],
+          "windowStart": null,
+          "windowEnd": null,
+          "maxLength": 0,
+          "currentLength": 0,
+          "charFrequency": {},
+          "maxRepeatLetterCount": 0,
+          "bestWindow": null,
+          "highlightedElements": [],
+          "k": 1
+        },
+        "jarvisMessage": "Welcome! We'll use a sliding window to find the longest substring where we can replace at most k=1 character to make all characters the same. We'll track character frequencies and the most frequent character count.",
+        "codeHint": "// Initialize\nlet windowStart = 0;\nlet maxLength = 0;\nlet maxRepeatLetterCount = 0;\nlet charFrequency = {};",
+        "codeBotMessage": "We'll expand the window when (windowSize - maxRepeatLetterCount) ≤ k and contract when it exceeds k. This ensures we stay within our replacement limit.",
+        "codeSnippet": "let windowStart = 0;\nlet maxLength = 0;\nlet maxRepeatLetterCount = 0;\nlet charFrequency = {};"
+      },
+      {
+        "stepId": 2,
+        "description": "Expand: add 'A'. freq[A]=1, maxRepeatLetterCount=1. Window size=1, replacements needed=0 ≤ k=1. maxLength=1.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 0,
+        "uiState": {
+          "stringElements": [
+            {"value": "A", "state": "in_window", "index": 0},
+            {"value": "A", "state": "not_yet_reached", "index": 1},
+            {"value": "B", "state": "not_yet_reached", "index": 2},
+            {"value": "A", "state": "not_yet_reached", "index": 3},
+            {"value": "B", "state": "not_yet_reached", "index": 4},
+            {"value": "B", "state": "not_yet_reached", "index": 5},
+            {"value": "A", "state": "not_yet_reached", "index": 6}
+          ],
+          "windowStart": 0,
+          "windowEnd": 0,
+          "maxLength": 1,
+          "currentLength": 1,
+          "charFrequency": {"A": 1},
+          "maxRepeatLetterCount": 1,
+          "bestWindow": [0, 0],
+          "highlightedElements": [0],
+          "k": 1
+        },
+        "jarvisMessage": "Added 'A'. We have freq[A]=1, so maxRepeatLetterCount=1. Window size=1, replacements needed=1-1=0 ≤ k=1. This is valid, update maxLength to 1.",
+        "codeHint": "// Expand\ncharFrequency[s[windowEnd]] = (charFrequency[s[windowEnd]] || 0) + 1;\nmaxRepeatLetterCount = Math.max(maxRepeatLetterCount, charFrequency[s[windowEnd]]);",
+        "codeBotMessage": "Window \"A\" is valid. Replacements needed = windowSize - maxRepeatLetterCount = 1 - 1 = 0 ≤ k (1).",
+        "codeSnippet": "// freq[A] = 1; maxRepeatLetterCount = 1; maxLength = 1;"
+      },
+      {
+        "stepId": 3,
+        "description": "Expand: add 'A'. freq[A]=2, maxRepeatLetterCount=2. Window size=2, replacements needed=0 ≤ k=1. maxLength=2.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 1,
+        "uiState": {
+          "stringElements": [
+            {"value": "A", "state": "in_window", "index": 0},
+            {"value": "A", "state": "in_window", "index": 1},
+            {"value": "B", "state": "not_yet_reached", "index": 2},
+            {"value": "A", "state": "not_yet_reached", "index": 3},
+            {"value": "B", "state": "not_yet_reached", "index": 4},
+            {"value": "B", "state": "not_yet_reached", "index": 5},
+            {"value": "A", "state": "not_yet_reached", "index": 6}
+          ],
+          "windowStart": 0,
+          "windowEnd": 1,
+          "maxLength": 2,
+          "currentLength": 2,
+          "charFrequency": {"A": 2},
+          "maxRepeatLetterCount": 2,
+          "bestWindow": [0, 1],
+          "highlightedElements": [0, 1],
+          "k": 1
+        },
+        "jarvisMessage": "Added another 'A'. Now freq[A]=2, so maxRepeatLetterCount=2. Window size=2, replacements needed=2-2=0 ≤ k=1. This is valid, update maxLength to 2.",
+        "codeHint": "// Expand and update best",
+        "codeBotMessage": "Window \"AA\" is valid. Replacements needed = 2 - 2 = 0 ≤ k (1).",
+        "codeSnippet": "// freq[A] = 2; maxRepeatLetterCount = 2; maxLength = 2;"
+      },
+      {
+        "stepId": 4,
+        "description": "Expand: add 'B'. freq[A]=2, freq[B]=1, maxRepeatLetterCount=2. Window size=3, replacements needed=1 ≤ k=1. maxLength=3.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 2,
+        "uiState": {
+          "stringElements": [
+            {"value": "A", "state": "in_window", "index": 0},
+            {"value": "A", "state": "in_window", "index": 1},
+            {"value": "B", "state": "in_window", "index": 2},
+            {"value": "A", "state": "not_yet_reached", "index": 3},
+            {"value": "B", "state": "not_yet_reached", "index": 4},
+            {"value": "B", "state": "not_yet_reached", "index": 5},
+            {"value": "A", "state": "not_yet_reached", "index": 6}
+          ],
+          "windowStart": 0,
+          "windowEnd": 2,
+          "maxLength": 3,
+          "currentLength": 3,
+          "charFrequency": {"A": 2, "B": 1},
+          "maxRepeatLetterCount": 2,
+          "bestWindow": [0, 2],
+          "highlightedElements": [0, 1, 2],
+          "k": 1
+        },
+        "jarvisMessage": "Added 'B'. Now freq[A]=2, freq[B]=1, maxRepeatLetterCount=2. Window size=3, replacements needed=3-2=1 ≤ k=1. This is valid, update maxLength to 3.",
+        "codeHint": "// Expand and update best",
+        "codeBotMessage": "Window \"AAB\" is valid. Replacements needed = 3 - 2 = 1 ≤ k (1). We can replace 1 'B' with 'A'.",
+        "codeSnippet": "// freq[A] = 2, freq[B] = 1; maxRepeatLetterCount = 2; maxLength = 3;"
+      },
+      {
+        "stepId": 5,
+        "description": "Expand: add 'A'. freq[A]=3, freq[B]=1, maxRepeatLetterCount=3. Window size=4, replacements needed=1 ≤ k=1. maxLength=4.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 3,
+        "uiState": {
+          "stringElements": [
+            {"value": "A", "state": "in_window", "index": 0},
+            {"value": "A", "state": "in_window", "index": 1},
+            {"value": "B", "state": "in_window", "index": 2},
+            {"value": "A", "state": "in_window", "index": 3},
+            {"value": "B", "state": "not_yet_reached", "index": 4},
+            {"value": "B", "state": "not_yet_reached", "index": 5},
+            {"value": "A", "state": "not_yet_reached", "index": 6}
+          ],
+          "windowStart": 0,
+          "windowEnd": 3,
+          "maxLength": 4,
+          "currentLength": 4,
+          "charFrequency": {"A": 3, "B": 1},
+          "maxRepeatLetterCount": 3,
+          "bestWindow": [0, 3],
+          "highlightedElements": [0, 1, 2, 3],
+          "k": 1
+        },
+        "jarvisMessage": "Added 'A'. Now freq[A]=3, freq[B]=1, maxRepeatLetterCount=3. Window size=4, replacements needed=4-3=1 ≤ k=1. This is valid, update maxLength to 4.",
+        "codeHint": "// Expand and update best",
+        "codeBotMessage": "Window \"AABA\" is valid. Replacements needed = 4 - 3 = 1 ≤ k (1). We can replace 1 'B' with 'A'.",
+        "codeSnippet": "// freq[A] = 3, freq[B] = 1; maxRepeatLetterCount = 3; maxLength = 4;"
+      },
+      {
+        "stepId": 6,
+        "description": "Expand: add 'B'. freq[A]=3, freq[B]=2, maxRepeatLetterCount=3. Window size=5, replacements needed=2 > k=1. Contract from left.",
+        "expectedAction": "contract_window",
+        "expectedElementIndex": 4,
+        "uiState": {
+          "stringElements": [
+            {"value": "A", "state": "out_of_window_past", "index": 0},
+            {"value": "A", "state": "in_window", "index": 1},
+            {"value": "B", "state": "in_window", "index": 2},
+            {"value": "A", "state": "in_window", "index": 3},
+            {"value": "B", "state": "in_window", "index": 4},
+            {"value": "B", "state": "not_yet_reached", "index": 5},
+            {"value": "A", "state": "not_yet_reached", "index": 6}
+          ],
+          "windowStart": 1,
+          "windowEnd": 4,
+          "maxLength": 4,
+          "currentLength": 4,
+          "charFrequency": {"A": 2, "B": 2},
+          "maxRepeatLetterCount": 2,
+          "bestWindow": [0, 3],
+          "highlightedElements": [1, 2, 3, 4],
+          "k": 1
+        },
+        "jarvisMessage": "Added 'B' but now we have 2 replacements needed (5-3=2 > k=1). We must contract from the left. Removed first 'A', now freq[A]=2, freq[B]=2, maxRepeatLetterCount=2.",
+        "codeHint": "// While too many replacements needed\nwhile ((windowEnd - windowStart + 1 - maxRepeatLetterCount) > k) {\n  charFrequency[s[windowStart]]--;\n  windowStart++;\n}",
+        "codeBotMessage": "We contracted until replacements needed ≤ k. Now window has 4-2=2 replacements needed, which exceeds k=1, so we need to contract more.",
+        "codeSnippet": "// Contracted: freq[A] = 2, freq[B] = 2; maxRepeatLetterCount = 2;"
+      },
+      {
+        "stepId": 7,
+        "description": "Continue contracting: remove 'A'. freq[A]=1, freq[B]=2, maxRepeatLetterCount=2. Window size=3, replacements needed=1 ≤ k=1.",
+        "expectedAction": "contract_window",
+        "expectedElementIndex": 4,
+        "uiState": {
+          "stringElements": [
+            {"value": "A", "state": "out_of_window_past", "index": 0},
+            {"value": "A", "state": "out_of_window_past", "index": 1},
+            {"value": "B", "state": "in_window", "index": 2},
+            {"value": "A", "state": "in_window", "index": 3},
+            {"value": "B", "state": "in_window", "index": 4},
+            {"value": "B", "state": "not_yet_reached", "index": 5},
+            {"value": "A", "state": "not_yet_reached", "index": 6}
+          ],
+          "windowStart": 2,
+          "windowEnd": 4,
+          "maxLength": 4,
+          "currentLength": 3,
+          "charFrequency": {"A": 1, "B": 2},
+          "maxRepeatLetterCount": 2,
+          "bestWindow": [0, 3],
+          "highlightedElements": [2, 3, 4],
+          "k": 1
+        },
+        "jarvisMessage": "Removed another 'A'. Now freq[A]=1, freq[B]=2, maxRepeatLetterCount=2. Window size=3, replacements needed=3-2=1 ≤ k=1. Window is now valid again.",
+        "codeHint": "// Continue contracting until valid",
+        "codeBotMessage": "Window \"BAB\" is valid. Replacements needed = 3 - 2 = 1 ≤ k (1).",
+        "codeSnippet": "// Now valid: freq[A] = 1, freq[B] = 2; maxRepeatLetterCount = 2;"
+      },
+      {
+        "stepId": 8,
+        "description": "Expand: add 'B'. freq[A]=1, freq[B]=3, maxRepeatLetterCount=3. Window size=4, replacements needed=1 ≤ k=1. maxLength=4 (unchanged).",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 5,
+        "uiState": {
+          "stringElements": [
+            {"value": "A", "state": "out_of_window_past", "index": 0},
+            {"value": "A", "state": "out_of_window_past", "index": 1},
+            {"value": "B", "state": "in_window", "index": 2},
+            {"value": "A", "state": "in_window", "index": 3},
+            {"value": "B", "state": "in_window", "index": 4},
+            {"value": "B", "state": "in_window", "index": 5},
+            {"value": "A", "state": "not_yet_reached", "index": 6}
+          ],
+          "windowStart": 2,
+          "windowEnd": 5,
+          "maxLength": 4,
+          "currentLength": 4,
+          "charFrequency": {"A": 1, "B": 3},
+          "maxRepeatLetterCount": 3,
+          "bestWindow": [0, 3],
+          "highlightedElements": [2, 3, 4, 5],
+          "k": 1
+        },
+        "jarvisMessage": "Added 'B'. Now freq[A]=1, freq[B]=3, maxRepeatLetterCount=3. Window size=4, replacements needed=4-3=1 ≤ k=1. This is valid, but maxLength stays 4 (not better).",
+        "codeHint": "// Expand and check if better",
+        "codeBotMessage": "Window \"BABB\" is valid. Replacements needed = 4 - 3 = 1 ≤ k (1). Current maxLength is already 4.",
+        "codeSnippet": "// freq[A] = 1, freq[B] = 3; maxRepeatLetterCount = 3; maxLength = 4;"
+      },
+      {
+        "stepId": 9,
+        "description": "Expand: add 'A'. freq[A]=2, freq[B]=3, maxRepeatLetterCount=3. Window size=5, replacements needed=2 > k=1. Contract from left.",
+        "expectedAction": "contract_window",
+        "expectedElementIndex": 6,
+        "uiState": {
+          "stringElements": [
+            {"value": "A", "state": "out_of_window_past", "index": 0},
+            {"value": "A", "state": "out_of_window_past", "index": 1},
+            {"value": "B", "state": "out_of_window_past", "index": 2},
+            {"value": "A", "state": "in_window", "index": 3},
+            {"value": "B", "state": "in_window", "index": 4},
+            {"value": "B", "state": "in_window", "index": 5},
+            {"value": "A", "state": "in_window", "index": 6}
+          ],
+          "windowStart": 3,
+          "windowEnd": 6,
+          "maxLength": 4,
+          "currentLength": 4,
+          "charFrequency": {"A": 2, "B": 2},
+          "maxRepeatLetterCount": 2,
+          "bestWindow": [0, 3],
+          "highlightedElements": [3, 4, 5, 6],
+          "k": 1
+        },
+        "jarvisMessage": "Added 'A' but now we have 2 replacements needed (5-3=2 > k=1). We must contract from the left. Removed 'B', now freq[A]=2, freq[B]=2, maxRepeatLetterCount=2.",
+        "codeHint": "// Contract until valid again",
+        "codeBotMessage": "Window \"ABBA\" is valid. Replacements needed = 4 - 2 = 2 > k (1), so we need to contract more.",
+        "codeSnippet": "// Contracted: freq[A] = 2, freq[B] = 2; maxRepeatLetterCount = 2;"
+      },
+      {
+        "stepId": 10,
+        "description": "Continue contracting: remove 'A'. freq[A]=1, freq[B]=2, maxRepeatLetterCount=2. Window size=3, replacements needed=1 ≤ k=1.",
+        "expectedAction": "contract_window",
+        "expectedElementIndex": 6,
+        "uiState": {
+          "stringElements": [
+            {"value": "A", "state": "out_of_window_past", "index": 0},
+            {"value": "A", "state": "out_of_window_past", "index": 1},
+            {"value": "B", "state": "out_of_window_past", "index": 2},
+            {"value": "A", "state": "out_of_window_past", "index": 3},
+            {"value": "B", "state": "in_window", "index": 4},
+            {"value": "B", "state": "in_window", "index": 5},
+            {"value": "A", "state": "in_window", "index": 6}
+          ],
+          "windowStart": 4,
+          "windowEnd": 6,
+          "maxLength": 4,
+          "currentLength": 3,
+          "charFrequency": {"A": 1, "B": 2},
+          "maxRepeatLetterCount": 2,
+          "bestWindow": [0, 3],
+          "highlightedElements": [4, 5, 6],
+          "k": 1
+        },
+        "jarvisMessage": "Removed another 'A'. Now freq[A]=1, freq[B]=2, maxRepeatLetterCount=2. Window size=3, replacements needed=3-2=1 ≤ k=1. Window is now valid again.",
+        "codeHint": "// Continue contracting until valid",
+        "codeBotMessage": "Window \"BBA\" is valid. Replacements needed = 3 - 2 = 1 ≤ k (1).",
+        "codeSnippet": "// Now valid: freq[A] = 1, freq[B] = 2; maxRepeatLetterCount = 2;"
+      },
+      {
+        "stepId": 11,
+        "description": "Algorithm completed! Best substring length = 4 (after replacing 1 character).",
+        "expectedAction": "complete_algorithm",
+        "expectedElementIndex": 6,
+        "uiState": {
+          "stringElements": [
+            {"value": "A", "state": "out_of_window_past", "index": 0},
+            {"value": "A", "state": "out_of_window_past", "index": 1},
+            {"value": "B", "state": "out_of_window_past", "index": 2},
+            {"value": "A", "state": "out_of_window_past", "index": 3},
+            {"value": "B", "state": "in_window", "index": 4},
+            {"value": "B", "state": "in_window", "index": 5},
+            {"value": "A", "state": "in_window", "index": 6}
+          ],
+          "windowStart": 4,
+          "windowEnd": 6,
+          "maxLength": 4,
+          "currentLength": 3,
+          "charFrequency": {"A": 1, "B": 2},
+          "maxRepeatLetterCount": 2,
+          "bestWindow": [0, 3],
+          "highlightedElements": [4, 5, 6],
+          "k": 1
+        },
+        "jarvisMessage": "🎉 Congratulations! You've completed the walkthrough. Best substring length is 4 (after replacing 1 character). The best window was \"AABA\" where we could replace 1 'B' with 'A' to get \"AAAA\".",
+        "codeHint": "// Done\nreturn maxLength;",
+        "codeBotMessage": "Sliding window + frequency tracking: O(n) time, O(1) space. We tracked character frequencies and maintained ≤k replacements in our window.",
+        "codeSnippet": "// Final answer\nreturn maxLength;"
+      }
+    ],
+    "jarvisConfig": {
+      "personality": "encouraging",
+      "hintLevels": ["subtle", "helpful", "explicit"],
+      "motivationalMessages": [
+        "Great thinking! Track the most frequent character to minimize replacements needed.",
+        "Exactly! The key insight is (windowSize - maxRepeatLetterCount) ≤ k.",
+        "You're mastering character frequency tracking with sliding windows!",
+        "Awesome! This technique works for any character replacement problems."
+      ]
+    }
+  },
+  "solution": {
+    "optimal": {
+      "idea": "Use variable-size window with character frequency tracking; expand when (windowSize - maxRepeatLetterCount) ≤ k and contract when it exceeds k to find longest substring with same character after replacements.",
+      "timeComplexity": "O(n)",
+      "spaceComplexity": "O(1)",
+      "walkthrough": [
+        "Initialize windowStart = 0, maxLength = 0, maxRepeatLetterCount = 0, charFrequency = {}.",
+        "For windowEnd from 0..n-1, update character frequency and maxRepeatLetterCount.",
+        "While (windowSize - maxRepeatLetterCount) > k, decrement frequency of s[windowStart] and increment windowStart.",
+        "Update maxLength with current window size.",
+        "Return maxLength."
+      ]
+    }
+  },
+  "code": {
+    "cpp": "#include <iostream>\n#include <string>\n#include <unordered_map>\nusing namespace std;\n\nclass Solution {\npublic:\n    int characterReplacement(string s, int k) {\n        int windowStart = 0, maxLength = 0, maxRepeatLetterCount = 0;\n        unordered_map<char, int> charFrequency;\n        \n        for (int windowEnd = 0; windowEnd < s.length(); ++windowEnd) {\n            charFrequency[s[windowEnd]]++;\n            maxRepeatLetterCount = max(maxRepeatLetterCount, charFrequency[s[windowEnd]]);\n            \n            // If we need more replacements than allowed, shrink the window\n            while ((windowEnd - windowStart + 1 - maxRepeatLetterCount) > k) {\n                charFrequency[s[windowStart]]--;\n                windowStart++;\n            }\n            \n            maxLength = max(maxLength, windowEnd - windowStart + 1);\n        }\n        return maxLength;\n    }\n};\n\nint main() {\n    Solution sol;\n    string s1 = \"BAABAABBBAAA\";\n    cout << \"Longest substring length: \" << sol.characterReplacement(s1, 2) << endl; // 6\n    \n    string s2 = \"AABABBA\";\n    cout << \"Longest substring length: \" << sol.characterReplacement(s2, 1) << endl; // 4\n    return 0;\n}"
+  }
+}

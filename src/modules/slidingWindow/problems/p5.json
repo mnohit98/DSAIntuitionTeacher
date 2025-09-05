@@ -1,0 +1,398 @@
+{
+  "problemId": "p5",
+  "title": "Longest Substring Without Repeating Characters",
+  "description": "Given a string S, find the length of the longest substring without repeating characters.",
+  "aim": "Demonstrate variable-size sliding window with a hashmap to track character counts; expand when valid and contract on duplicates.",
+  "moduleId": "slidingWindow",
+  "submoduleId": "sw_variable",
+  "difficulty": "Medium",
+  "tags": ["String", "Sliding Window", "Variable Size", "HashMap"],
+  "examples": [
+    { "input": "S = \"abcddabac\"", "output": "4", "explanation": "The answer is \"abcd\" with length 4." },
+    { "input": "S = \"aaabbbccc\"", "output": "2", "explanation": "Answers include \"ab\" and \"bc\", both length 2." }
+  ],
+  "playground": {
+    "initialState": {
+      "array": ["a", "b", "c", "d", "d", "a", "b", "a", "c"],
+      "windowStart": 0,
+      "windowEnd": 0,
+      "windowSum": 0,
+      "maxLength": 0,
+      "currentLength": 0,
+      "charCount": {},
+      "bestWindow": null
+    },
+    "steps": [
+      {
+        "stepId": 1,
+        "description": "Initialize variables. We'll use a hashmap (charCount) to avoid repeats.",
+        "expectedAction": "click_initialize",
+        "uiState": {
+          "arrayElements": [
+            {"value": "a", "state": "not_yet_reached", "index": 0},
+            {"value": "b", "state": "not_yet_reached", "index": 1},
+            {"value": "c", "state": "not_yet_reached", "index": 2},
+            {"value": "d", "state": "not_yet_reached", "index": 3},
+            {"value": "d", "state": "not_yet_reached", "index": 4},
+            {"value": "a", "state": "not_yet_reached", "index": 5},
+            {"value": "b", "state": "not_yet_reached", "index": 6},
+            {"value": "a", "state": "not_yet_reached", "index": 7},
+            {"value": "c", "state": "not_yet_reached", "index": 8}
+          ],
+          "windowStart": null,
+          "windowEnd": null,
+          "windowSum": 0,
+          "maxSum": 0,
+          "maxLength": 0,
+          "currentLength": 0,
+          "charCount": {},
+          "bestWindow": null,
+          "highlightedElements": []
+        },
+        "jarvisMessage": "We will expand the window to include new characters. If a duplicate appears, we'll contract from the left until all characters are unique again.",
+        "codeHint": "// Initialize\nlet windowStart = 0;\nlet maxLength = 0;\nlet charCount = {};",
+        "codeBotMessage": "HashMap shows counts per character inside the current window.",
+        "codeSnippet": "let windowStart = 0;\nlet maxLength = 0;\nconst charCount = Object.create(null);"
+      },
+      {
+        "stepId": 2,
+        "description": "Expand: add 'a'. No duplicates. maxLength = 1.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 0,
+        "uiState": {
+          "arrayElements": [
+            {"value": "a", "state": "in_window", "index": 0},
+            {"value": "b", "state": "not_yet_reached", "index": 1},
+            {"value": "c", "state": "not_yet_reached", "index": 2},
+            {"value": "d", "state": "not_yet_reached", "index": 3},
+            {"value": "d", "state": "not_yet_reached", "index": 4},
+            {"value": "a", "state": "not_yet_reached", "index": 5},
+            {"value": "b", "state": "not_yet_reached", "index": 6},
+            {"value": "a", "state": "not_yet_reached", "index": 7},
+            {"value": "c", "state": "not_yet_reached", "index": 8}
+          ],
+          "windowStart": 0,
+          "windowEnd": 0,
+          "windowSum": 0,
+          "maxSum": 0,
+          "maxLength": 1,
+          "currentLength": 1,
+          "charCount": {"a": 1},
+          "bestWindow": [0, 0],
+          "highlightedElements": [0]
+        },
+        "jarvisMessage": "Added 'a'. All counts ≤ 1, so update best length to 1.",
+        "codeHint": "// Expand\ncharCount[s[windowEnd]] = (charCount[s[windowEnd]]||0) + 1;\nmaxLength = Math.max(maxLength, windowEnd - windowStart + 1);",
+        "codeBotMessage": "Valid window so far.",
+        "codeSnippet": "charCount['a'] = 1; maxLength = 1;"
+      },
+      {
+        "stepId": 3,
+        "description": "Expand: add 'b'. Unique. maxLength = 2.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 1,
+        "uiState": {
+          "arrayElements": [
+            {"value": "a", "state": "in_window", "index": 0},
+            {"value": "b", "state": "in_window", "index": 1},
+            {"value": "c", "state": "not_yet_reached", "index": 2},
+            {"value": "d", "state": "not_yet_reached", "index": 3},
+            {"value": "d", "state": "not_yet_reached", "index": 4},
+            {"value": "a", "state": "not_yet_reached", "index": 5},
+            {"value": "b", "state": "not_yet_reached", "index": 6},
+            {"value": "a", "state": "not_yet_reached", "index": 7},
+            {"value": "c", "state": "not_yet_reached", "index": 8}
+          ],
+          "windowStart": 0,
+          "windowEnd": 1,
+          "maxLength": 2,
+          "currentLength": 2,
+          "charCount": {"a": 1, "b": 1},
+          "bestWindow": [0, 1],
+          "highlightedElements": [0, 1],
+          "windowSum": 0,
+          "maxSum": 0
+        },
+        "jarvisMessage": "Added 'b'. Still unique characters.",
+        "codeHint": "// Expand next and update length",
+        "codeBotMessage": "Window \"ab\" is valid.",
+        "codeSnippet": "charCount['b'] = 1; maxLength = 2;"
+      },
+      {
+        "stepId": 4,
+        "description": "Expand: add 'c'. Unique. maxLength = 3.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 2,
+        "uiState": {
+          "arrayElements": [
+            {"value": "a", "state": "in_window", "index": 0},
+            {"value": "b", "state": "in_window", "index": 1},
+            {"value": "c", "state": "in_window", "index": 2},
+            {"value": "d", "state": "not_yet_reached", "index": 3},
+            {"value": "d", "state": "not_yet_reached", "index": 4},
+            {"value": "a", "state": "not_yet_reached", "index": 5},
+            {"value": "b", "state": "not_yet_reached", "index": 6},
+            {"value": "a", "state": "not_yet_reached", "index": 7},
+            {"value": "c", "state": "not_yet_reached", "index": 8}
+          ],
+          "windowStart": 0,
+          "windowEnd": 2,
+          "maxLength": 3,
+          "currentLength": 3,
+          "charCount": {"a": 1, "b": 1, "c": 1},
+          "bestWindow": [0, 2],
+          "highlightedElements": [0, 1, 2],
+          "windowSum": 0,
+          "maxSum": 0
+        },
+        "jarvisMessage": "Added 'c'. Still no duplicates.",
+        "codeHint": "// Update length if improved",
+        "codeBotMessage": "Window \"abc\" length 3.",
+        "codeSnippet": "maxLength = 3;"
+      },
+      {
+        "stepId": 5,
+        "description": "Expand: add 'd'. Unique. maxLength = 4 (best so far: \"abcd\").",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 3,
+        "uiState": {
+          "arrayElements": [
+            {"value": "a", "state": "in_window", "index": 0},
+            {"value": "b", "state": "in_window", "index": 1},
+            {"value": "c", "state": "in_window", "index": 2},
+            {"value": "d", "state": "in_window", "index": 3},
+            {"value": "d", "state": "not_yet_reached", "index": 4},
+            {"value": "a", "state": "not_yet_reached", "index": 5},
+            {"value": "b", "state": "not_yet_reached", "index": 6},
+            {"value": "a", "state": "not_yet_reached", "index": 7},
+            {"value": "c", "state": "not_yet_reached", "index": 8}
+          ],
+          "windowStart": 0,
+          "windowEnd": 3,
+          "maxLength": 4,
+          "currentLength": 4,
+          "charCount": {"a": 1, "b": 1, "c": 1, "d": 1},
+          "bestWindow": [0, 3],
+          "highlightedElements": [0, 1, 2, 3],
+          "windowSum": 0,
+          "maxSum": 0
+        },
+        "jarvisMessage": "Great! We reached \"abcd\" (length 4).",
+        "codeHint": "// Expand and update best",
+        "codeBotMessage": "Best length now 4.",
+        "codeSnippet": "charCount['d'] = 1; maxLength = 4;"
+      },
+      {
+        "stepId": 6,
+        "description": "Expand: add next 'd' (duplicate). Contract from left until 'd' count ≤ 1.",
+        "expectedAction": "contract_window",
+        "expectedElementIndex": 4,
+        "uiState": {
+          "arrayElements": [
+            {"value": "a", "state": "out_of_window_past", "index": 0},
+            {"value": "b", "state": "out_of_window_past", "index": 1},
+            {"value": "c", "state": "out_of_window_past", "index": 2},
+            {"value": "d", "state": "out_of_window_past", "index": 3},
+            {"value": "d", "state": "in_window", "index": 4},
+            {"value": "a", "state": "not_yet_reached", "index": 5},
+            {"value": "b", "state": "not_yet_reached", "index": 6},
+            {"value": "a", "state": "not_yet_reached", "index": 7},
+            {"value": "c", "state": "not_yet_reached", "index": 8}
+          ],
+          "windowStart": 4,
+          "windowEnd": 4,
+          "maxLength": 4,
+          "currentLength": 1,
+          "charCount": {"d": 1},
+          "bestWindow": [0, 3],
+          "highlightedElements": [4],
+          "windowSum": 0,
+          "maxSum": 0
+        },
+        "jarvisMessage": "Duplicate 'd' forced us to shrink from the left until valid again.",
+        "codeHint": "// While duplicate\nwhile (charCount[s[windowEnd]] > 1) { charCount[s[windowStart]]--; windowStart++; }",
+        "codeBotMessage": "We removed a,b,c,d from the left to drop the earlier 'd'.",
+        "codeSnippet": "// Now window is just 'd' at index 4"
+      },
+      {
+        "stepId": 7,
+        "description": "Expand: add 'a' → window \"da\" (len 2).",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 5,
+        "uiState": {
+          "arrayElements": [
+            {"value": "a", "state": "out_of_window_past", "index": 0},
+            {"value": "b", "state": "out_of_window_past", "index": 1},
+            {"value": "c", "state": "out_of_window_past", "index": 2},
+            {"value": "d", "state": "out_of_window_past", "index": 3},
+            {"value": "d", "state": "in_window", "index": 4},
+            {"value": "a", "state": "in_window", "index": 5},
+            {"value": "b", "state": "not_yet_reached", "index": 6},
+            {"value": "a", "state": "not_yet_reached", "index": 7},
+            {"value": "c", "state": "not_yet_reached", "index": 8}
+          ],
+          "windowStart": 4,
+          "windowEnd": 5,
+          "maxLength": 4,
+          "currentLength": 2,
+          "charCount": {"d": 1, "a": 1},
+          "bestWindow": [0, 3],
+          "highlightedElements": [4, 5]
+        },
+        "jarvisMessage": "Window is \"da\". Best stays 4.",
+        "codeHint": "// Expand normally",
+        "codeBotMessage": "No duplicates right now.",
+        "codeSnippet": "charCount['a'] = 1;"
+      },
+      {
+        "stepId": 8,
+        "description": "Expand: add 'b' → window \"dab\" (len 3).",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 6,
+        "uiState": {
+          "arrayElements": [
+            {"value": "a", "state": "out_of_window_past", "index": 0},
+            {"value": "b", "state": "out_of_window_past", "index": 1},
+            {"value": "c", "state": "out_of_window_past", "index": 2},
+            {"value": "d", "state": "out_of_window_past", "index": 3},
+            {"value": "d", "state": "in_window", "index": 4},
+            {"value": "a", "state": "in_window", "index": 5},
+            {"value": "b", "state": "in_window", "index": 6},
+            {"value": "a", "state": "not_yet_reached", "index": 7},
+            {"value": "c", "state": "not_yet_reached", "index": 8}
+          ],
+          "windowStart": 4,
+          "windowEnd": 6,
+          "maxLength": 4,
+          "currentLength": 3,
+          "charCount": {"d": 1, "a": 1, "b": 1},
+          "bestWindow": [0, 3],
+          "highlightedElements": [4, 5, 6]
+        },
+        "jarvisMessage": "Window is \"dab\".",
+        "codeHint": "// Expand normally",
+        "codeBotMessage": "Still unique.",
+        "codeSnippet": "charCount['b'] = 1;"
+      },
+      {
+        "stepId": 9,
+        "description": "Expand: add 'a' (duplicate). Contract from left until valid → window becomes \"ba\".",
+        "expectedAction": "contract_window",
+        "expectedElementIndex": 7,
+        "uiState": {
+          "arrayElements": [
+            {"value": "a", "state": "out_of_window_past", "index": 0},
+            {"value": "b", "state": "out_of_window_past", "index": 1},
+            {"value": "c", "state": "out_of_window_past", "index": 2},
+            {"value": "d", "state": "out_of_window_past", "index": 3},
+            {"value": "d", "state": "out_of_window_past", "index": 4},
+            {"value": "a", "state": "out_of_window_past", "index": 5},
+            {"value": "b", "state": "in_window", "index": 6},
+            {"value": "a", "state": "in_window", "index": 7},
+            {"value": "c", "state": "not_yet_reached", "index": 8}
+          ],
+          "windowStart": 6,
+          "windowEnd": 7,
+          "maxLength": 4,
+          "currentLength": 2,
+          "charCount": {"b": 1, "a": 1},
+          "bestWindow": [0, 3],
+          "highlightedElements": [6, 7]
+        },
+        "jarvisMessage": "Encountered duplicate 'a'. We removed from the left until counts are valid again.",
+        "codeHint": "// Contract while duplicate",
+        "codeBotMessage": "Now window is \"ba\".",
+        "codeSnippet": "// counts: b:1, a:1"
+      },
+      {
+        "stepId": 10,
+        "description": "Expand: add 'c' → window \"bac\" (len 3). Best remains 4.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 8,
+        "uiState": {
+          "arrayElements": [
+            {"value": "a", "state": "out_of_window_past", "index": 0},
+            {"value": "b", "state": "out_of_window_past", "index": 1},
+            {"value": "c", "state": "out_of_window_past", "index": 2},
+            {"value": "d", "state": "out_of_window_past", "index": 3},
+            {"value": "d", "state": "out_of_window_past", "index": 4},
+            {"value": "a", "state": "out_of_window_past", "index": 5},
+            {"value": "b", "state": "in_window", "index": 6},
+            {"value": "a", "state": "in_window", "index": 7},
+            {"value": "c", "state": "in_window", "index": 8}
+          ],
+          "windowStart": 6,
+          "windowEnd": 8,
+          "maxLength": 4,
+          "currentLength": 3,
+          "charCount": {"b": 1, "a": 1, "c": 1},
+          "bestWindow": [0, 3],
+          "highlightedElements": [6, 7, 8]
+        },
+        "jarvisMessage": "Finished scanning. Best unique length is 4 (\"abcd\").",
+        "codeHint": "// Final result\nreturn maxLength;",
+        "codeBotMessage": "We tracked unique window using the hashmap and kept the best length.",
+        "codeSnippet": "return maxLength;"
+      },
+      {
+        "stepId": 11,
+        "description": "Algorithm completed! Best unique substring length = 4 (e.g., \"abcd\").",
+        "expectedAction": "complete_algorithm",
+        "expectedElementIndex": 8,
+        "uiState": {
+          "arrayElements": [
+            {"value": "a", "state": "out_of_window_past", "index": 0},
+            {"value": "b", "state": "out_of_window_past", "index": 1},
+            {"value": "c", "state": "out_of_window_past", "index": 2},
+            {"value": "d", "state": "out_of_window_past", "index": 3},
+            {"value": "d", "state": "out_of_window_past", "index": 4},
+            {"value": "a", "state": "out_of_window_past", "index": 5},
+            {"value": "b", "state": "in_window", "index": 6},
+            {"value": "a", "state": "in_window", "index": 7},
+            {"value": "c", "state": "in_window", "index": 8}
+          ],
+          "windowStart": 6,
+          "windowEnd": 8,
+          "maxLength": 4,
+          "currentLength": 3,
+          "charCount": {"b": 1, "a": 1, "c": 1},
+          "bestWindow": [0, 3],
+          "highlightedElements": [6, 7, 8],
+          "windowSum": 0,
+          "maxSum": 0
+        },
+        "jarvisMessage": "🎉 Congratulations! You've completed the walkthrough. Best unique length is 4 (e.g., \"abcd\").",
+        "codeHint": "// Done\nreturn maxLength;",
+        "codeBotMessage": "HashMap + expand/contract: O(n) time, O(k) space.",
+        "codeSnippet": "// Final answer\nreturn maxLength;"
+      }
+    ],
+    "jarvisConfig": {
+      "personality": "encouraging",
+      "hintLevels": ["subtle", "helpful", "explicit"],
+      "motivationalMessages": [
+        "Great thinking! Expand until duplicate, then contract to restore validity.",
+        "Exactly! The hashmap ensures we detect duplicates quickly.",
+        "You're mastering variable-size windows!",
+        "Awesome! This technique generalizes to many string problems."
+      ]
+    }
+  },
+  "solution": {
+    "optimal": {
+      "idea": "Use variable-size window with a hashmap to track character counts and contract when duplicates appear.",
+      "timeComplexity": "O(n)",
+      "spaceComplexity": "O(k)",
+      "walkthrough": [
+        "Initialize windowStart = 0, maxLength = 0, charCount = {}.",
+        "For windowEnd from 0..n-1, add s[windowEnd] to charCount.",
+        "While charCount[s[windowEnd]] > 1, decrement charCount[s[windowStart]] and increment windowStart.",
+        "Update maxLength with current window size.",
+        "Return maxLength."
+      ]
+    }
+  },
+  "code": {
+    "cpp": "#include <bits/stdc++.h>\nusing namespace std;\n\nclass Solution {\npublic:\n    int lengthOfLongestSubstring(string s) {\n        vector<int> count(256, 0);\n        int start = 0, best = 0;\n        for (int end = 0; end < (int)s.size(); ++end) {\n            count[(unsigned char)s[end]]++;\n            while (count[(unsigned char)s[end]] > 1) {\n                count[(unsigned char)s[start]]--;\n                start++;\n            }\n            best = max(best, end - start + 1);\n        }\n        return best;\n    }\n};\n\nint main(){\n    Solution sol;\n    cout << sol.lengthOfLongestSubstring(\"abcddabac\") << endl; // 4\n    cout << sol.lengthOfLongestSubstring(\"aaabbbccc\") << endl; // 2\n    return 0;\n}"
+  }
+}

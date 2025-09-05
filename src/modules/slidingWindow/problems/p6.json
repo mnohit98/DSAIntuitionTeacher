@@ -1,0 +1,497 @@
+{
+  "problemId": "p6",
+  "title": "Longest Substring with At Most K Distinct Characters",
+  "description": "Given a string s and an integer k, return the length of the longest substring that contains at most k distinct characters.",
+  "aim": "Demonstrate variable-size sliding window with a hashmap to track character frequencies; expand when distinct characters ≤ k and contract when distinct characters > k.",
+  "moduleId": "slidingWindow",
+  "submoduleId": "sw_variable",
+  "difficulty": "Medium",
+  "tags": ["String", "Sliding Window", "Variable Size", "HashMap", "Character Frequency"],
+  "examples": [
+    { "input": "s = \"aababbcaacc\", k = 2", "output": "6", "explanation": "The longest substring with at most two distinct characters is \"aababb\". The length of the string is 6." },
+    { "input": "s = \"abcddefg\", k = 3", "output": "4", "explanation": "The longest substring with at most three distinct characters is \"bcdd\". The length of the string is 4." }
+  ],
+  "playground": {
+    "initialState": {
+      "array": ["a", "a", "b", "a", "b", "b", "c", "a", "a", "c", "c"],
+      "k": 2,
+      "windowStart": 0,
+      "windowEnd": 0,
+      "maxLength": 0,
+      "currentLength": 0,
+      "charCount": {},
+      "distinctChars": 0,
+      "bestWindow": null
+    },
+    "steps": [
+      {
+        "stepId": 1,
+        "description": "Initialize variables. We'll use a hashmap (charCount) to track character frequencies and count distinct characters.",
+        "expectedAction": "click_initialize",
+        "uiState": {
+          "arrayElements": [
+            {"value": "a", "state": "not_yet_reached", "index": 0},
+            {"value": "a", "state": "not_yet_reached", "index": 1},
+            {"value": "b", "state": "not_yet_reached", "index": 2},
+            {"value": "a", "state": "not_yet_reached", "index": 3},
+            {"value": "b", "state": "not_yet_reached", "index": 4},
+            {"value": "b", "state": "not_yet_reached", "index": 5},
+            {"value": "c", "state": "not_yet_reached", "index": 6},
+            {"value": "a", "state": "not_yet_reached", "index": 7},
+            {"value": "a", "state": "not_yet_reached", "index": 8},
+            {"value": "c", "state": "not_yet_reached", "index": 9},
+            {"value": "c", "state": "not_yet_reached", "index": 10}
+          ],
+          "windowStart": null,
+          "windowEnd": null,
+          "maxLength": 0,
+          "currentLength": 0,
+          "charCount": {},
+          "distinctChars": 0,
+          "bestWindow": null,
+          "highlightedElements": [],
+          "k": 2
+        },
+        "jarvisMessage": "Welcome! We'll use a hashmap to track character frequencies and count distinct characters. Our goal is to find the longest substring with at most k=2 distinct characters.",
+        "codeHint": "// Initialize\nlet windowStart = 0;\nlet maxLength = 0;\nlet charCount = {};\nlet distinctChars = 0;",
+        "codeBotMessage": "HashMap will track how many times each character appears in our current window. We'll expand when distinct characters ≤ k and contract when distinct characters > k.",
+        "codeSnippet": "let windowStart = 0;\nlet maxLength = 0;\nconst charCount = Object.create(null);\nlet distinctChars = 0;"
+      },
+      {
+        "stepId": 2,
+        "description": "Expand: add 'a'. charCount = {a: 1}, distinctChars = 1 ≤ k=2. maxLength = 1.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 0,
+        "uiState": {
+          "arrayElements": [
+            {"value": "a", "state": "in_window", "index": 0},
+            {"value": "a", "state": "not_yet_reached", "index": 1},
+            {"value": "b", "state": "not_yet_reached", "index": 2},
+            {"value": "a", "state": "not_yet_reached", "index": 3},
+            {"value": "b", "state": "not_yet_reached", "index": 4},
+            {"value": "b", "state": "not_yet_reached", "index": 5},
+            {"value": "c", "state": "not_yet_reached", "index": 6},
+            {"value": "a", "state": "not_yet_reached", "index": 7},
+            {"value": "a", "state": "not_yet_reached", "index": 8},
+            {"value": "c", "state": "not_yet_reached", "index": 9},
+            {"value": "c", "state": "not_yet_reached", "index": 10}
+          ],
+          "windowStart": 0,
+          "windowEnd": 0,
+          "maxLength": 1,
+          "currentLength": 1,
+          "charCount": {"a": 1},
+          "distinctChars": 1,
+          "bestWindow": [0, 0],
+          "highlightedElements": [0],
+          "k": 2
+        },
+        "jarvisMessage": "Added 'a'. We now have 1 distinct character, which is ≤ k=2. Update maxLength to 1.",
+        "codeHint": "// Expand\ncharCount[s[windowEnd]] = (charCount[s[windowEnd]] || 0) + 1;\nif (charCount[s[windowEnd]] === 1) distinctChars++;\nmaxLength = Math.max(maxLength, windowEnd - windowStart + 1);",
+        "codeBotMessage": "Valid window so far. We can expand more since distinctChars (1) ≤ k (2).",
+        "codeSnippet": "charCount['a'] = 1; distinctChars = 1; maxLength = 1;"
+      },
+      {
+        "stepId": 3,
+        "description": "Expand: add 'a'. charCount = {a: 2}, distinctChars = 1 ≤ k=2. maxLength = 2.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 1,
+        "uiState": {
+          "arrayElements": [
+            {"value": "a", "state": "in_window", "index": 0},
+            {"value": "a", "state": "in_window", "index": 1},
+            {"value": "b", "state": "not_yet_reached", "index": 2},
+            {"value": "a", "state": "not_yet_reached", "index": 3},
+            {"value": "b", "state": "not_yet_reached", "index": 4},
+            {"value": "b", "state": "not_yet_reached", "index": 5},
+            {"value": "c", "state": "not_yet_reached", "index": 6},
+            {"value": "a", "state": "not_yet_reached", "index": 7},
+            {"value": "a", "state": "not_yet_reached", "index": 8},
+            {"value": "c", "state": "not_yet_reached", "index": 9},
+            {"value": "c", "state": "not_yet_reached", "index": 10}
+          ],
+          "windowStart": 0,
+          "windowEnd": 1,
+          "maxLength": 2,
+          "currentLength": 2,
+          "charCount": {"a": 2},
+          "distinctChars": 1,
+          "bestWindow": [0, 1],
+          "highlightedElements": [0, 1],
+          "k": 2
+        },
+        "jarvisMessage": "Added another 'a'. Still only 1 distinct character, so we can expand more. Window \"aa\" has length 2.",
+        "codeHint": "// Expand next and update length",
+        "codeBotMessage": "Window \"aa\" is valid. distinctChars (1) ≤ k (2).",
+        "codeSnippet": "charCount['a'] = 2; maxLength = 2;"
+      },
+      {
+        "stepId": 4,
+        "description": "Expand: add 'b'. charCount = {a: 2, b: 1}, distinctChars = 2 ≤ k=2. maxLength = 3.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 2,
+        "uiState": {
+          "arrayElements": [
+            {"value": "a", "state": "in_window", "index": 0},
+            {"value": "a", "state": "in_window", "index": 1},
+            {"value": "b", "state": "in_window", "index": 2},
+            {"value": "a", "state": "not_yet_reached", "index": 3},
+            {"value": "b", "state": "not_yet_reached", "index": 4},
+            {"value": "b", "state": "not_yet_reached", "index": 5},
+            {"value": "c", "state": "not_yet_reached", "index": 6},
+            {"value": "a", "state": "not_yet_reached", "index": 7},
+            {"value": "a", "state": "not_yet_reached", "index": 8},
+            {"value": "c", "state": "not_yet_reached", "index": 9},
+            {"value": "c", "state": "not_yet_reached", "index": 10}
+          ],
+          "windowStart": 0,
+          "windowEnd": 2,
+          "maxLength": 3,
+          "currentLength": 3,
+          "charCount": {"a": 2, "b": 1},
+          "distinctChars": 2,
+          "bestWindow": [0, 2],
+          "highlightedElements": [0, 1, 2],
+          "k": 2
+        },
+        "jarvisMessage": "Added 'b'. Now we have 2 distinct characters (a, b), which equals k=2. We can still expand!",
+        "codeHint": "// Update length if improved",
+        "codeBotMessage": "Window \"aab\" has 2 distinct characters, which equals k. We can expand more.",
+        "codeSnippet": "charCount['b'] = 1; distinctChars = 2; maxLength = 3;"
+      },
+      {
+        "stepId": 5,
+        "description": "Expand: add 'a'. charCount = {a: 3, b: 1}, distinctChars = 2 ≤ k=2. maxLength = 4.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 3,
+        "uiState": {
+          "arrayElements": [
+            {"value": "a", "state": "in_window", "index": 0},
+            {"value": "a", "state": "in_window", "index": 1},
+            {"value": "b", "state": "in_window", "index": 2},
+            {"value": "a", "state": "in_window", "index": 3},
+            {"value": "b", "state": "not_yet_reached", "index": 4},
+            {"value": "b", "state": "not_yet_reached", "index": 5},
+            {"value": "c", "state": "not_yet_reached", "index": 6},
+            {"value": "a", "state": "not_yet_reached", "index": 7},
+            {"value": "a", "state": "not_yet_reached", "index": 8},
+            {"value": "c", "state": "not_yet_reached", "index": 9},
+            {"value": "c", "state": "not_yet_reached", "index": 10}
+          ],
+          "windowStart": 0,
+          "windowEnd": 3,
+          "maxLength": 4,
+          "currentLength": 4,
+          "charCount": {"a": 3, "b": 1},
+          "distinctChars": 2,
+          "bestWindow": [0, 3],
+          "highlightedElements": [0, 1, 2, 3],
+          "k": 2
+        },
+        "jarvisMessage": "Added another 'a'. Still 2 distinct characters (a, b), so we can expand more. Window \"aaba\" has length 4.",
+        "codeHint": "// Expand and update best",
+        "codeBotMessage": "Best length now 4. We can continue expanding since distinctChars (2) ≤ k (2).",
+        "codeSnippet": "charCount['a'] = 3; maxLength = 4;"
+      },
+      {
+        "stepId": 6,
+        "description": "Expand: add 'b'. charCount = {a: 3, b: 2}, distinctChars = 2 ≤ k=2. maxLength = 5.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 4,
+        "uiState": {
+          "arrayElements": [
+            {"value": "a", "state": "in_window", "index": 0},
+            {"value": "a", "state": "in_window", "index": 1},
+            {"value": "b", "state": "in_window", "index": 2},
+            {"value": "a", "state": "in_window", "index": 3},
+            {"value": "b", "state": "in_window", "index": 4},
+            {"value": "b", "state": "not_yet_reached", "index": 5},
+            {"value": "c", "state": "not_yet_reached", "index": 6},
+            {"value": "a", "state": "not_yet_reached", "index": 7},
+            {"value": "a", "state": "not_yet_reached", "index": 8},
+            {"value": "c", "state": "not_yet_reached", "index": 9},
+            {"value": "c", "state": "not_yet_reached", "index": 10}
+          ],
+          "windowStart": 0,
+          "windowEnd": 4,
+          "maxLength": 5,
+          "currentLength": 5,
+          "charCount": {"a": 3, "b": 2},
+          "distinctChars": 2,
+          "bestWindow": [0, 4],
+          "highlightedElements": [0, 1, 2, 3, 4],
+          "k": 2
+        },
+        "jarvisMessage": "Added another 'b'. Still 2 distinct characters (a, b), so we can expand more. Window \"aabab\" has length 5.",
+        "codeHint": "// Expand and update best",
+        "codeBotMessage": "Best length now 5. We can continue expanding since distinctChars (2) ≤ k (2).",
+        "codeSnippet": "charCount['b'] = 2; maxLength = 5;"
+      },
+      {
+        "stepId": 7,
+        "description": "Expand: add 'b'. charCount = {a: 3, b: 3}, distinctChars = 2 ≤ k=2. maxLength = 6.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 5,
+        "uiState": {
+          "arrayElements": [
+            {"value": "a", "state": "in_window", "index": 0},
+            {"value": "a", "state": "in_window", "index": 1},
+            {"value": "b", "state": "in_window", "index": 2},
+            {"value": "a", "state": "in_window", "index": 3},
+            {"value": "b", "state": "in_window", "index": 4},
+            {"value": "b", "state": "in_window", "index": 5},
+            {"value": "c", "state": "not_yet_reached", "index": 6},
+            {"value": "a", "state": "not_yet_reached", "index": 7},
+            {"value": "a", "state": "not_yet_reached", "index": 8},
+            {"value": "c", "state": "not_yet_reached", "index": 9},
+            {"value": "c", "state": "not_yet_reached", "index": 10}
+          ],
+          "windowStart": 0,
+          "windowEnd": 5,
+          "maxLength": 6,
+          "currentLength": 6,
+          "charCount": {"a": 3, "b": 3},
+          "distinctChars": 2,
+          "bestWindow": [0, 5],
+          "highlightedElements": [0, 1, 2, 3, 4, 5],
+          "k": 2
+        },
+        "jarvisMessage": "Added another 'b'. Still 2 distinct characters (a, b), so we can expand more. Window \"aababb\" has length 6.",
+        "codeHint": "// Expand and update best",
+        "codeBotMessage": "Best length now 6. We can continue expanding since distinctChars (2) ≤ k (2).",
+        "codeSnippet": "charCount['b'] = 3; maxLength = 6;"
+      },
+      {
+        "stepId": 8,
+        "description": "Expand: add 'c'. charCount = {a: 3, b: 3, c: 1}, distinctChars = 3 > k=2. Contract from left until distinctChars ≤ k.",
+        "expectedAction": "contract_window",
+        "expectedElementIndex": 6,
+        "uiState": {
+          "arrayElements": [
+            {"value": "a", "state": "out_of_window_past", "index": 0},
+            {"value": "a", "state": "out_of_window_past", "index": 1},
+            {"value": "b", "state": "out_of_window_past", "index": 2},
+            {"value": "a", "state": "out_of_window_past", "index": 3},
+            {"value": "b", "state": "out_of_window_past", "index": 4},
+            {"value": "b", "state": "out_of_window_past", "index": 5},
+            {"value": "c", "state": "in_window", "index": 6},
+            {"value": "a", "state": "not_yet_reached", "index": 7},
+            {"value": "a", "state": "not_yet_reached", "index": 8},
+            {"value": "c", "state": "not_yet_reached", "index": 9},
+            {"value": "c", "state": "not_yet_reached", "index": 10}
+          ],
+          "windowStart": 6,
+          "windowEnd": 6,
+          "maxLength": 6,
+          "currentLength": 1,
+          "charCount": {"c": 1},
+          "distinctChars": 1,
+          "bestWindow": [0, 5],
+          "highlightedElements": [6],
+          "k": 2
+        },
+        "jarvisMessage": "Added 'c' but now we have 3 distinct characters (a, b, c), which exceeds k=2. We must contract from the left until we're back to ≤2 distinct characters.",
+        "codeHint": "// While too many distinct characters\nwhile (distinctChars > k) {\n  charCount[s[windowStart]]--;\n  if (charCount[s[windowStart]] === 0) distinctChars--;\n  windowStart++;\n}",
+        "codeBotMessage": "We removed characters from the left until distinctChars ≤ k. Now window is just 'c' at index 6.",
+        "codeSnippet": "// Now window is just 'c' at index 6, distinctChars = 1 ≤ k = 2"
+      },
+      {
+        "stepId": 9,
+        "description": "Expand: add 'a' → window \"ca\" (len 2).",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 7,
+        "uiState": {
+          "arrayElements": [
+            {"value": "a", "state": "out_of_window_past", "index": 0},
+            {"value": "a", "state": "out_of_window_past", "index": 1},
+            {"value": "b", "state": "out_of_window_past", "index": 2},
+            {"value": "a", "state": "out_of_window_past", "index": 3},
+            {"value": "b", "state": "out_of_window_past", "index": 4},
+            {"value": "b", "state": "out_of_window_past", "index": 5},
+            {"value": "c", "state": "in_window", "index": 6},
+            {"value": "a", "state": "in_window", "index": 7},
+            {"value": "a", "state": "not_yet_reached", "index": 8},
+            {"value": "c", "state": "not_yet_reached", "index": 9},
+            {"value": "c", "state": "not_yet_reached", "index": 10}
+          ],
+          "windowStart": 6,
+          "windowEnd": 7,
+          "maxLength": 6,
+          "currentLength": 2,
+          "charCount": {"c": 1, "a": 1},
+          "distinctChars": 2,
+          "bestWindow": [0, 5],
+          "highlightedElements": [6, 7],
+          "k": 2
+        },
+        "jarvisMessage": "Window is \"ca\". Best stays 6 since current length (2) < maxLength (6).",
+        "codeHint": "// Expand normally",
+        "codeBotMessage": "No duplicates right now. distinctChars (2) ≤ k (2).",
+        "codeSnippet": "charCount['a'] = 1; distinctChars = 2;"
+      },
+      {
+        "stepId": 10,
+        "description": "Expand: add 'a' → window \"caa\" (len 3).",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 8,
+        "uiState": {
+          "arrayElements": [
+            {"value": "a", "state": "out_of_window_past", "index": 0},
+            {"value": "a", "state": "out_of_window_past", "index": 1},
+            {"value": "b", "state": "out_of_window_past", "index": 2},
+            {"value": "a", "state": "out_of_window_past", "index": 3},
+            {"value": "b", "state": "out_of_window_past", "index": 4},
+            {"value": "b", "state": "out_of_window_past", "index": 5},
+            {"value": "c", "state": "in_window", "index": 6},
+            {"value": "a", "state": "in_window", "index": 7},
+            {"value": "a", "state": "in_window", "index": 8},
+            {"value": "c", "state": "not_yet_reached", "index": 9},
+            {"value": "c", "state": "not_yet_reached", "index": 10}
+          ],
+          "windowStart": 6,
+          "windowEnd": 8,
+          "maxLength": 6,
+          "currentLength": 3,
+          "charCount": {"c": 1, "a": 2},
+          "distinctChars": 2,
+          "bestWindow": [0, 5],
+          "highlightedElements": [6, 7, 8],
+          "k": 2
+        },
+        "jarvisMessage": "Window is \"caa\". Best stays 6 since current length (3) < maxLength (6).",
+        "codeHint": "// Expand normally",
+        "codeBotMessage": "Still 2 distinct characters (c, a).",
+        "codeSnippet": "charCount['a'] = 2;"
+      },
+      {
+        "stepId": 11,
+        "description": "Expand: add 'c' (duplicate). charCount = {c: 2, a: 2}, distinctChars = 2 ≤ k=2. maxLength stays 6.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 9,
+        "uiState": {
+          "arrayElements": [
+            {"value": "a", "state": "out_of_window_past", "index": 0},
+            {"value": "a", "state": "out_of_window_past", "index": 1},
+            {"value": "b", "state": "out_of_window_past", "index": 2},
+            {"value": "a", "state": "out_of_window_past", "index": 3},
+            {"value": "b", "state": "out_of_window_past", "index": 4},
+            {"value": "b", "state": "out_of_window_past", "index": 5},
+            {"value": "c", "state": "in_window", "index": 6},
+            {"value": "a", "state": "in_window", "index": 7},
+            {"value": "a", "state": "in_window", "index": 8},
+            {"value": "c", "state": "in_window", "index": 9},
+            {"value": "c", "state": "not_yet_reached", "index": 10}
+          ],
+          "windowStart": 6,
+          "windowEnd": 9,
+          "maxLength": 6,
+          "currentLength": 4,
+          "charCount": {"c": 2, "a": 2},
+          "distinctChars": 2,
+          "bestWindow": [0, 5],
+          "highlightedElements": [6, 7, 8, 9],
+          "k": 2
+        },
+        "jarvisMessage": "Added 'c'. Still 2 distinct characters (c, a), so we can expand more. Window \"caac\" has length 4.",
+        "codeHint": "// Expand normally",
+        "codeBotMessage": "Window \"caac\" is valid. distinctChars (2) ≤ k (2).",
+        "codeSnippet": "charCount['c'] = 2;"
+      },
+      {
+        "stepId": 12,
+        "description": "Expand: add 'c' (duplicate). charCount = {c: 3, a: 2}, distinctChars = 2 ≤ k=2. maxLength stays 6.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 10,
+        "uiState": {
+          "arrayElements": [
+            {"value": "a", "state": "out_of_window_past", "index": 0},
+            {"value": "a", "state": "out_of_window_past", "index": 1},
+            {"value": "b", "state": "out_of_window_past", "index": 2},
+            {"value": "a", "state": "out_of_window_past", "index": 3},
+            {"value": "b", "state": "out_of_window_past", "index": 4},
+            {"value": "b", "state": "out_of_window_past", "index": 5},
+            {"value": "c", "state": "in_window", "index": 6},
+            {"value": "a", "state": "in_window", "index": 7},
+            {"value": "a", "state": "in_window", "index": 8},
+            {"value": "c", "state": "in_window", "index": 9},
+            {"value": "c", "state": "in_window", "index": 10}
+          ],
+          "windowStart": 6,
+          "windowEnd": 10,
+          "maxLength": 6,
+          "currentLength": 5,
+          "charCount": {"c": 3, "a": 2},
+          "distinctChars": 2,
+          "bestWindow": [0, 5],
+          "highlightedElements": [6, 7, 8, 9, 10],
+          "k": 2
+        },
+        "jarvisMessage": "Added another 'c'. Still 2 distinct characters (c, a), so we can expand more. Window \"caacc\" has length 5.",
+        "codeHint": "// Expand normally",
+        "codeBotMessage": "Window \"caacc\" is valid. distinctChars (2) ≤ k (2).",
+        "codeSnippet": "charCount['c'] = 3;"
+      },
+      {
+        "stepId": 13,
+        "description": "Algorithm completed! Best substring length = 6 (e.g., \"aababb\").",
+        "expectedAction": "complete_algorithm",
+        "expectedElementIndex": 10,
+        "uiState": {
+          "arrayElements": [
+            {"value": "a", "state": "out_of_window_past", "index": 0},
+            {"value": "a", "state": "out_of_window_past", "index": 1},
+            {"value": "b", "state": "out_of_window_past", "index": 2},
+            {"value": "a", "state": "out_of_window_past", "index": 3},
+            {"value": "b", "state": "out_of_window_past", "index": 4},
+            {"value": "b", "state": "out_of_window_past", "index": 5},
+            {"value": "c", "state": "in_window", "index": 6},
+            {"value": "a", "state": "in_window", "index": 7},
+            {"value": "a", "state": "in_window", "index": 8},
+            {"value": "c", "state": "in_window", "index": 9},
+            {"value": "c", "state": "in_window", "index": 10}
+          ],
+          "windowStart": 6,
+          "windowEnd": 10,
+          "maxLength": 6,
+          "currentLength": 5,
+          "charCount": {"c": 3, "a": 2},
+          "distinctChars": 2,
+          "bestWindow": [0, 5],
+          "highlightedElements": [6, 7, 8, 9, 10],
+          "k": 2
+        },
+        "jarvisMessage": "🎉 Congratulations! You've completed the walkthrough. Best substring length is 6 (e.g., \"aababb\").",
+        "codeHint": "// Done\nreturn maxLength;",
+        "codeBotMessage": "HashMap + expand/contract: O(n) time, O(k) space. We tracked character frequencies and maintained ≤k distinct characters.",
+        "codeSnippet": "// Final answer\nreturn maxLength;"
+      }
+    ],
+    "jarvisConfig": {
+      "personality": "encouraging",
+      "hintLevels": ["subtle", "helpful", "explicit"],
+      "motivationalMessages": [
+        "Great thinking! Expand until distinct characters > k, then contract to restore validity.",
+        "Exactly! The hashmap ensures we track character frequencies efficiently.",
+        "You're mastering variable-size windows with character constraints!",
+        "Awesome! This technique generalizes to many string problems with character limits."
+      ]
+    }
+  },
+  "solution": {
+    "optimal": {
+      "idea": "Use variable-size window with a hashmap to track character frequencies and count distinct characters. Expand when distinct characters ≤ k and contract when distinct characters > k.",
+      "timeComplexity": "O(n)",
+      "spaceComplexity": "O(k)",
+      "walkthrough": [
+        "Initialize windowStart = 0, maxLength = 0, charCount = {}, distinctChars = 0.",
+        "For windowEnd from 0..n-1, add s[windowEnd] to charCount and update distinctChars.",
+        "While distinctChars > k, decrement charCount[s[windowStart]] and increment windowStart.",
+        "Update maxLength with current window size.",
+        "Return maxLength."
+      ]
+    }
+  },
+  "code": {
+    "cpp": "#include <bits/stdc++.h>\nusing namespace std;\n\nclass Solution {\npublic:\n    int lengthOfLongestSubstringKDistinct(string s, int k) {\n        if (k == 0) return 0;\n        \n        unordered_map<char, int> charCount;\n        int start = 0, best = 0, distinctChars = 0;\n        \n        for (int end = 0; end < (int)s.size(); ++end) {\n            charCount[s[end]]++;\n            if (charCount[s[end]] == 1) distinctChars++;\n            \n            while (distinctChars > k) {\n                charCount[s[start]]--;\n                if (charCount[s[start]] == 0) distinctChars--;\n                start++;\n            }\n            \n            best = max(best, end - start + 1);\n        }\n        return best;\n    }\n};\n\nint main(){\n    Solution sol;\n    cout << sol.lengthOfLongestSubstringKDistinct(\"aababbcaacc\", 2) << endl; // 6\n    cout << sol.lengthOfLongestSubstringKDistinct(\"abcddefg\", 3) << endl; // 4\n    return 0;\n}"
+  }
+}

@@ -1,0 +1,277 @@
+{
+  "problemId": "p3",
+  "title": "First Negative Number in Every Window of Size K",
+  "description": "Given an array arr[] and a positive integer k, find the first negative integer for each and every window (contiguous subarray) of size k. If a window does not contain a negative integer, then return 0 for that window.",
+  "aim": "The goal is to demonstrate how to find the first negative number in each fixed-size window using the sliding window technique with a queue-based approach for efficient negative number tracking.",
+  "moduleId": "slidingWindow",
+  "submoduleId": "sw_fixed",
+  "difficulty": "Medium",
+  "tags": ["Array", "Sliding Window", "Fixed Size", "Queue", "Negative Numbers"],
+  "examples": [
+    {
+      "input": "arr = [-8, 2, 3, -6, 10], k = 2",
+      "output": "[-8, 0, -6, -6]",
+      "explanation": "Window [-8, 2] First negative integer is -8. Window [2, 3] No negative integers, output is 0. Window [3, -6] First negative integer is -6. Window [-6, 10] First negative integer is -6."
+    },
+    {
+      "input": "arr = [12, -1, -7, 8, -15, 30, 16, 28], k = 3",
+      "output": "[-1, -1, -7, -15, -15, 0]",
+      "explanation": "Window [12, -1, -7] First negative integer is -1. Window [-1, -7, 8] First negative integer is -1. Window [-7, 8, -15] First negative integer is -7. Window [8, -15, 30] First negative integer is -15. Window [-15, 30, 16] First negative integer is -15. Window [30, 16, 28] No negative integers, output is 0."
+    },
+    {
+      "input": "arr = [12, 1, 3, 5], k = 3",
+      "output": "[0, 0]",
+      "explanation": "Window [12, 1, 3] No negative integers, output is 0. Window [1, 3, 5] No negative integers, output is 0."
+    }
+  ],
+  "playground": {
+    "initialState": {
+      "array": [-8, 2, 3, -6, 10],
+      "k": 2,
+      "windowStart": 0,
+      "windowEnd": 0,
+      "negativeQueue": [],
+      "result": [],
+      "currentWindow": []
+    },
+    "steps": [
+      {
+        "stepId": 1,
+        "description": "Initialize variables. Set windowStart = 0, windowEnd = 0, negativeQueue = [], result = []",
+        "expectedAction": "click_initialize",
+        "uiState": {
+          "arrayElements": [
+            {"value": -8, "state": "not_yet_reached", "index": 0},
+            {"value": 2, "state": "not_yet_reached", "index": 1},
+            {"value": 3, "state": "not_yet_reached", "index": 2},
+            {"value": -6, "state": "not_yet_reached", "index": 3},
+            {"value": 10, "state": "not_yet_reached", "index": 4}
+          ],
+          "windowStart": null,
+          "windowEnd": null,
+          "windowSum": 0,
+          "maxSum": 0,
+          "highlightedElements": [],
+          "negativeQueue": [],
+          "result": [],
+          "currentWindow": []
+        },
+        "jarvisMessage": "Welcome! Let's solve the First Negative Number in Every Window problem. We need to find the first negative number in each window of size 2. Click 'Initialize' to set up our variables and start building our solution.",
+        "codeHint": "// Initialize variables\nlet windowStart = 0;\nlet windowEnd = 0;\nlet negativeQueue = [];\nlet result = [];",
+        "codeBotMessage": "Hey there! I'm CodeBot. When you click Initialize, we set up our sliding window variables. The key insight here is that we'll use a queue to track negative numbers in each window efficiently!",
+        "codeSnippet": "let windowStart = 0;    // Track window start position\nlet windowEnd = 0;      // Track window end position\nlet negativeQueue = []; // Queue to track negative numbers\nlet result = [];        // Store results for each window"
+      },
+      {
+        "stepId": 2,
+        "description": "Add first element to window. Check if arr[0] = -8 is negative and add to queue. Update currentWindow = [-8]",
+        "expectedAction": "add_element_to_window",
+        "expectedElementIndex": 0,
+        "uiState": {
+          "arrayElements": [
+            {"value": -8, "state": "in_window", "index": 0},
+            {"value": 2, "state": "not_yet_reached", "index": 1},
+            {"value": 3, "state": "not_yet_reached", "index": 2},
+            {"value": -6, "state": "not_yet_reached", "index": 3},
+            {"value": 10, "state": "not_yet_reached", "index": 4}
+          ],
+          "windowStart": 0,
+          "windowEnd": 0,
+          "windowSum": 0,
+          "maxSum": 0,
+          "highlightedElements": [0],
+          "negativeQueue": [-8],
+          "result": [],
+          "currentWindow": [-8]
+        },
+        "jarvisMessage": "Great! We've added the first element (-8) to our window. Since -8 is negative, we add it to our negativeQueue. This queue will help us efficiently find the first negative number in each window!",
+        "codeHint": "// Add current element to window and check if negative\nif (arr[windowEnd] < 0) {\n  negativeQueue.push(arr[windowEnd]);\n}",
+        "codeBotMessage": "Perfect! We found our first negative number (-8) and added it to the queue. The queue will maintain the order of negative numbers, so we can always get the first one in O(1) time!",
+        "codeSnippet": "// Add element to current window\ncurrentWindow.push(arr[windowEnd]);\n\n// Check if element is negative\nif (arr[windowEnd] < 0) {\n  negativeQueue.push(arr[windowEnd]);\n  // negativeQueue = [-8]\n}"
+      },
+      {
+        "stepId": 3,
+        "description": "Add second element to window. Check if arr[1] = 2 is negative. Update currentWindow = [-8, 2]. Since we have a complete window of size 2, find first negative: -8",
+        "expectedAction": "complete_first_window",
+        "expectedElementIndex": 1,
+        "uiState": {
+          "arrayElements": [
+            {"value": -8, "state": "in_window", "index": 0},
+            {"value": 2, "state": "in_window", "index": 1},
+            {"value": 3, "state": "not_yet_reached", "index": 2},
+            {"value": -6, "state": "not_yet_reached", "index": 3},
+            {"value": 10, "state": "not_yet_reached", "index": 4}
+          ],
+          "windowStart": 0,
+          "windowEnd": 1,
+          "windowSum": 0,
+          "maxSum": 0,
+          "highlightedElements": [0, 1],
+          "negativeQueue": [-8],
+          "result": [-8],
+          "currentWindow": [-8, 2]
+        },
+        "jarvisMessage": "Excellent! We now have our first complete window of size 2: [-8, 2]. Since -8 is the first negative number in this window, we add -8 to our result. This is the key insight - we use the queue to efficiently track negative numbers!",
+        "codeHint": "// Check if we have a complete window\nif (windowEnd >= k - 1) {\n  // Find first negative number\n  let firstNegative = negativeQueue.length > 0 ? negativeQueue[0] : 0;\n  result.push(firstNegative);\n}",
+        "codeBotMessage": "Great job! We've completed our first window and found the first negative number. The queue makes this efficient - we just check if it's not empty and take the first element. If no negatives, we return 0!",
+        "codeSnippet": "// Check if window is complete\nif (windowEnd >= k - 1) {\n  // Find first negative in current window\n  let firstNegative = negativeQueue.length > 0 ? negativeQueue[0] : 0;\n  result.push(firstNegative);\n  // result = [-8] for window [-8, 2]\n}"
+      },
+      {
+        "stepId": 4,
+        "description": "Slide window: remove arr[0] = -8, add arr[2] = 3. Update currentWindow = [2, 3]. Remove -8 from queue if it's no longer in window. Check if 3 is negative. Find first negative: 0 (no negatives)",
+        "expectedAction": "slide_window",
+        "expectedElementIndex": 2,
+        "expectedRemoveIndex": 0,
+        "expectedAddIndex": 2,
+        "uiState": {
+          "arrayElements": [
+            {"value": -8, "state": "out_of_window_past", "index": 0},
+            {"value": 2, "state": "in_window", "index": 1},
+            {"value": 3, "state": "in_window", "index": 2},
+            {"value": -6, "state": "not_yet_reached", "index": 3},
+            {"value": 10, "state": "not_yet_reached", "index": 4}
+          ],
+          "windowStart": 1,
+          "windowEnd": 2,
+          "windowSum": 0,
+          "maxSum": 0,
+          "highlightedElements": [1, 2],
+          "negativeQueue": [],
+          "result": [-8, 0],
+          "currentWindow": [2, 3]
+        },
+        "jarvisMessage": "This is the key insight! We slide the window by removing the leftmost element (-8) and adding the new rightmost element (3). Since -8 is no longer in our window, we remove it from the queue. Window [2, 3] has no negatives, so we add 0 to result.",
+        "codeHint": "// Slide the window\ncurrentWindow.shift(); // Remove leftmost element\nif (arr[windowStart] < 0) {\n  negativeQueue.shift(); // Remove from queue if negative\n}",
+        "codeBotMessage": "This is where the magic happens! We efficiently slide the window by removing the leftmost element and adding the new rightmost element. We also maintain our queue by removing elements that are no longer in the current window!",
+        "codeSnippet": "// Slide the window\ncurrentWindow.shift(); // Remove arr[0] = -8\nif (arr[windowStart] < 0) {\n  negativeQueue.shift(); // Remove -8 from queue\n}\n\n// Add new element\ncurrentWindow.push(arr[windowEnd]); // Add arr[2] = 3\nif (arr[windowEnd] < 0) {\n  negativeQueue.push(arr[windowEnd]); // 3 is not negative\n}\n\n// Find first negative for window [2, 3]\nlet firstNegative = negativeQueue.length > 0 ? negativeQueue[0] : 0;\nresult.push(firstNegative); // result = [-8, 0]"
+      },
+      {
+        "stepId": 5,
+        "description": "Slide window: remove arr[1] = 2, add arr[3] = -6. Update currentWindow = [3, -6]. Add -6 to queue. Find first negative: -6",
+        "expectedAction": "slide_window",
+        "expectedElementIndex": 3,
+        "expectedRemoveIndex": 1,
+        "expectedAddIndex": 3,
+        "uiState": {
+          "arrayElements": [
+            {"value": -8, "state": "out_of_window_past", "index": 0},
+            {"value": 2, "state": "out_of_window_past", "index": 1},
+            {"value": 3, "state": "in_window", "index": 2},
+            {"value": -6, "state": "in_window", "index": 3},
+            {"value": 10, "state": "not_yet_reached", "index": 4}
+          ],
+          "windowStart": 2,
+          "windowEnd": 3,
+          "windowSum": 0,
+          "maxSum": 0,
+          "highlightedElements": [2, 3],
+          "negativeQueue": [-6],
+          "result": [-8, 0, -6],
+          "currentWindow": [3, -6]
+        },
+        "jarvisMessage": "Perfect! We slide to window [3, -6]. Since 2 is not negative, we don't need to remove anything from the queue. We add -6 to the queue since it's negative. For window [3, -6], the first negative is -6.",
+        "codeHint": "// Continue sliding and updating queue\ncurrentWindow.shift(); // Remove arr[1] = 2\ncurrentWindow.push(arr[windowEnd]); // Add arr[3] = -6\nif (arr[windowEnd] < 0) {\n  negativeQueue.push(arr[windowEnd]);\n}",
+        "codeBotMessage": "Excellent! We're maintaining our queue efficiently. Since 2 wasn't negative, we don't need to update the queue when removing it. Adding -6 gives us a negative number in the current window, so we can find the first negative!",
+        "codeSnippet": "// Slide window [2, 3] -> [3, -6]\ncurrentWindow.shift(); // Remove 2 (not negative, no queue update)\ncurrentWindow.push(arr[windowEnd]); // Add -6\nif (arr[windowEnd] < 0) {\n  negativeQueue.push(arr[windowEnd]); // Add -6 to queue\n}\n\n// Find first negative for window [3, -6]\nlet firstNegative = negativeQueue.length > 0 ? negativeQueue[0] : 0;\nresult.push(firstNegative); // result = [-8, 0, -6]"
+      },
+      {
+        "stepId": 6,
+        "description": "Final slide: remove arr[2] = 3, add arr[4] = 10. Update currentWindow = [-6, 10]. Remove 3 from queue if needed. Find first negative: -6",
+        "expectedAction": "slide_window",
+        "expectedElementIndex": 4,
+        "expectedRemoveIndex": 2,
+        "expectedAddIndex": 4,
+        "uiState": {
+          "arrayElements": [
+            {"value": -8, "state": "out_of_window_past", "index": 0},
+            {"value": 2, "state": "out_of_window_past", "index": 1},
+            {"value": 3, "state": "out_of_window_past", "index": 2},
+            {"value": -6, "state": "in_window", "index": 3},
+            {"value": 10, "state": "in_window", "index": 4}
+          ],
+          "windowStart": 3,
+          "windowEnd": 4,
+          "windowSum": 0,
+          "maxSum": 0,
+          "highlightedElements": [3, 4],
+          "negativeQueue": [-6],
+          "result": [-8, 0, -6, -6],
+          "currentWindow": [-6, 10]
+        },
+        "jarvisMessage": "Fantastic! Our final window is [-6, 10]. Since 3 is not negative, we don't need to update the queue when removing it. For window [-6, 10], the first negative is -6. We've successfully processed all windows!",
+        "codeHint": "// Final window processing\ncurrentWindow.shift(); // Remove arr[2] = 3\ncurrentWindow.push(arr[windowEnd]); // Add arr[4] = 10\n// Find first negative for window [-6, 10]",
+        "codeBotMessage": "Perfect! We've completed all windows. The key insight is that we only need to update the queue when removing negative numbers. Since 3 wasn't negative, our queue still contains -6, which is the first negative in the final window!",
+        "codeSnippet": "// Final slide: [3, -6] -> [-6, 10]\ncurrentWindow.shift(); // Remove 3 (not negative, no queue update)\ncurrentWindow.push(arr[windowEnd]); // Add 10 (not negative)\n\n// Find first negative for window [-6, 10]\nlet firstNegative = negativeQueue.length > 0 ? negativeQueue[0] : 0;\nresult.push(firstNegative); // result = [-8, 0, -6, -6]"
+      },
+      {
+        "stepId": 7,
+        "description": "Algorithm completed! Final result = [-8, 0, -6, -6]",
+        "expectedAction": "complete_algorithm",
+        "expectedElementIndex": 4,
+        "uiState": {
+          "arrayElements": [
+            {"value": -8, "state": "out_of_window_past", "index": 0},
+            {"value": 2, "state": "out_of_window_past", "index": 1},
+            {"value": 3, "state": "out_of_window_past", "index": 2},
+            {"value": -6, "state": "in_window", "index": 3},
+            {"value": 10, "state": "in_window", "index": 4}
+          ],
+          "windowStart": 3,
+          "windowEnd": 4,
+          "windowSum": 0,
+          "maxSum": 0,
+          "highlightedElements": [3, 4],
+          "negativeQueue": [-6],
+          "result": [-8, 0, -6, -6],
+          "currentWindow": [-6, 10]
+        },
+        "jarvisMessage": "🎉 Congratulations! You've successfully completed the First Negative Number algorithm! We found [-8, 0, -6, -6] for windows of size 2. The queue-based approach made this efficient and elegant!",
+        "codeHint": "// Algorithm completed successfully\nreturn result; // Returns [-8, 0, -6, -6]",
+        "codeBotMessage": "Fantastic! You've mastered the First Negative Number algorithm! The key insight is using a queue to efficiently track negative numbers in each window. This gives us O(n) time complexity instead of O(n*k) for brute force!",
+        "codeSnippet": "// Algorithm completed!\n// Final result: [-8, 0, -6, -6]\n// Windows: [-8,2]->-8, [2,3]->0, [3,-6]->-6, [-6,10]->-6\nreturn result; // Returns [-8, 0, -6, -6]"
+      }
+    ],
+    "jarvisConfig": {
+      "personality": "encouraging",
+      "hintLevels": ["subtle", "helpful", "explicit"],
+      "motivationalMessages": [
+        "Great thinking! You're understanding how the queue tracks negative numbers efficiently.",
+        "That's exactly right! You're seeing the pattern of maintaining the queue as the window slides.",
+        "Excellent intuition! You're understanding how to find the first negative in each window.",
+        "You've got this! Each slide brings you closer to mastering the algorithm."
+      ]
+    }
+  },
+  "solution": {
+    "bruteForce": {
+      "idea": "For each window of size k, scan through the window to find the first negative number.",
+      "timeComplexity": "O(n*k)",
+      "spaceComplexity": "O(1)",
+      "walkthrough": [
+        "Initialize result array.",
+        "Iterate i from 0 to n - k.",
+        "For each window starting at i, scan from i to i+k-1.",
+        "Find the first negative number in the window.",
+        "Add the result to the result array (0 if no negative found).",
+        "Return the result array."
+      ]
+    },
+    "optimal": {
+      "idea": "Use a sliding window with a queue to efficiently track negative numbers in each window, avoiding repeated scanning.",
+      "timeComplexity": "O(n)",
+      "spaceComplexity": "O(k)",
+      "walkthrough": [
+        "Initialize windowStart = 0, negativeQueue = [], result = [].",
+        "Iterate windowEnd from 0 to n-1.",
+        "If current element is negative, add its index to the queue.",
+        "When window size reaches k, check if queue is empty.",
+        "If queue is empty, add 0 to result. Otherwise, add the first negative number.",
+        "If the element at windowStart is negative, remove it from the queue.",
+        "Increment windowStart to slide the window.",
+        "Return the result array."
+      ]
+    }
+  },
+  "code": {
+    "cpp": "#include <iostream>\n#include <vector>\n#include <queue>\nusing namespace std;\n\nclass Solution {\npublic:\n    vector<int> firstNegativeInWindow(vector<int>& arr, int k) {\n        vector<int> result;\n        queue<int> negativeQueue;\n        int windowStart = 0;\n        \n        for (int windowEnd = 0; windowEnd < arr.size(); windowEnd++) {\n            // Add negative numbers to queue\n            if (arr[windowEnd] < 0) {\n                negativeQueue.push(windowEnd);\n            }\n            \n            // Check if window size is k\n            if (windowEnd >= k - 1) {\n                // Find first negative in current window\n                if (negativeQueue.empty()) {\n                    result.push_back(0);\n                } else {\n                    result.push_back(arr[negativeQueue.front()]);\n                }\n                \n                // Remove element that's going out of window\n                if (arr[windowStart] < 0) {\n                    negativeQueue.pop();\n                }\n                windowStart++;\n            }\n        }\n        \n        return result;\n    }\n};\n\nint main() {\n    Solution sol;\n    vector<int> arr1 = {-8, 2, 3, -6, 10};\n    vector<int> arr2 = {12, -1, -7, 8, -15, 30, 16, 28};\n    \n    vector<int> result1 = sol.firstNegativeInWindow(arr1, 2);\n    vector<int> result2 = sol.firstNegativeInWindow(arr2, 3);\n    \n    cout << \"Result 1: \";\n    for (int num : result1) cout << num << \" \";\n    cout << endl;\n    \n    cout << \"Result 2: \";\n    for (int num : result2) cout << num << \" \";\n    cout << endl;\n    \n    return 0;\n}"
+  }
+}

@@ -1,0 +1,320 @@
+{
+  "problemId": "p15",
+  "title": "Permutation in String",
+  "description": "Given two strings s1 and s2, return true if s2 contains a permutation of s1, or false otherwise. In other words, return true if one of s1's permutations is the substring of s2.",
+  "aim": "The goal is to understand how to use sliding window with character frequency comparison to find pattern permutations in a string.",
+  "moduleId": "slidingWindow",
+  "submoduleId": "sw_advanced",
+  "difficulty": "Medium",
+  "tags": ["String", "Sliding Window", "Pattern Matching", "Hash Map", "Permutation"],
+  "examples": [
+    {
+      "input": "s1 = \"ab\", s2 = \"eidbaooo\"",
+      "output": "true",
+      "explanation": "s2 contains one permutation of s1 (\"ba\")."
+    },
+    {
+      "input": "s1 = \"ab\", s2 = \"eidboaoo\"",
+      "output": "false",
+      "explanation": "s2 does not contain any permutation of s1."
+    }
+  ],
+  "playground": {
+    "initialState": {
+      "stringElements": [
+        {"value": "e", "state": "not_yet_reached", "index": 0},
+        {"value": "i", "state": "not_yet_reached", "index": 1},
+        {"value": "d", "state": "not_yet_reached", "index": 2},
+        {"value": "b", "state": "not_yet_reached", "index": 3},
+        {"value": "a", "state": "not_yet_reached", "index": 4},
+        {"value": "o", "state": "not_yet_reached", "index": 5},
+        {"value": "o", "state": "not_yet_reached", "index": 6},
+        {"value": "o", "state": "not_yet_reached", "index": 7}
+      ],
+      "pattern": "ab",
+      "patternFreq": {"a": 1, "b": 1},
+      "windowFreq": {},
+      "matches": 0,
+      "requiredMatches": 2,
+      "windowStart": 0,
+      "windowEnd": 0,
+      "currentLength": 0
+    },
+    "steps": [
+      {
+        "stepId": 1,
+        "description": "Initialize variables. Set windowStart = 0, matches = 0, windowFreq = {}, requiredMatches = 2 (length of pattern)",
+        "expectedAction": "click_initialize",
+        "uiState": {
+          "stringElements": [
+            {"value": "e", "state": "not_yet_reached", "index": 0},
+            {"value": "i", "state": "not_yet_reached", "index": 1},
+            {"value": "d", "state": "not_yet_reached", "index": 2},
+            {"value": "b", "state": "not_yet_reached", "index": 3},
+            {"value": "a", "state": "not_yet_reached", "index": 4},
+            {"value": "o", "state": "not_yet_reached", "index": 5},
+            {"value": "o", "state": "not_yet_reached", "index": 6},
+            {"value": "o", "state": "not_yet_reached", "index": 7}
+          ],
+          "pattern": "ab",
+          "patternFreq": {"a": 1, "b": 1},
+          "windowFreq": {},
+          "matches": 0,
+          "requiredMatches": 2,
+          "windowStart": 0,
+          "windowEnd": 0,
+          "currentLength": 0,
+          "highlightedElements": []
+        },
+        "jarvisMessage": "Welcome! Let's solve this permutation matching problem. We need to find if s2 contains any permutation of s1. We'll use a sliding window with character frequency tracking.",
+        "codeHint": "// Initialize variables\nlet windowStart = 0;\nlet matches = 0;\nlet windowFreq = {};\nlet requiredMatches = pattern.length;",
+        "codeBotMessage": "Hey! I'm CodeBot. The key insight here is that a permutation has the same character frequencies as the original pattern. We'll track frequencies in our sliding window and compare them!",
+        "codeSnippet": "let windowStart = 0;        // Start of current window\nlet matches = 0;            // Characters that match pattern frequency\nlet windowFreq = {};        // Frequency map for current window\nlet requiredMatches = 2;    // We need 2 characters to match"
+      },
+      {
+        "stepId": 2,
+        "description": "Expand window to include first character 'e'. Update windowFreq['e'] = 1. Check if 'e' is in pattern: no, so no match update",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 0,
+        "uiState": {
+          "stringElements": [
+            {"value": "e", "state": "in_window", "index": 0},
+            {"value": "i", "state": "not_yet_reached", "index": 1},
+            {"value": "d", "state": "not_yet_reached", "index": 2},
+            {"value": "b", "state": "not_yet_reached", "index": 3},
+            {"value": "a", "state": "not_yet_reached", "index": 4},
+            {"value": "o", "state": "not_yet_reached", "index": 5},
+            {"value": "o", "state": "not_yet_reached", "index": 6},
+            {"value": "o", "state": "not_yet_reached", "index": 7}
+          ],
+          "pattern": "ab",
+          "patternFreq": {"a": 1, "b": 1},
+          "windowFreq": {"e": 1},
+          "matches": 0,
+          "requiredMatches": 2,
+          "windowStart": 0,
+          "windowEnd": 0,
+          "currentLength": 1,
+          "highlightedElements": [0]
+        },
+        "jarvisMessage": "Great! We've added 'e' to our window. Since 'e' is not in our pattern \"ab\", it doesn't contribute to our match count. Our window length is 1, but we need 2 to match the pattern length.",
+        "codeHint": "// Add current character to window frequency\nwindowFreq[s2[windowEnd]] = (windowFreq[s2[windowEnd]] || 0) + 1;\n// Check if this character contributes to a match"
+      },
+      {
+        "stepId": 3,
+        "description": "Expand window to include 'i'. Update windowFreq['i'] = 1. Check if 'i' is in pattern: no, so no match update. Window length = 2",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 1,
+        "uiState": {
+          "stringElements": [
+            {"value": "e", "state": "in_window", "index": 0},
+            {"value": "i", "state": "in_window", "index": 1},
+            {"value": "d", "state": "not_yet_reached", "index": 2},
+            {"value": "b", "state": "not_yet_reached", "index": 3},
+            {"value": "a", "state": "not_yet_reached", "index": 4},
+            {"value": "o", "state": "not_yet_reached", "index": 5},
+            {"value": "o", "state": "not_yet_reached", "index": 6},
+            {"value": "o", "state": "not_yet_reached", "index": 7}
+          ],
+          "pattern": "ab",
+          "patternFreq": {"a": 1, "b": 1},
+          "windowFreq": {"e": 1, "i": 1},
+          "matches": 0,
+          "requiredMatches": 2,
+          "windowStart": 0,
+          "windowEnd": 1,
+          "currentLength": 2,
+          "highlightedElements": [0, 1]
+        },
+        "jarvisMessage": "Now we have \"ei\" in our window with length 2. Since neither 'e' nor 'i' are in our pattern \"ab\", matches = 0. We need to slide the window to find characters that match our pattern.",
+        "codeHint": "// Move window end pointer\nwindowEnd++;\n// Check if current character frequency matches pattern requirement"
+      },
+      {
+        "stepId": 4,
+        "description": "Expand window to include 'd'. Update windowFreq['d'] = 1. Check if 'd' is in pattern: no. Window length = 3, exceeds pattern length. Contract from left.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 2,
+        "uiState": {
+          "stringElements": [
+            {"value": "e", "state": "in_window", "index": 0},
+            {"value": "i", "state": "in_window", "index": 1},
+            {"value": "d", "state": "in_window", "index": 2},
+            {"value": "b", "state": "not_yet_reached", "index": 3},
+            {"value": "a", "state": "not_yet_reached", "index": 4},
+            {"value": "o", "state": "not_yet_reached", "index": 5},
+            {"value": "o", "state": "not_yet_reached", "index": 6},
+            {"value": "o", "state": "not_yet_reached", "index": 7}
+          ],
+          "pattern": "ab",
+          "patternFreq": {"a": 1, "b": 1},
+          "windowFreq": {"e": 1, "i": 1, "d": 1},
+          "matches": 0,
+          "requiredMatches": 2,
+          "windowStart": 0,
+          "windowEnd": 2,
+          "currentLength": 3,
+          "highlightedElements": [0, 1, 2]
+        },
+        "jarvisMessage": "We've added 'd' to get \"eid\" with length 3. Since our pattern length is 2, we need to contract from the left. We'll remove 'e' to maintain the correct window size.",
+        "codeHint": "// If window length exceeds pattern length, contract from left\nwhile (currentLength > pattern.length) {\n  windowFreq[s2[windowStart]]--;\n  windowStart++;\n  currentLength--;\n}"
+      },
+      {
+        "stepId": 5,
+        "description": "Contract window by removing leftmost 'e'. Update windowFreq['e'] = 0. Now window \"id\" has length 2, but no pattern matches",
+        "expectedAction": "contract_window",
+        "expectedElementIndex": 0,
+        "uiState": {
+          "stringElements": [
+            {"value": "e", "state": "out_of_window_past", "index": 0},
+            {"value": "i", "state": "in_window", "index": 1},
+            {"value": "d", "state": "in_window", "index": 2},
+            {"value": "b", "state": "not_yet_reached", "index": 3},
+            {"value": "a", "state": "not_yet_reached", "index": 4},
+            {"value": "o", "state": "not_yet_reached", "index": 5},
+            {"value": "o", "state": "not_yet_reached", "index": 6},
+            {"value": "o", "state": "not_yet_reached", "index": 7}
+          ],
+          "pattern": "ab",
+          "patternFreq": {"a": 1, "b": 1},
+          "windowFreq": {"i": 1, "d": 1},
+          "matches": 0,
+          "requiredMatches": 2,
+          "windowStart": 1,
+          "windowEnd": 2,
+          "currentLength": 2,
+          "highlightedElements": [1, 2]
+        },
+        "jarvisMessage": "Perfect! After contracting, we have \"id\" with length 2. Since neither 'i' nor 'd' are in our pattern \"ab\", matches = 0. We need to slide the window to find characters that match.",
+        "codeHint": "// After contracting, check if current window matches pattern\n// We need to compare character frequencies"
+      },
+      {
+        "stepId": 6,
+        "description": "Slide window by removing 'i' and adding 'b'. Update windowFreq: remove 'i', add 'b'. Check if 'b' is in pattern: yes! Update matches = 1",
+        "expectedAction": "slide_window",
+        "expectedElementIndex": 3,
+        "uiState": {
+          "stringElements": [
+            {"value": "e", "state": "out_of_window_past", "index": 0},
+            {"value": "i", "state": "out_of_window_past", "index": 1},
+            {"value": "d", "state": "in_window", "index": 2},
+            {"value": "b", "state": "in_window", "index": 3},
+            {"value": "a", "state": "not_yet_reached", "index": 4},
+            {"value": "o", "state": "not_yet_reached", "index": 5},
+            {"value": "o", "state": "not_yet_reached", "index": 6},
+            {"value": "o", "state": "not_yet_reached", "index": 7}
+          ],
+          "pattern": "ab",
+          "patternFreq": {"a": 1, "b": 1},
+          "windowFreq": {"d": 1, "b": 1},
+          "matches": 1,
+          "requiredMatches": 2,
+          "windowStart": 2,
+          "windowEnd": 3,
+          "currentLength": 2,
+          "highlightedElements": [2, 3]
+        },
+        "jarvisMessage": "Excellent! We've slid the window to \"db\". Since 'b' is in our pattern \"ab\", we increment matches to 1. We have one character matching, but we need two to find a permutation.",
+        "codeHint": "// Slide window by removing leftmost and adding rightmost\nwindowFreq[s2[windowStart]]--;\nwindowStart++;\nwindowFreq[s2[windowEnd]] = (windowFreq[s2[windowEnd]] || 0) + 1;\n// Check if new character contributes to match"
+      },
+      {
+        "stepId": 7,
+        "description": "Slide window by removing 'd' and adding 'a'. Update windowFreq: remove 'd', add 'a'. Check if 'a' is in pattern: yes! Update matches = 2. Check if window matches pattern: yes!",
+        "expectedAction": "slide_window",
+        "expectedElementIndex": 4,
+        "uiState": {
+          "stringElements": [
+            {"value": "e", "state": "out_of_window_past", "index": 0},
+            {"value": "i", "state": "out_of_window_past", "index": 1},
+            {"value": "d", "state": "out_of_window_past", "index": 2},
+            {"value": "b", "state": "in_window", "index": 3},
+            {"value": "a", "state": "in_window", "index": 4},
+            {"value": "o", "state": "not_yet_reached", "index": 5},
+            {"value": "o", "state": "not_yet_reached", "index": 6},
+            {"value": "o", "state": "not_yet_reached", "index": 7}
+          ],
+          "pattern": "ab",
+          "patternFreq": {"a": 1, "b": 1},
+          "windowFreq": {"b": 1, "a": 1},
+          "matches": 2,
+          "requiredMatches": 2,
+          "windowStart": 3,
+          "windowEnd": 4,
+          "currentLength": 2,
+          "highlightedElements": [3, 4]
+        },
+        "jarvisMessage": "🎉 Fantastic! We've found \"ba\" which is a permutation of \"ab\"! Our window has both 'a' and 'b' with the correct frequencies. Since matches = 2 equals requiredMatches = 2, we've found a valid permutation!",
+        "codeHint": "// Check if we have found a permutation\nif (matches === requiredMatches) {\n  // Verify character frequencies match exactly\n  // If they do, we've found a permutation!\n}"
+      },
+      {
+        "stepId": 8,
+        "description": "Algorithm completed! We found that s2 contains a permutation of s1. The substring \"ba\" is a permutation of \"ab\".",
+        "expectedAction": "complete_algorithm",
+        "expectedElementIndex": 4,
+        "uiState": {
+          "stringElements": [
+            {"value": "e", "state": "out_of_window_past", "index": 0},
+            {"value": "i", "state": "out_of_window_past", "index": 1},
+            {"value": "d", "state": "out_of_window_past", "index": 2},
+            {"value": "b", "state": "in_window", "index": 3},
+            {"value": "a", "state": "in_window", "index": 4},
+            {"value": "o", "state": "not_yet_reached", "index": 5},
+            {"value": "o", "state": "not_yet_reached", "index": 6},
+            {"value": "o", "state": "not_yet_reached", "index": 7}
+          ],
+          "pattern": "ab",
+          "patternFreq": {"a": 1, "b": 1},
+          "windowFreq": {"b": 1, "a": 1},
+          "matches": 2,
+          "requiredMatches": 2,
+          "windowStart": 3,
+          "windowEnd": 4,
+          "currentLength": 2,
+          "highlightedElements": [3, 4]
+        },
+        "jarvisMessage": "🎉 Congratulations! You've successfully completed the permutation matching algorithm. We found that s2 contains a permutation of s1: \"ba\" is a permutation of \"ab\".",
+        "codeHint": "// Return the final result\nreturn true; // Found a permutation!",
+        "codeBotMessage": "Excellent work! You've mastered this advanced sliding window problem. The key insight was maintaining a fixed-size window and tracking character frequencies to detect when we have a permutation match. This gives us O(n) time complexity!",
+        "codeSnippet": "// Algorithm completed!\n// Found permutation \"ba\" of pattern \"ab\"\n// s2 contains a permutation of s1\nreturn true; // Returns true"
+      }
+    ],
+    "jarvisConfig": {
+      "personality": "encouraging",
+      "hintLevels": ["subtle", "helpful", "explicit"],
+      "motivationalMessages": [
+        "Great thinking! You're understanding the permutation matching concept.",
+        "That's exactly right! You're seeing how character frequency tracking works.",
+        "Excellent intuition! You're mastering the fixed-size sliding window.",
+        "You've got this! Each step brings you closer to mastering advanced sliding window."
+      ]
+    }
+  },
+  "solution": {
+    "bruteForce": {
+      "idea": "Generate all permutations of s1 and check if any of them is a substring of s2.",
+      "timeComplexity": "O(n! * n)",
+      "spaceComplexity": "O(n!)",
+      "walkthrough": [
+        "Generate all permutations of s1.",
+        "For each permutation, check if it's a substring of s2.",
+        "Return true if any permutation is found.",
+        "Return false otherwise."
+      ]
+    },
+    "optimal": {
+      "idea": "Use sliding window with character frequency tracking. Maintain a window of size s1.length and compare character frequencies.",
+      "timeComplexity": "O(n)",
+      "spaceComplexity": "O(1)",
+      "walkthrough": [
+        "Create frequency map for pattern s1.",
+        "Initialize sliding window of size s1.length.",
+        "Track character frequencies in current window.",
+        "Compare window frequencies with pattern frequencies.",
+        "Slide window and update frequencies.",
+        "Return true if any window matches pattern frequencies."
+      ]
+    }
+  },
+  "code": {
+    "javascript": "function checkInclusion(s1, s2) {\n    if (s1.length > s2.length) return false;\n    \n    const patternFreq = {};\n    const windowFreq = {};\n    \n    // Create frequency map for pattern\n    for (let char of s1) {\n        patternFreq[char] = (patternFreq[char] || 0) + 1;\n    }\n    \n    let windowStart = 0;\n    let matches = 0;\n    const requiredMatches = Object.keys(patternFreq).length;\n    \n    for (let windowEnd = 0; windowEnd < s2.length; windowEnd++) {\n        const rightChar = s2[windowEnd];\n        \n        // Add right character to window\n        if (patternFreq[rightChar]) {\n            windowFreq[rightChar] = (windowFreq[rightChar] || 0) + 1;\n            if (windowFreq[rightChar] === patternFreq[rightChar]) {\n                matches++;\n            }\n        }\n        \n        // Contract window if it exceeds pattern length\n        if (windowEnd - windowStart + 1 > s1.length) {\n            const leftChar = s2[windowStart];\n            if (patternFreq[leftChar]) {\n                if (windowFreq[leftChar] === patternFreq[leftChar]) {\n                    matches--;\n                }\n                windowFreq[leftChar]--;\n            }\n            windowStart++;\n        }\n        \n        // Check if we found a permutation\n        if (matches === requiredMatches) {\n            return true;\n        }\n    }\n    \n    return false;\n}"
+  }
+}

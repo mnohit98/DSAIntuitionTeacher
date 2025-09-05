@@ -1,0 +1,549 @@
+{
+  "problemId": "p10",
+  "title": "Longest Subarray with Ones after Replacement",
+  "description": "Given an array containing 0s and 1s, if you are allowed to replace no more than 'k' 0s with 1s, find the length of the longest contiguous subarray having all 1s.",
+  "aim": "Demonstrate variable-size sliding window with ones counting; expand when zeros ≤ k and contract when zeros > k to find longest subarray of 1s after replacements.",
+  "moduleId": "slidingWindow",
+  "submoduleId": "sw_variable",
+  "difficulty": "Medium",
+  "tags": ["Array", "Sliding Window", "Variable Size", "Binary Array", "Zero Replacement", "Ones Counting"],
+  "examples": [
+    { "input": "Array=[0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1], k=2", "output": "6", "explanation": "Replace the '0' at index 5 and 8 to have the longest contiguous subarray of 1s having length 6." },
+    { "input": "Array=[0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 1, 1], k=3", "output": "9", "explanation": "Replace the '0' at index 6, 9, and 10 to have the longest contiguous subarray of 1s having length 9." }
+  ],
+  "playground": {
+    "initialState": {
+      "array": [0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1],
+      "k": 2,
+      "windowStart": 0,
+      "windowEnd": 0,
+      "maxLength": 0,
+      "currentLength": 0,
+      "onesCount": 0,
+      "bestWindow": null
+    },
+    "steps": [
+      {
+        "stepId": 1,
+        "description": "Initialize variables. We'll track the count of 1s in our window to know how many zeros we can replace.",
+        "expectedAction": "click_initialize",
+        "uiState": {
+          "arrayElements": [
+            {"value": 0, "state": "not_yet_reached", "index": 0},
+            {"value": 1, "state": "not_yet_reached", "index": 1},
+            {"value": 1, "state": "not_yet_reached", "index": 2},
+            {"value": 0, "state": "not_yet_reached", "index": 3},
+            {"value": 0, "state": "not_yet_reached", "index": 4},
+            {"value": 0, "state": "not_yet_reached", "index": 5},
+            {"value": 1, "state": "not_yet_reached", "index": 6},
+            {"value": 1, "state": "not_yet_reached", "index": 7},
+            {"value": 0, "state": "not_yet_reached", "index": 8},
+            {"value": 1, "state": "not_yet_reached", "index": 9},
+            {"value": 1, "state": "not_yet_reached", "index": 10}
+          ],
+          "windowStart": null,
+          "windowEnd": null,
+          "maxLength": 0,
+          "currentLength": 0,
+          "onesCount": 0,
+          "bestWindow": null,
+          "highlightedElements": [],
+          "k": 2
+        },
+        "jarvisMessage": "Welcome! We'll use a sliding window to find the longest subarray of 1s by replacing at most k=2 zeros. We'll track onesCount to know how many zeros we can replace.",
+        "codeHint": "// Initialize\nlet windowStart = 0;\nlet maxLength = 0;\nlet onesCount = 0;",
+        "codeBotMessage": "We'll expand the window when (windowSize - onesCount) ≤ k and contract when it exceeds k. This ensures we stay within our replacement limit.",
+        "codeSnippet": "let windowStart = 0;\nlet maxLength = 0;\nlet onesCount = 0;"
+      },
+      {
+        "stepId": 2,
+        "description": "Expand: add 0. onesCount=0. Window size=1, zeros=1 ≤ k=2. maxLength=1.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 0,
+        "uiState": {
+          "arrayElements": [
+            {"value": 0, "state": "in_window", "index": 0},
+            {"value": 1, "state": "not_yet_reached", "index": 1},
+            {"value": 1, "state": "not_yet_reached", "index": 2},
+            {"value": 0, "state": "not_yet_reached", "index": 3},
+            {"value": 0, "state": "not_yet_reached", "index": 4},
+            {"value": 0, "state": "not_yet_reached", "index": 5},
+            {"value": 1, "state": "not_yet_reached", "index": 6},
+            {"value": 1, "state": "not_yet_reached", "index": 7},
+            {"value": 0, "state": "not_yet_reached", "index": 8},
+            {"value": 1, "state": "not_yet_reached", "index": 9},
+            {"value": 1, "state": "not_yet_reached", "index": 10}
+          ],
+          "windowStart": 0,
+          "windowEnd": 0,
+          "maxLength": 1,
+          "currentLength": 1,
+          "onesCount": 0,
+          "bestWindow": [0, 0],
+          "highlightedElements": [0],
+          "k": 2
+        },
+        "jarvisMessage": "Added 0. We have 0 ones so far, so onesCount=0. Window size=1, zeros=1-0=1 ≤ k=2. We can replace this zero to make it 1. Update maxLength to 1.",
+        "codeHint": "// Expand\nif (nums[windowEnd] === 1) onesCount++;\nmaxLength = Math.max(maxLength, windowEnd - windowStart + 1);",
+        "codeBotMessage": "Window [0] is valid. Zeros = windowSize - onesCount = 1 - 0 = 1 ≤ k (2). We can replace this zero.",
+        "codeSnippet": "// onesCount = 0; maxLength = 1;"
+      },
+      {
+        "stepId": 3,
+        "description": "Expand: add 1. onesCount=1. Window size=2, zeros=1 ≤ k=2. maxLength=2.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 1,
+        "uiState": {
+          "arrayElements": [
+            {"value": 0, "state": "in_window", "index": 0},
+            {"value": 1, "state": "in_window", "index": 1},
+            {"value": 1, "state": "not_yet_reached", "index": 2},
+            {"value": 0, "state": "not_yet_reached", "index": 3},
+            {"value": 0, "state": "not_yet_reached", "index": 4},
+            {"value": 0, "state": "not_yet_reached", "index": 5},
+            {"value": 1, "state": "not_yet_reached", "index": 6},
+            {"value": 1, "state": "not_yet_reached", "index": 7},
+            {"value": 0, "state": "not_yet_reached", "index": 8},
+            {"value": 1, "state": "not_yet_reached", "index": 9},
+            {"value": 1, "state": "not_yet_reached", "index": 10}
+          ],
+          "windowStart": 0,
+          "windowEnd": 1,
+          "maxLength": 2,
+          "currentLength": 2,
+          "onesCount": 1,
+          "bestWindow": [0, 1],
+          "highlightedElements": [0, 1],
+          "k": 2
+        },
+        "jarvisMessage": "Added 1. Now onesCount=1. Window size=2, zeros=2-1=1 ≤ k=2. We can replace 1 zero to make it 1. Update maxLength to 2.",
+        "codeHint": "// Expand and update best",
+        "codeBotMessage": "Window [0,1] is valid. Zeros = 2 - 1 = 1 ≤ k (2). We can replace 1 zero.",
+        "codeSnippet": "// onesCount = 1; maxLength = 2;"
+      },
+      {
+        "stepId": 4,
+        "description": "Expand: add 1. onesCount=2. Window size=3, zeros=1 ≤ k=2. maxLength=3.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 2,
+        "uiState": {
+          "arrayElements": [
+            {"value": 0, "state": "in_window", "index": 0},
+            {"value": 1, "state": "in_window", "index": 1},
+            {"value": 1, "state": "in_window", "index": 2},
+            {"value": 0, "state": "not_yet_reached", "index": 3},
+            {"value": 0, "state": "not_yet_reached", "index": 4},
+            {"value": 0, "state": "not_yet_reached", "index": 5},
+            {"value": 1, "state": "not_yet_reached", "index": 6},
+            {"value": 1, "state": "not_yet_reached", "index": 7},
+            {"value": 0, "state": "not_yet_reached", "index": 8},
+            {"value": 1, "state": "not_yet_reached", "index": 9},
+            {"value": 1, "state": "not_yet_reached", "index": 10}
+          ],
+          "windowStart": 0,
+          "windowEnd": 2,
+          "maxLength": 3,
+          "currentLength": 3,
+          "onesCount": 2,
+          "bestWindow": [0, 2],
+          "highlightedElements": [0, 1, 2],
+          "k": 2
+        },
+        "jarvisMessage": "Added 1. Now onesCount=2. Window size=3, zeros=3-2=1 ≤ k=2. We can replace 1 zero to make it 1. Update maxLength to 3.",
+        "codeHint": "// Expand and update best",
+        "codeBotMessage": "Window [0,1,1] is valid. Zeros = 3 - 2 = 1 ≤ k (2). We can replace 1 zero.",
+        "codeSnippet": "// onesCount = 2; maxLength = 3;"
+      },
+      {
+        "stepId": 5,
+        "description": "Expand: add 0. onesCount=2. Window size=4, zeros=2 ≤ k=2. maxLength=4.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 3,
+        "uiState": {
+          "arrayElements": [
+            {"value": 0, "state": "in_window", "index": 0},
+            {"value": 1, "state": "in_window", "index": 1},
+            {"value": 1, "state": "in_window", "index": 2},
+            {"value": 0, "state": "in_window", "index": 3},
+            {"value": 0, "state": "not_yet_reached", "index": 4},
+            {"value": 0, "state": "not_yet_reached", "index": 5},
+            {"value": 1, "state": "not_yet_reached", "index": 6},
+            {"value": 1, "state": "not_yet_reached", "index": 7},
+            {"value": 0, "state": "not_yet_reached", "index": 8},
+            {"value": 1, "state": "not_yet_reached", "index": 9},
+            {"value": 1, "state": "not_yet_reached", "index": 10}
+          ],
+          "windowStart": 0,
+          "windowEnd": 3,
+          "maxLength": 4,
+          "currentLength": 4,
+          "onesCount": 2,
+          "bestWindow": [0, 3],
+          "highlightedElements": [0, 1, 2, 3],
+          "k": 2
+        },
+        "jarvisMessage": "Added 0. Still onesCount=2. Window size=4, zeros=4-2=2 ≤ k=2. We can replace 2 zeros to make them 1s. Update maxLength to 4.",
+        "codeHint": "// Expand and update best",
+        "codeBotMessage": "Window [0,1,1,0] is valid. Zeros = 4 - 2 = 2 ≤ k (2). We can replace both zeros.",
+        "codeSnippet": "// onesCount = 2; maxLength = 4;"
+      },
+      {
+        "stepId": 6,
+        "description": "Expand: add 0. onesCount=2. Window size=5, zeros=3 > k=2. Contract from left until zeros ≤ k.",
+        "expectedAction": "contract_window",
+        "expectedElementIndex": 4,
+        "uiState": {
+          "arrayElements": [
+            {"value": 0, "state": "out_of_window_past", "index": 0},
+            {"value": 1, "state": "in_window", "index": 1},
+            {"value": 1, "state": "in_window", "index": 2},
+            {"value": 0, "state": "in_window", "index": 3},
+            {"value": 0, "state": "in_window", "index": 4},
+            {"value": 0, "state": "not_yet_reached", "index": 5},
+            {"value": 1, "state": "not_yet_reached", "index": 6},
+            {"value": 1, "state": "not_yet_reached", "index": 7},
+            {"value": 0, "state": "not_yet_reached", "index": 8},
+            {"value": 1, "state": "not_yet_reached", "index": 9},
+            {"value": 1, "state": "not_yet_reached", "index": 10}
+          ],
+          "windowStart": 1,
+          "windowEnd": 4,
+          "maxLength": 4,
+          "currentLength": 4,
+          "onesCount": 2,
+          "bestWindow": [0, 3],
+          "highlightedElements": [1, 2, 3, 4],
+          "k": 2
+        },
+        "jarvisMessage": "Added 0 but now we have 3 zeros (5-2=3 > k=2). We must contract from the left until we're back to ≤2 zeros. We removed the first 0, now window has 2 zeros.",
+        "codeHint": "// While too many zeros\nwhile ((windowEnd - windowStart + 1 - onesCount) > k) {\n  if (nums[windowStart] === 1) onesCount--;\n  windowStart++;\n}",
+        "codeBotMessage": "We contracted until zeros ≤ k. Now window has 4-2=2 zeros, which equals k=2.",
+        "codeSnippet": "// Contracted: window has 2 zeros, which equals k = 2"
+      },
+      {
+        "stepId": 7,
+        "description": "Continue contracting: remove 1. onesCount=1. Window size=3, zeros=2 ≤ k=2.",
+        "expectedAction": "contract_window",
+        "expectedElementIndex": 4,
+        "uiState": {
+          "arrayElements": [
+            {"value": 0, "state": "out_of_window_past", "index": 0},
+            {"value": 1, "state": "out_of_window_past", "index": 1},
+            {"value": 1, "state": "in_window", "index": 2},
+            {"value": 0, "state": "in_window", "index": 3},
+            {"value": 0, "state": "in_window", "index": 4},
+            {"value": 0, "state": "not_yet_reached", "index": 5},
+            {"value": 1, "state": "not_yet_reached", "index": 6},
+            {"value": 1, "state": "not_yet_reached", "index": 7},
+            {"value": 0, "state": "not_yet_reached", "index": 8},
+            {"value": 1, "state": "not_yet_reached", "index": 9},
+            {"value": 1, "state": "not_yet_reached", "index": 10}
+          ],
+          "windowStart": 2,
+          "windowEnd": 4,
+          "maxLength": 4,
+          "currentLength": 3,
+          "onesCount": 1,
+          "bestWindow": [0, 3],
+          "highlightedElements": [2, 3, 4],
+          "k": 2
+        },
+        "jarvisMessage": "Removed 1. Now onesCount=1. Window size=3, zeros=3-1=2 ≤ k=2. Window is now valid again.",
+        "codeHint": "// Continue contracting until valid",
+        "codeBotMessage": "Window [1,0,0] is valid. Zeros = 3 - 1 = 2 ≤ k (2).",
+        "codeSnippet": "// Now valid: onesCount = 1; zeros = 2 ≤ k = 2"
+      },
+      {
+        "stepId": 8,
+        "description": "Expand: add 0. onesCount=1. Window size=4, zeros=3 > k=2. Contract from left until zeros ≤ k.",
+        "expectedAction": "contract_window",
+        "expectedElementIndex": 5,
+        "uiState": {
+          "arrayElements": [
+            {"value": 0, "state": "out_of_window_past", "index": 0},
+            {"value": 1, "state": "out_of_window_past", "index": 1},
+            {"value": 1, "state": "out_of_window_past", "index": 2},
+            {"value": 0, "state": "in_window", "index": 3},
+            {"value": 0, "state": "in_window", "index": 4},
+            {"value": 0, "state": "in_window", "index": 5},
+            {"value": 1, "state": "not_yet_reached", "index": 6},
+            {"value": 1, "state": "not_yet_reached", "index": 7},
+            {"value": 0, "state": "not_yet_reached", "index": 8},
+            {"value": 1, "state": "not_yet_reached", "index": 9},
+            {"value": 1, "state": "not_yet_reached", "index": 10}
+          ],
+          "windowStart": 3,
+          "windowEnd": 5,
+          "maxLength": 4,
+          "currentLength": 3,
+          "onesCount": 0,
+          "bestWindow": [0, 3],
+          "highlightedElements": [3, 4, 5],
+          "k": 2
+        },
+        "jarvisMessage": "Added 0 but now we have 3 zeros (4-1=3 > k=2). We must contract from the left. Removed 1, now onesCount=0. Window has 3-0=3 zeros, still > k=2.",
+        "codeHint": "// Continue contracting until valid",
+        "codeBotMessage": "Window [0,0,0] has 3 zeros > k (2), so we need to contract more.",
+        "codeSnippet": "// Contracted: onesCount = 0; zeros = 3 > k = 2"
+      },
+      {
+        "stepId": 9,
+        "description": "Continue contracting: remove 0. onesCount=0. Window size=2, zeros=2 ≤ k=2.",
+        "expectedAction": "contract_window",
+        "expectedElementIndex": 5,
+        "uiState": {
+          "arrayElements": [
+            {"value": 0, "state": "out_of_window_past", "index": 0},
+            {"value": 1, "state": "out_of_window_past", "index": 1},
+            {"value": 1, "state": "out_of_window_past", "index": 2},
+            {"value": 0, "state": "out_of_window_past", "index": 3},
+            {"value": 0, "state": "in_window", "index": 4},
+            {"value": 0, "state": "in_window", "index": 5},
+            {"value": 1, "state": "not_yet_reached", "index": 6},
+            {"value": 1, "state": "not_yet_reached", "index": 7},
+            {"value": 0, "state": "not_yet_reached", "index": 8},
+            {"value": 1, "state": "not_yet_reached", "index": 9},
+            {"value": 1, "state": "not_yet_reached", "index": 10}
+          ],
+          "windowStart": 4,
+          "windowEnd": 5,
+          "maxLength": 4,
+          "currentLength": 2,
+          "onesCount": 0,
+          "bestWindow": [0, 3],
+          "highlightedElements": [4, 5],
+          "k": 2
+        },
+        "jarvisMessage": "Removed another 0. Now onesCount=0. Window size=2, zeros=2-0=2 ≤ k=2. Window is now valid again.",
+        "codeHint": "// Continue contracting until valid",
+        "codeBotMessage": "Window [0,0] is valid. Zeros = 2 - 0 = 2 ≤ k (2).",
+        "codeSnippet": "// Now valid: onesCount = 0; zeros = 2 ≤ k = 2"
+      },
+      {
+        "stepId": 10,
+        "description": "Expand: add 1. onesCount=1. Window size=3, zeros=2 ≤ k=2. maxLength=4 (unchanged).",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 6,
+        "uiState": {
+          "arrayElements": [
+            {"value": 0, "state": "out_of_window_past", "index": 0},
+            {"value": 1, "state": "out_of_window_past", "index": 1},
+            {"value": 1, "state": "out_of_window_past", "index": 2},
+            {"value": 0, "state": "out_of_window_past", "index": 3},
+            {"value": 0, "state": "in_window", "index": 4},
+            {"value": 0, "state": "in_window", "index": 5},
+            {"value": 1, "state": "in_window", "index": 6},
+            {"value": 1, "state": "not_yet_reached", "index": 7},
+            {"value": 0, "state": "not_yet_reached", "index": 8},
+            {"value": 1, "state": "not_yet_reached", "index": 9},
+            {"value": 1, "state": "not_yet_reached", "index": 10}
+          ],
+          "windowStart": 4,
+          "windowEnd": 6,
+          "maxLength": 4,
+          "currentLength": 3,
+          "onesCount": 1,
+          "bestWindow": [0, 3],
+          "highlightedElements": [4, 5, 6],
+          "k": 2
+        },
+        "jarvisMessage": "Added 1. Now onesCount=1. Window size=3, zeros=3-1=2 ≤ k=2. This is valid, but maxLength stays 4 (not better).",
+        "codeHint": "// Expand and check if better",
+        "codeBotMessage": "Window [0,0,1] is valid. Zeros = 3 - 1 = 2 ≤ k (2). Current maxLength is already 4.",
+        "codeSnippet": "// onesCount = 1; maxLength = 4;"
+      },
+      {
+        "stepId": 11,
+        "description": "Expand: add 1. onesCount=2. Window size=4, zeros=2 ≤ k=2. maxLength=4 (unchanged).",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 7,
+        "uiState": {
+          "arrayElements": [
+            {"value": 0, "state": "out_of_window_past", "index": 0},
+            {"value": 1, "state": "out_of_window_past", "index": 1},
+            {"value": 1, "state": "out_of_window_past", "index": 2},
+            {"value": 0, "state": "out_of_window_past", "index": 3},
+            {"value": 0, "state": "in_window", "index": 4},
+            {"value": 0, "state": "in_window", "index": 5},
+            {"value": 1, "state": "in_window", "index": 6},
+            {"value": 1, "state": "in_window", "index": 7},
+            {"value": 0, "state": "not_yet_reached", "index": 8},
+            {"value": 1, "state": "not_yet_reached", "index": 9},
+            {"value": 1, "state": "not_yet_reached", "index": 10}
+          ],
+          "windowStart": 4,
+          "windowEnd": 7,
+          "maxLength": 4,
+          "currentLength": 4,
+          "onesCount": 2,
+          "bestWindow": [0, 3],
+          "highlightedElements": [4, 5, 6, 7],
+          "k": 2
+        },
+        "jarvisMessage": "Added 1. Now onesCount=2. Window size=4, zeros=4-2=2 ≤ k=2. This is valid, but maxLength stays 4 (not better).",
+        "codeHint": "// Expand and check if better",
+        "codeBotMessage": "Window [0,0,1,1] is valid. Zeros = 4 - 2 = 2 ≤ k (2). Current maxLength is already 4.",
+        "codeSnippet": "// onesCount = 2; maxLength = 4;"
+      },
+      {
+        "stepId": 12,
+        "description": "Expand: add 0. onesCount=2. Window size=5, zeros=3 > k=2. Contract from left until zeros ≤ k.",
+        "expectedAction": "contract_window",
+        "expectedElementIndex": 8,
+        "uiState": {
+          "arrayElements": [
+            {"value": 0, "state": "out_of_window_past", "index": 0},
+            {"value": 1, "state": "out_of_window_past", "index": 1},
+            {"value": 1, "state": "out_of_window_past", "index": 2},
+            {"value": 0, "state": "out_of_window_past", "index": 3},
+            {"value": 0, "state": "out_of_window_past", "index": 4},
+            {"value": 0, "state": "in_window", "index": 5},
+            {"value": 1, "state": "in_window", "index": 6},
+            {"value": 1, "state": "in_window", "index": 7},
+            {"value": 0, "state": "in_window", "index": 8},
+            {"value": 1, "state": "not_yet_reached", "index": 9},
+            {"value": 1, "state": "not_yet_reached", "index": 10}
+          ],
+          "windowStart": 5,
+          "windowEnd": 8,
+          "maxLength": 4,
+          "currentLength": 4,
+          "onesCount": 2,
+          "bestWindow": [0, 3],
+          "highlightedElements": [5, 6, 7, 8],
+          "k": 2
+        },
+        "jarvisMessage": "Added 0 but now we have 3 zeros (5-2=3 > k=2). We must contract from the left. Removed 0, now window has 2 zeros, which equals k=2.",
+        "codeHint": "// Contract until valid again",
+        "codeBotMessage": "Window [0,1,1,0] is valid. Zeros = 4 - 2 = 2 ≤ k (2).",
+        "codeSnippet": "// Contracted: window has 2 zeros, which equals k = 2"
+      },
+      {
+        "stepId": 13,
+        "description": "Expand: add 1. onesCount=3. Window size=5, zeros=2 ≤ k=2. maxLength=5.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 9,
+        "uiState": {
+          "arrayElements": [
+            {"value": 0, "state": "out_of_window_past", "index": 0},
+            {"value": 1, "state": "out_of_window_past", "index": 1},
+            {"value": 1, "state": "out_of_window_past", "index": 2},
+            {"value": 0, "state": "out_of_window_past", "index": 3},
+            {"value": 0, "state": "out_of_window_past", "index": 4},
+            {"value": 0, "state": "in_window", "index": 5},
+            {"value": 1, "state": "in_window", "index": 6},
+            {"value": 1, "state": "in_window", "index": 7},
+            {"value": 0, "state": "in_window", "index": 8},
+            {"value": 1, "state": "in_window", "index": 9},
+            {"value": 1, "state": "not_yet_reached", "index": 10}
+          ],
+          "windowStart": 5,
+          "windowEnd": 9,
+          "maxLength": 5,
+          "currentLength": 5,
+          "onesCount": 3,
+          "bestWindow": [5, 9],
+          "highlightedElements": [5, 6, 7, 8, 9],
+          "k": 2
+        },
+        "jarvisMessage": "Added 1. Now onesCount=3. Window size=5, zeros=5-3=2 ≤ k=2. This is valid and better! Update maxLength to 5.",
+        "codeHint": "// Expand and update best",
+        "codeBotMessage": "Window [0,1,1,0,1] is valid. Zeros = 5 - 3 = 2 ≤ k (2). This is better than our previous maxLength of 4.",
+        "codeSnippet": "// onesCount = 3; maxLength = 5;"
+      },
+      {
+        "stepId": 14,
+        "description": "Expand: add 1. onesCount=4. Window size=6, zeros=2 ≤ k=2. maxLength=6.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 10,
+        "uiState": {
+          "arrayElements": [
+            {"value": 0, "state": "out_of_window_past", "index": 0},
+            {"value": 1, "state": "out_of_window_past", "index": 1},
+            {"value": 1, "state": "out_of_window_past", "index": 2},
+            {"value": 0, "state": "out_of_window_past", "index": 3},
+            {"value": 0, "state": "out_of_window_past", "index": 4},
+            {"value": 0, "state": "in_window", "index": 5},
+            {"value": 1, "state": "in_window", "index": 6},
+            {"value": 1, "state": "in_window", "index": 7},
+            {"value": 0, "state": "in_window", "index": 8},
+            {"value": 1, "state": "in_window", "index": 9},
+            {"value": 1, "state": "in_window", "index": 10}
+          ],
+          "windowStart": 5,
+          "windowEnd": 10,
+          "maxLength": 6,
+          "currentLength": 6,
+          "onesCount": 4,
+          "bestWindow": [5, 10],
+          "highlightedElements": [5, 6, 7, 8, 9, 10],
+          "k": 2
+        },
+        "jarvisMessage": "Added 1. Now onesCount=4. Window size=6, zeros=6-4=2 ≤ k=2. This is valid and even better! Update maxLength to 6.",
+        "codeHint": "// Expand and update best",
+        "codeBotMessage": "Window [0,1,1,0,1,1] is valid. Zeros = 6 - 4 = 2 ≤ k (2). This is our new best with length 6.",
+        "codeSnippet": "// onesCount = 4; maxLength = 6;"
+      },
+      {
+        "stepId": 15,
+        "description": "Algorithm completed! Best subarray length = 6 (after replacing 2 zeros).",
+        "expectedAction": "complete_algorithm",
+        "expectedElementIndex": 10,
+        "uiState": {
+          "arrayElements": [
+            {"value": 0, "state": "out_of_window_past", "index": 0},
+            {"value": 1, "state": "out_of_window_past", "index": 1},
+            {"value": 1, "state": "out_of_window_past", "index": 2},
+            {"value": 0, "state": "out_of_window_past", "index": 3},
+            {"value": 0, "state": "out_of_window_past", "index": 4},
+            {"value": 0, "state": "in_window", "index": 5},
+            {"value": 1, "state": "in_window", "index": 6},
+            {"value": 1, "state": "in_window", "index": 7},
+            {"value": 0, "state": "in_window", "index": 8},
+            {"value": 1, "state": "in_window", "index": 9},
+            {"value": 1, "state": "in_window", "index": 10}
+          ],
+          "windowStart": 5,
+          "windowEnd": 10,
+          "maxLength": 6,
+          "currentLength": 6,
+          "onesCount": 4,
+          "bestWindow": [5, 10],
+          "highlightedElements": [5, 6, 7, 8, 9, 10],
+          "k": 2
+        },
+        "jarvisMessage": "🎉 Congratulations! You've completed the walkthrough. Best subarray length is 6 (after replacing 2 zeros). The best window was [0,1,1,0,1,1] where we could replace 2 zeros with 1s to get all 1s.",
+        "codeHint": "// Done\nreturn maxLength;",
+        "codeBotMessage": "Sliding window + ones counting: O(n) time, O(1) space. We tracked ones and maintained ≤k zeros in our window.",
+        "codeSnippet": "// Final answer\nreturn maxLength;"
+      }
+    ],
+    "jarvisConfig": {
+      "personality": "encouraging",
+      "hintLevels": ["subtle", "helpful", "explicit"],
+      "motivationalMessages": [
+        "Great thinking! Track ones to know how many zeros you can replace.",
+        "Exactly! The key insight is (windowSize - onesCount) ≤ k.",
+        "You're mastering binary array problems with sliding windows!",
+        "Awesome! This technique works for any zero replacement problems."
+      ]
+    }
+  },
+  "solution": {
+    "optimal": {
+      "idea": "Use variable-size window with ones counting; expand when (windowSize - onesCount) ≤ k and contract when it exceeds k to find longest subarray of 1s after replacing zeros.",
+      "timeComplexity": "O(n)",
+      "spaceComplexity": "O(1)",
+      "walkthrough": [
+        "Initialize windowStart = 0, maxLength = 0, onesCount = 0.",
+        "For windowEnd from 0..n-1, increment onesCount if nums[windowEnd] === 1.",
+        "While (windowSize - onesCount) > k, decrement onesCount if nums[windowStart] === 1 and increment windowStart.",
+        "Update maxLength with current window size.",
+        "Return maxLength."
+      ]
+    }
+  },
+  "code": {
+    "cpp": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nclass Solution {\npublic:\n    int longestOnes(vector<int>& nums, int k) {\n        int windowStart = 0, maxLength = 0, onesCount = 0;\n        \n        for (int windowEnd = 0; windowEnd < nums.size(); ++windowEnd) {\n            if (nums[windowEnd] == 1) {\n                onesCount++;\n            }\n            \n            // If we have more zeros than allowed, shrink the window\n            while ((windowEnd - windowStart + 1 - onesCount) > k) {\n                if (nums[windowStart] == 1) {\n                    onesCount--;\n                }\n                windowStart++;\n            }\n            \n            maxLength = max(maxLength, windowEnd - windowStart + 1);\n        }\n        return maxLength;\n    }\n};\n\nint main() {\n    Solution sol;\n    vector<int> nums1 = {0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1};\n    cout << \"Longest subarray length: \" << sol.longestOnes(nums1, 2) << endl; // 6\n    \n    vector<int> nums2 = {0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 1, 1};\n    cout << \"Longest subarray length: \" << sol.longestOnes(nums2, 3) << endl; // 9\n    return 0;\n}"
+  }
+}

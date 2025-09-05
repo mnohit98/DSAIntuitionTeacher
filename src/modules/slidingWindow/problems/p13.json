@@ -1,0 +1,262 @@
+{
+  "problemId": "p13",
+  "title": "Count Number of Nice Subarrays",
+  "description": "Given an array nums and an integer k, an array is called nice if and only if it contains exactly k odd numbers. Find the number of nice subarrays in the given array nums.",
+  "aim": "Demonstrate prefix sum with hashmap approach for odd counting; transform array to binary (odd=1, even=0) and reduce to counting subarrays with sum = k.",
+  "moduleId": "slidingWindow",
+  "submoduleId": "sw_prefix_sum",
+  "difficulty": "Medium",
+  "tags": ["Array", "Hash Map", "Prefix Sum", "Subarray Counting", "Odd Numbers", "Binary Transformation"],
+  "examples": [
+    { "input": "nums = [1, 1, 2, 1, 1], k = 3", "output": "2", "explanation": "The subarrays with three odd numbers are: [1, 1, 2, 1], [1, 2, 1, 1]." },
+    { "input": "nums = [4, 8, 2], k = 1", "output": "0", "explanation": "The array does not contain any odd number." }
+  ],
+  "playground": {
+    "initialState": {
+      "array": [1, 1, 2, 1, 1],
+      "k": 3,
+      "binaryArray": [],
+      "prefixSum": 0,
+      "count": 0,
+      "prefixCount": {},
+      "currentIndex": 0
+    },
+    "steps": [
+      {
+        "stepId": 1,
+        "description": "Initialize variables. We'll transform the array to binary (odd=1, even=0) and use prefix sum to count subarrays with exactly k odd numbers.",
+        "expectedAction": "click_initialize",
+        "uiState": {
+          "arrayElements": [
+            {"value": 1, "state": "not_yet_reached", "index": 0},
+            {"value": 1, "state": "not_yet_reached", "index": 1},
+            {"value": 2, "state": "not_yet_reached", "index": 2},
+            {"value": 1, "state": "not_yet_reached", "index": 3},
+            {"value": 1, "state": "not_yet_reached", "index": 4}
+          ],
+          "binaryArray": [1, 1, 0, 1, 1],
+          "prefixSum": 0,
+          "count": 0,
+          "prefixCount": {"0": 1},
+          "currentIndex": 0,
+          "highlightedElements": [],
+          "k": 3
+        },
+        "jarvisMessage": "Welcome! We'll transform the array to binary (odd=1, even=0) and use prefix sum with hashmap to find subarrays with exactly k=3 odd numbers.",
+        "codeHint": "// Initialize\nlet prefixSum = 0;\nlet count = 0;\nlet prefixCount = {0: 1}; // base case",
+        "codeBotMessage": "We'll transform nums to binary array where odd numbers become 1 and even numbers become 0. Then we'll count subarrays with sum = k using prefix sum approach.",
+        "codeSnippet": "let prefixSum = 0;\nlet count = 0;\nlet prefixCount = {0: 1};"
+      },
+      {
+        "stepId": 2,
+        "description": "Transform array to binary: [1,1,2,1,1] → [1,1,0,1,1]. Now we need to find subarrays with sum = 3.",
+        "expectedAction": "transform_array",
+        "expectedElementIndex": 0,
+        "uiState": {
+          "arrayElements": [
+            {"value": 1, "state": "transformed", "index": 0},
+            {"value": 1, "state": "transformed", "index": 1},
+            {"value": 2, "state": "transformed", "index": 2},
+            {"value": 1, "state": "transformed", "index": 3},
+            {"value": 1, "state": "transformed", "index": 4}
+          ],
+          "binaryArray": [1, 1, 0, 1, 1],
+          "prefixSum": 0,
+          "count": 0,
+          "prefixCount": {"0": 1},
+          "currentIndex": 0,
+          "highlightedElements": [0, 1, 2, 3, 4],
+          "k": 3
+        },
+        "jarvisMessage": "Transformed array to binary: [1,1,2,1,1] → [1,1,0,1,1]. Now we need to find subarrays with sum = 3 (exactly 3 odd numbers).",
+        "codeHint": "// Transform to binary\nlet binary = nums.map(num => num % 2); // odd=1, even=0",
+        "codeBotMessage": "Binary transformation: odd numbers (1,1,1,1) become 1, even number (2) becomes 0. Now we count subarrays with sum = 3.",
+        "codeSnippet": "// Binary array: [1, 1, 0, 1, 1]; need sum = 3"
+      },
+      {
+        "stepId": 3,
+        "description": "Process index 0: binary[0]=1. prefixSum=1. Need prefixSum-k=1-3=-2. Not found in hashmap. Add prefixSum=1 to hashmap.",
+        "expectedAction": "process_element",
+        "expectedElementIndex": 0,
+        "uiState": {
+          "arrayElements": [
+            {"value": 1, "state": "processed", "index": 0},
+            {"value": 1, "state": "transformed", "index": 1},
+            {"value": 2, "state": "transformed", "index": 2},
+            {"value": 1, "state": "transformed", "index": 3},
+            {"value": 1, "state": "transformed", "index": 4}
+          ],
+          "binaryArray": [1, 1, 0, 1, 1],
+          "prefixSum": 1,
+          "count": 0,
+          "prefixCount": {"0": 1, "1": 1},
+          "currentIndex": 0,
+          "highlightedElements": [0],
+          "k": 3
+        },
+        "jarvisMessage": "Processed binary[0]=1. prefixSum=1. We need to find a previous prefix sum equal to (1-3)=-2. Since -2 is not in our hashmap, no valid subarray ends here. Add prefixSum=1 to hashmap.",
+        "codeHint": "// Process current element\nprefixSum += binary[i];\nif (prefixCount[prefixSum - k]) count += prefixCount[prefixSum - k];\nprefixCount[prefixSum]++;",
+        "codeBotMessage": "prefixSum = 1. We need prefixSum - k = 1 - 3 = -2. Since -2 is not in our hashmap, count stays 0. We add prefixSum=1 to our hashmap.",
+        "codeSnippet": "// prefixSum = 1; need = -2; not found; count = 0; prefixCount = {0:1, 1:1};"
+      },
+      {
+        "stepId": 4,
+        "description": "Process index 1: binary[1]=1. prefixSum=2. Need prefixSum-k=2-3=-1. Not found in hashmap. Add prefixSum=2 to hashmap.",
+        "expectedAction": "process_element",
+        "expectedElementIndex": 1,
+        "uiState": {
+          "arrayElements": [
+            {"value": 1, "state": "processed", "index": 0},
+            {"value": 1, "state": "processed", "index": 1},
+            {"value": 2, "state": "transformed", "index": 2},
+            {"value": 1, "state": "transformed", "index": 3},
+            {"value": 1, "state": "transformed", "index": 4}
+          ],
+          "binaryArray": [1, 1, 0, 1, 1],
+          "prefixSum": 2,
+          "count": 0,
+          "prefixCount": {"0": 1, "1": 1, "2": 1},
+          "currentIndex": 1,
+          "highlightedElements": [0, 1],
+          "k": 3
+        },
+        "jarvisMessage": "Processed binary[1]=1. prefixSum=2. We need to find a previous prefix sum equal to (2-3)=-1. Since -1 is not in our hashmap, no valid subarray ends here. Add prefixSum=2 to hashmap.",
+        "codeHint": "// Process current element",
+        "codeBotMessage": "prefixSum = 2. We need prefixSum - k = 2 - 3 = -1. Since -1 is not in our hashmap, count stays 0. We add prefixSum=2 to our hashmap.",
+        "codeSnippet": "// prefixSum = 2; need = -1; not found; count = 0; prefixCount = {0:1, 1:1, 2:1};"
+      },
+      {
+        "stepId": 5,
+        "description": "Process index 2: binary[2]=0. prefixSum=2. Need prefixSum-k=2-3=-1. Not found in hashmap. Add prefixSum=2 to hashmap (increment count).",
+        "expectedAction": "process_element",
+        "expectedElementIndex": 2,
+        "uiState": {
+          "arrayElements": [
+            {"value": 1, "state": "processed", "index": 0},
+            {"value": 1, "state": "processed", "index": 1},
+            {"value": 2, "state": "processed", "index": 2},
+            {"value": 1, "state": "transformed", "index": 3},
+            {"value": 1, "state": "transformed", "index": 4}
+          ],
+          "binaryArray": [1, 1, 0, 1, 1],
+          "prefixSum": 2,
+          "count": 0,
+          "prefixCount": {"0": 1, "1": 1, "2": 2},
+          "currentIndex": 2,
+          "highlightedElements": [0, 1, 2],
+          "k": 3
+        },
+        "jarvisMessage": "Processed binary[2]=0. prefixSum=2 (unchanged). We need to find a previous prefix sum equal to (2-3)=-1. Since -1 is not in our hashmap, no valid subarray ends here. Increment count for prefixSum=2 in hashmap.",
+        "codeHint": "// Process current element",
+        "codeBotMessage": "prefixSum = 2. We need prefixSum - k = 2 - 3 = -1. Since -1 is not in our hashmap, count stays 0. We increment the count for prefixSum=2 in our hashmap.",
+        "codeSnippet": "// prefixSum = 2; need = -1; not found; count = 0; prefixCount = {0:1, 1:1, 2:2};"
+      },
+      {
+        "stepId": 6,
+        "description": "Process index 3: binary[3]=1. prefixSum=3. Need prefixSum-k=3-3=0. Found in hashmap! count += prefixCount[0] = 1. Add prefixSum=3 to hashmap.",
+        "expectedAction": "process_element",
+        "expectedElementIndex": 3,
+        "uiState": {
+          "arrayElements": [
+            {"value": 1, "state": "processed", "index": 0},
+            {"value": 1, "state": "processed", "index": 1},
+            {"value": 2, "state": "processed", "index": 2},
+            {"value": 1, "state": "processed", "index": 3},
+            {"value": 1, "state": "transformed", "index": 4}
+          ],
+          "binaryArray": [1, 1, 0, 1, 1],
+          "prefixSum": 3,
+          "count": 1,
+          "prefixCount": {"0": 1, "1": 1, "2": 2, "3": 1},
+          "currentIndex": 3,
+          "highlightedElements": [0, 1, 2, 3],
+          "k": 3
+        },
+        "jarvisMessage": "Processed binary[3]=1. prefixSum=3. We need to find a previous prefix sum equal to (3-3)=0. Found! prefixCount[0]=1, so count += 1. We found 1 valid subarray ending at index 3.",
+        "codeHint": "// Found valid subarray\nif (prefixCount[prefixSum - k]) {\n  count += prefixCount[prefixSum - k];\n}",
+        "codeBotMessage": "prefixSum = 3. We need prefixSum - k = 3 - 3 = 0. Found prefixCount[0] = 1! This means there's 1 subarray ending at index 3 with exactly 3 odd numbers. count = 1.",
+        "codeSnippet": "// prefixSum = 3; need = 0; found = 1; count = 1; prefixCount = {0:1, 1:1, 2:2, 3:1};"
+      },
+      {
+        "stepId": 7,
+        "description": "Process index 4: binary[4]=1. prefixSum=4. Need prefixSum-k=4-3=1. Found in hashmap! count += prefixCount[1] = 1. Add prefixSum=4 to hashmap.",
+        "expectedAction": "process_element",
+        "expectedElementIndex": 4,
+        "uiState": {
+          "arrayElements": [
+            {"value": 1, "state": "processed", "index": 0},
+            {"value": 1, "state": "processed", "index": 1},
+            {"value": 2, "state": "processed", "index": 2},
+            {"value": 1, "state": "processed", "index": 3},
+            {"value": 1, "state": "processed", "index": 4}
+          ],
+          "binaryArray": [1, 1, 0, 1, 1],
+          "prefixSum": 4,
+          "count": 2,
+          "prefixCount": {"0": 1, "1": 1, "2": 2, "3": 1, "4": 1},
+          "currentIndex": 4,
+          "highlightedElements": [0, 1, 2, 3, 4],
+          "k": 3
+        },
+        "jarvisMessage": "Processed binary[4]=1. prefixSum=4. We need to find a previous prefix sum equal to (4-3)=1. Found! prefixCount[1]=1, so count += 1. We found another valid subarray ending at index 4.",
+        "codeHint": "// Found another valid subarray",
+        "codeBotMessage": "prefixSum = 4. We need prefixSum - k = 4 - 3 = 1. Found prefixCount[1] = 1! This means there's another subarray ending at index 4 with exactly 3 odd numbers. count = 2.",
+        "codeSnippet": "// prefixSum = 4; need = 1; found = 1; count = 2; prefixCount = {0:1, 1:1, 2:2, 3:1, 4:1};"
+      },
+      {
+        "stepId": 8,
+        "description": "Algorithm completed! Total nice subarrays with exactly 3 odd numbers = 2.",
+        "expectedAction": "complete_algorithm",
+        "expectedElementIndex": 4,
+        "uiState": {
+          "arrayElements": [
+            {"value": 1, "state": "processed", "index": 0},
+            {"value": 1, "state": "processed", "index": 1},
+            {"value": 2, "state": "processed", "index": 2},
+            {"value": 1, "state": "processed", "index": 3},
+            {"value": 1, "state": "processed", "index": 4}
+          ],
+          "binaryArray": [1, 1, 0, 1, 1],
+          "prefixSum": 4,
+          "count": 2,
+          "prefixCount": {"0": 1, "1": 1, "2": 2, "3": 1, "4": 1},
+          "currentIndex": 4,
+          "highlightedElements": [0, 1, 2, 3, 4],
+          "k": 3
+        },
+        "jarvisMessage": "🎉 Congratulations! You've completed the walkthrough. Total nice subarrays with exactly 3 odd numbers = 2. The valid subarrays are: [1,1,2,1] and [1,2,1,1].",
+        "codeHint": "// Done\nreturn count;",
+        "codeBotMessage": "Binary transformation + prefix sum + hashmap: O(n) time, O(n) space. We transformed odds to 1s, evens to 0s, then counted subarrays with sum = k.",
+        "codeSnippet": "// Final answer\nreturn count;"
+      }
+    ],
+    "jarvisConfig": {
+      "personality": "encouraging",
+      "hintLevels": ["subtle", "helpful", "explicit"],
+      "motivationalMessages": [
+        "Great thinking! Transform odds to 1s and evens to 0s to reduce to a sum problem.",
+        "Exactly! The key insight is that counting odd numbers becomes counting 1s in binary array.",
+        "You're mastering array transformation with prefix sum optimization!",
+        "Awesome! This technique works for any counting problems with specific criteria."
+      ]
+    }
+  },
+  "solution": {
+    "optimal": {
+      "idea": "Transform array to binary (odd=1, even=0), then use prefix sum with hashmap to count subarrays with sum = k (exactly k odd numbers).",
+      "timeComplexity": "O(n)",
+      "spaceComplexity": "O(n)",
+      "walkthrough": [
+        "Transform nums to binary array: odd numbers become 1, even numbers become 0.",
+        "Initialize prefixSum = 0, count = 0, prefixCount = {0: 1} (base case).",
+        "For each element binary[i], update prefixSum += binary[i].",
+        "If (prefixSum - k) exists in prefixCount, add prefixCount[prefixSum - k] to count.",
+        "Increment prefixCount[prefixSum].",
+        "Return count."
+      ]
+    }
+  },
+  "code": {
+    "cpp": "#include <iostream>\n#include <vector>\n#include <unordered_map>\nusing namespace std;\n\nclass Solution {\npublic:\n    int numberOfSubarrays(vector<int>& nums, int k) {\n        unordered_map<int, int> prefixCount;\n        prefixCount[0] = 1;\n        int prefixSum = 0, result = 0;\n        \n        for (int num : nums) {\n            prefixSum += (num % 2); // count odd as 1, even as 0\n            if (prefixCount.find(prefixSum - k) != prefixCount.end()) {\n                result += prefixCount[prefixSum - k];\n            }\n            prefixCount[prefixSum]++;\n        }\n        return result;\n    }\n};\n\nint main() {\n    Solution sol;\n    vector<int> nums1 = {1, 1, 2, 1, 1};\n    cout << \"Number of nice subarrays: \" << sol.numberOfSubarrays(nums1, 3) << endl; // 2\n    \n    vector<int> nums2 = {4, 8, 2};\n    cout << \"Number of nice subarrays: \" << sol.numberOfSubarrays(nums2, 1) << endl; // 0\n    return 0;\n}"
+  }
+}

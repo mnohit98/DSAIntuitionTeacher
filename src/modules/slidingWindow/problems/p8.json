@@ -1,0 +1,483 @@
+{
+  "problemId": "p8",
+  "title": "Max Consecutive Ones III",
+  "description": "Given a binary array nums and an integer k, flip at most k 0's. Return the maximum number of consecutive 1's after performing the flipping operation.",
+  "aim": "Demonstrate variable-size sliding window with zero counting; expand when zeros ≤ k and contract when zeros > k to find longest consecutive ones sequence.",
+  "moduleId": "slidingWindow",
+  "submoduleId": "sw_variable",
+  "difficulty": "Hard",
+  "tags": ["Array", "Sliding Window", "Variable Size", "Binary Array", "Zero Flipping", "Consecutive Ones"],
+  "examples": [
+    { "input": "nums = [1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0], k = 3", "output": "10", "explanation": "The maximum number of consecutive 1's are obtained only if we flip the 0's present at position 3, 4, 5 (0 base indexing). The array after flipping becomes [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0]. The number of consecutive 1's is 10." },
+    { "input": "nums = [0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1], k = 3", "output": "9", "explanation": "The underlined 1's are obtained by flipping 0's in the new array. [1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1]. The number of consecutive 1's is 9." }
+  ],
+  "playground": {
+    "initialState": {
+      "array": [1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0],
+      "k": 3,
+      "windowStart": 0,
+      "windowEnd": 0,
+      "maxLength": 0,
+      "currentLength": 0,
+      "zeroCount": 0,
+      "bestWindow": null
+    },
+    "steps": [
+      {
+        "stepId": 1,
+        "description": "Initialize variables. We'll use zeroCount to track how many zeros we've encountered and can flip.",
+        "expectedAction": "click_initialize",
+        "uiState": {
+          "arrayElements": [
+            {"value": 1, "state": "not_yet_reached", "index": 0},
+            {"value": 1, "state": "not_yet_reached", "index": 1},
+            {"value": 1, "state": "not_yet_reached", "index": 2},
+            {"value": 0, "state": "not_yet_reached", "index": 3},
+            {"value": 0, "state": "not_yet_reached", "index": 4},
+            {"value": 0, "state": "not_yet_reached", "index": 5},
+            {"value": 1, "state": "not_yet_reached", "index": 6},
+            {"value": 1, "state": "not_yet_reached", "index": 7},
+            {"value": 1, "state": "not_yet_reached", "index": 8},
+            {"value": 1, "state": "not_yet_reached", "index": 9},
+            {"value": 0, "state": "not_yet_reached", "index": 10}
+          ],
+          "windowStart": null,
+          "windowEnd": null,
+          "maxLength": 0,
+          "currentLength": 0,
+          "zeroCount": 0,
+          "bestWindow": null,
+          "highlightedElements": [],
+          "k": 3
+        },
+        "jarvisMessage": "Welcome! We'll use a sliding window to find the longest sequence of consecutive 1's by flipping at most k=3 zeros. We'll track zeroCount to know how many zeros we can still flip.",
+        "codeHint": "// Initialize\nlet windowStart = 0;\nlet maxLength = 0;\nlet zeroCount = 0;",
+        "codeBotMessage": "We'll expand the window when zeroCount ≤ k and contract when zeroCount > k. This way we find the longest sequence of 1's with at most k zeros.",
+        "codeSnippet": "let windowStart = 0;\nlet maxLength = 0;\nlet zeroCount = 0;"
+      },
+      {
+        "stepId": 2,
+        "description": "Expand: add 1. zeroCount = 0 ≤ k=3. maxLength = 1.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 0,
+        "uiState": {
+          "arrayElements": [
+            {"value": 1, "state": "in_window", "index": 0},
+            {"value": 1, "state": "not_yet_reached", "index": 1},
+            {"value": 1, "state": "not_yet_reached", "index": 2},
+            {"value": 0, "state": "not_yet_reached", "index": 3},
+            {"value": 0, "state": "not_yet_reached", "index": 4},
+            {"value": 0, "state": "not_yet_reached", "index": 5},
+            {"value": 1, "state": "not_yet_reached", "index": 6},
+            {"value": 1, "state": "not_yet_reached", "index": 7},
+            {"value": 1, "state": "not_yet_reached", "index": 8},
+            {"value": 1, "state": "not_yet_reached", "index": 9},
+            {"value": 0, "state": "not_yet_reached", "index": 10}
+          ],
+          "windowStart": 0,
+          "windowEnd": 0,
+          "maxLength": 1,
+          "currentLength": 1,
+          "zeroCount": 0,
+          "bestWindow": [0, 0],
+          "highlightedElements": [0],
+          "k": 3
+        },
+        "jarvisMessage": "Added 1. We have 0 zeros so far, which is ≤ k=3. Update maxLength to 1.",
+        "codeHint": "// Expand\nif (nums[windowEnd] === 0) zeroCount++;\nmaxLength = Math.max(maxLength, windowEnd - windowStart + 1);",
+        "codeBotMessage": "Valid window so far. We can expand more since zeroCount (0) ≤ k (3).",
+        "codeSnippet": "// zeroCount = 0; maxLength = 1;"
+      },
+      {
+        "stepId": 3,
+        "description": "Expand: add 1. zeroCount = 0 ≤ k=3. maxLength = 2.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 1,
+        "uiState": {
+          "arrayElements": [
+            {"value": 1, "state": "in_window", "index": 0},
+            {"value": 1, "state": "in_window", "index": 1},
+            {"value": 1, "state": "not_yet_reached", "index": 2},
+            {"value": 0, "state": "not_yet_reached", "index": 3},
+            {"value": 0, "state": "not_yet_reached", "index": 4},
+            {"value": 0, "state": "not_yet_reached", "index": 5},
+            {"value": 1, "state": "not_yet_reached", "index": 6},
+            {"value": 1, "state": "not_yet_reached", "index": 7},
+            {"value": 1, "state": "not_yet_reached", "index": 8},
+            {"value": 1, "state": "not_yet_reached", "index": 9},
+            {"value": 0, "state": "not_yet_reached", "index": 10}
+          ],
+          "windowStart": 0,
+          "windowEnd": 1,
+          "maxLength": 2,
+          "currentLength": 2,
+          "zeroCount": 0,
+          "bestWindow": [0, 1],
+          "highlightedElements": [0, 1],
+          "k": 3
+        },
+        "jarvisMessage": "Added another 1. Still 0 zeros, so we can expand more. Window \"11\" has length 2.",
+        "codeHint": "// Expand and update best",
+        "codeBotMessage": "Window \"11\" is valid. zeroCount (0) ≤ k (3).",
+        "codeSnippet": "maxLength = 2;"
+      },
+      {
+        "stepId": 4,
+        "description": "Expand: add 1. zeroCount = 0 ≤ k=3. maxLength = 3.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 2,
+        "uiState": {
+          "arrayElements": [
+            {"value": 1, "state": "in_window", "index": 0},
+            {"value": 1, "state": "in_window", "index": 1},
+            {"value": 1, "state": "in_window", "index": 2},
+            {"value": 0, "state": "not_yet_reached", "index": 3},
+            {"value": 0, "state": "not_yet_reached", "index": 4},
+            {"value": 0, "state": "not_yet_reached", "index": 5},
+            {"value": 1, "state": "not_yet_reached", "index": 6},
+            {"value": 1, "state": "not_yet_reached", "index": 7},
+            {"value": 1, "state": "not_yet_reached", "index": 8},
+            {"value": 1, "state": "not_yet_reached", "index": 9},
+            {"value": 0, "state": "not_yet_reached", "index": 10}
+          ],
+          "windowStart": 0,
+          "windowEnd": 2,
+          "maxLength": 3,
+          "currentLength": 3,
+          "zeroCount": 0,
+          "bestWindow": [0, 2],
+          "highlightedElements": [0, 1, 2],
+          "k": 3
+        },
+        "jarvisMessage": "Added another 1. Still 0 zeros, so we can expand more. Window \"111\" has length 3.",
+        "codeHint": "// Expand and update best",
+        "codeBotMessage": "Window \"111\" is valid. zeroCount (0) ≤ k (3).",
+        "codeSnippet": "maxLength = 3;"
+      },
+      {
+        "stepId": 5,
+        "description": "Expand: add 0. zeroCount = 1 ≤ k=3. maxLength = 4.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 3,
+        "uiState": {
+          "arrayElements": [
+            {"value": 1, "state": "in_window", "index": 0},
+            {"value": 1, "state": "in_window", "index": 1},
+            {"value": 1, "state": "in_window", "index": 2},
+            {"value": 0, "state": "in_window", "index": 3},
+            {"value": 0, "state": "not_yet_reached", "index": 4},
+            {"value": 0, "state": "not_yet_reached", "index": 5},
+            {"value": 1, "state": "not_yet_reached", "index": 6},
+            {"value": 1, "state": "not_yet_reached", "index": 7},
+            {"value": 1, "state": "not_yet_reached", "index": 8},
+            {"value": 1, "state": "not_yet_reached", "index": 9},
+            {"value": 0, "state": "not_yet_reached", "index": 10}
+          ],
+          "windowStart": 0,
+          "windowEnd": 3,
+          "maxLength": 4,
+          "currentLength": 4,
+          "zeroCount": 1,
+          "bestWindow": [0, 3],
+          "highlightedElements": [0, 1, 2, 3],
+          "k": 3
+        },
+        "jarvisMessage": "Added 0. We now have 1 zero, which is ≤ k=3. We can flip this zero to make it 1. Update maxLength to 4.",
+        "codeHint": "// Expand and update best",
+        "codeBotMessage": "Window \"1110\" is valid. zeroCount (1) ≤ k (3). We can flip this zero.",
+        "codeSnippet": "zeroCount = 1; maxLength = 4;"
+      },
+      {
+        "stepId": 6,
+        "description": "Expand: add 0. zeroCount = 2 ≤ k=3. maxLength = 5.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 4,
+        "uiState": {
+          "arrayElements": [
+            {"value": 1, "state": "in_window", "index": 0},
+            {"value": 1, "state": "in_window", "index": 1},
+            {"value": 1, "state": "in_window", "index": 2},
+            {"value": 0, "state": "in_window", "index": 3},
+            {"value": 0, "state": "in_window", "index": 4},
+            {"value": 0, "state": "not_yet_reached", "index": 5},
+            {"value": 1, "state": "not_yet_reached", "index": 6},
+            {"value": 1, "state": "not_yet_reached", "index": 7},
+            {"value": 1, "state": "not_yet_reached", "index": 8},
+            {"value": 1, "state": "not_yet_reached", "index": 9},
+            {"value": 0, "state": "not_yet_reached", "index": 10}
+          ],
+          "windowStart": 0,
+          "windowEnd": 4,
+          "maxLength": 5,
+          "currentLength": 5,
+          "zeroCount": 2,
+          "bestWindow": [0, 4],
+          "highlightedElements": [0, 1, 2, 3, 4],
+          "k": 3
+        },
+        "jarvisMessage": "Added another 0. We now have 2 zeros, which is still ≤ k=3. We can flip both zeros to make them 1s. Update maxLength to 5.",
+        "codeHint": "// Expand and update best",
+        "codeBotMessage": "Window \"11100\" is valid. zeroCount (2) ≤ k (3). We can flip both zeros.",
+        "codeSnippet": "zeroCount = 2; maxLength = 5;"
+      },
+      {
+        "stepId": 7,
+        "description": "Expand: add 0. zeroCount = 3 ≤ k=3. maxLength = 6.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 5,
+        "uiState": {
+          "arrayElements": [
+            {"value": 1, "state": "in_window", "index": 0},
+            {"value": 1, "state": "in_window", "index": 1},
+            {"value": 1, "state": "in_window", "index": 2},
+            {"value": 0, "state": "in_window", "index": 3},
+            {"value": 0, "state": "in_window", "index": 4},
+            {"value": 0, "state": "in_window", "index": 5},
+            {"value": 1, "state": "not_yet_reached", "index": 6},
+            {"value": 1, "state": "not_yet_reached", "index": 7},
+            {"value": 1, "state": "not_yet_reached", "index": 8},
+            {"value": 1, "state": "not_yet_reached", "index": 9},
+            {"value": 0, "state": "not_yet_reached", "index": 10}
+          ],
+          "windowStart": 0,
+          "windowEnd": 5,
+          "maxLength": 6,
+          "currentLength": 6,
+          "zeroCount": 3,
+          "bestWindow": [0, 5],
+          "highlightedElements": [0, 1, 2, 3, 4, 5],
+          "k": 3
+        },
+        "jarvisMessage": "Added another 0. We now have 3 zeros, which equals k=3. We can flip all three zeros to make them 1s. Update maxLength to 6.",
+        "codeHint": "// Expand and update best",
+        "codeBotMessage": "Window \"111000\" is valid. zeroCount (3) = k (3). We can flip all three zeros.",
+        "codeSnippet": "zeroCount = 3; maxLength = 6;"
+      },
+      {
+        "stepId": 8,
+        "description": "Expand: add 1. zeroCount = 3 ≤ k=3. maxLength = 7.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 6,
+        "uiState": {
+          "arrayElements": [
+            {"value": 1, "state": "in_window", "index": 0},
+            {"value": 1, "state": "in_window", "index": 1},
+            {"value": 1, "state": "in_window", "index": 2},
+            {"value": 0, "state": "in_window", "index": 3},
+            {"value": 0, "state": "in_window", "index": 4},
+            {"value": 0, "state": "in_window", "index": 5},
+            {"value": 1, "state": "in_window", "index": 6},
+            {"value": 1, "state": "not_yet_reached", "index": 7},
+            {"value": 1, "state": "not_yet_reached", "index": 8},
+            {"value": 1, "state": "not_yet_reached", "index": 9},
+            {"value": 0, "state": "not_yet_reached", "index": 10}
+          ],
+          "windowStart": 0,
+          "windowEnd": 6,
+          "maxLength": 7,
+          "currentLength": 7,
+          "zeroCount": 3,
+          "bestWindow": [0, 6],
+          "highlightedElements": [0, 1, 2, 3, 4, 5, 6],
+          "k": 3
+        },
+        "jarvisMessage": "Added 1. Still 3 zeros, which equals k=3. We can continue expanding since we haven't exceeded our flip limit. Update maxLength to 7.",
+        "codeHint": "// Expand and update best",
+        "codeBotMessage": "Window \"1110001\" is valid. zeroCount (3) = k (3). We can continue expanding.",
+        "codeSnippet": "maxLength = 7;"
+      },
+      {
+        "stepId": 9,
+        "description": "Expand: add 1. zeroCount = 3 ≤ k=3. maxLength = 8.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 7,
+        "uiState": {
+          "arrayElements": [
+            {"value": 1, "state": "in_window", "index": 0},
+            {"value": 1, "state": "in_window", "index": 1},
+            {"value": 1, "state": "in_window", "index": 2},
+            {"value": 0, "state": "in_window", "index": 3},
+            {"value": 0, "state": "in_window", "index": 4},
+            {"value": 0, "state": "in_window", "index": 5},
+            {"value": 1, "state": "in_window", "index": 6},
+            {"value": 1, "state": "in_window", "index": 7},
+            {"value": 1, "state": "not_yet_reached", "index": 8},
+            {"value": 1, "state": "not_yet_reached", "index": 9},
+            {"value": 0, "state": "not_yet_reached", "index": 10}
+          ],
+          "windowStart": 0,
+          "windowEnd": 7,
+          "maxLength": 8,
+          "currentLength": 8,
+          "zeroCount": 3,
+          "bestWindow": [0, 7],
+          "highlightedElements": [0, 1, 2, 3, 4, 5, 6, 7],
+          "k": 3
+        },
+        "jarvisMessage": "Added another 1. Still 3 zeros, which equals k=3. We can continue expanding since we haven't exceeded our flip limit. Update maxLength to 8.",
+        "codeHint": "// Expand and update best",
+        "codeBotMessage": "Window \"11100011\" is valid. zeroCount (3) = k (3). We can continue expanding.",
+        "codeSnippet": "maxLength = 8;"
+      },
+      {
+        "stepId": 10,
+        "description": "Expand: add 1. zeroCount = 3 ≤ k=3. maxLength = 9.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 8,
+        "uiState": {
+          "arrayElements": [
+            {"value": 1, "state": "in_window", "index": 0},
+            {"value": 1, "state": "in_window", "index": 1},
+            {"value": 1, "state": "in_window", "index": 2},
+            {"value": 0, "state": "in_window", "index": 3},
+            {"value": 0, "state": "in_window", "index": 4},
+            {"value": 0, "state": "in_window", "index": 5},
+            {"value": 1, "state": "in_window", "index": 6},
+            {"value": 1, "state": "in_window", "index": 7},
+            {"value": 1, "state": "in_window", "index": 8},
+            {"value": 1, "state": "not_yet_reached", "index": 9},
+            {"value": 0, "state": "not_yet_reached", "index": 10}
+          ],
+          "windowStart": 0,
+          "windowEnd": 8,
+          "maxLength": 9,
+          "currentLength": 9,
+          "zeroCount": 3,
+          "bestWindow": [0, 8],
+          "highlightedElements": [0, 1, 2, 3, 4, 5, 6, 7, 8],
+          "k": 3
+        },
+        "jarvisMessage": "Added another 1. Still 3 zeros, which equals k=3. We can continue expanding since we haven't exceeded our flip limit. Update maxLength to 9.",
+        "codeHint": "// Expand and update best",
+        "codeBotMessage": "Window \"111000111\" is valid. zeroCount (3) = k (3). We can continue expanding.",
+        "codeSnippet": "maxLength = 9;"
+      },
+      {
+        "stepId": 11,
+        "description": "Expand: add 1. zeroCount = 3 ≤ k=3. maxLength = 10.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 9,
+        "uiState": {
+          "arrayElements": [
+            {"value": 1, "state": "in_window", "index": 0},
+            {"value": 1, "state": "in_window", "index": 1},
+            {"value": 1, "state": "in_window", "index": 2},
+            {"value": 0, "state": "in_window", "index": 3},
+            {"value": 0, "state": "in_window", "index": 4},
+            {"value": 0, "state": "in_window", "index": 5},
+            {"value": 1, "state": "in_window", "index": 6},
+            {"value": 1, "state": "in_window", "index": 7},
+            {"value": 1, "state": "in_window", "index": 8},
+            {"value": 1, "state": "in_window", "index": 9},
+            {"value": 0, "state": "not_yet_reached", "index": 10}
+          ],
+          "windowStart": 0,
+          "windowEnd": 9,
+          "maxLength": 10,
+          "currentLength": 10,
+          "zeroCount": 3,
+          "bestWindow": [0, 9],
+          "highlightedElements": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+          "k": 3
+        },
+        "jarvisMessage": "Added another 1. Still 3 zeros, which equals k=3. We can continue expanding since we haven't exceeded our flip limit. Update maxLength to 10.",
+        "codeHint": "// Expand and update best",
+        "codeBotMessage": "Window \"1110001111\" is valid. zeroCount (3) = k (3). We can continue expanding.",
+        "codeSnippet": "maxLength = 10;"
+      },
+      {
+        "stepId": 12,
+        "description": "Expand: add 0. zeroCount = 4 > k=3. Contract from left until zeroCount ≤ k.",
+        "expectedAction": "contract_window",
+        "expectedElementIndex": 10,
+        "uiState": {
+          "arrayElements": [
+            {"value": 1, "state": "out_of_window_past", "index": 0},
+            {"value": 1, "state": "in_window", "index": 1},
+            {"value": 1, "state": "in_window", "index": 2},
+            {"value": 0, "state": "in_window", "index": 3},
+            {"value": 0, "state": "in_window", "index": 4},
+            {"value": 0, "state": "in_window", "index": 5},
+            {"value": 1, "state": "in_window", "index": 6},
+            {"value": 1, "state": "in_window", "index": 7},
+            {"value": 1, "state": "in_window", "index": 8},
+            {"value": 1, "state": "in_window", "index": 9},
+            {"value": 0, "state": "in_window", "index": 10}
+          ],
+          "windowStart": 1,
+          "windowEnd": 10,
+          "maxLength": 10,
+          "currentLength": 10,
+          "zeroCount": 3,
+          "bestWindow": [0, 9],
+          "highlightedElements": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+          "k": 3
+        },
+        "jarvisMessage": "Added 0 but now we have 4 zeros, which exceeds k=3. We must contract from the left until we're back to ≤3 zeros. We removed the first 1 to drop one zero.",
+        "codeHint": "// While too many zeros\nwhile (zeroCount > k) {\n  if (nums[windowStart] === 0) zeroCount--;\n  windowStart++;\n}",
+        "codeBotMessage": "We removed elements from the left until zeroCount ≤ k. Now window has 3 zeros, which equals k.",
+        "codeSnippet": "// Now window has 3 zeros, zeroCount = 3 ≤ k = 3"
+      },
+      {
+        "stepId": 13,
+        "description": "Algorithm completed! Best consecutive ones length = 10 (after flipping 3 zeros).",
+        "expectedAction": "complete_algorithm",
+        "expectedElementIndex": 10,
+        "uiState": {
+          "arrayElements": [
+            {"value": 1, "state": "out_of_window_past", "index": 0},
+            {"value": 1, "state": "in_window", "index": 1},
+            {"value": 1, "state": "in_window", "index": 2},
+            {"value": 0, "state": "in_window", "index": 3},
+            {"value": 0, "state": "in_window", "index": 4},
+            {"value": 0, "state": "in_window", "index": 5},
+            {"value": 1, "state": "in_window", "index": 6},
+            {"value": 1, "state": "in_window", "index": 7},
+            {"value": 1, "state": "in_window", "index": 8},
+            {"value": 1, "state": "in_window", "index": 9},
+            {"value": 0, "state": "in_window", "index": 10}
+          ],
+          "windowStart": 1,
+          "windowEnd": 10,
+          "maxLength": 10,
+          "currentLength": 10,
+          "zeroCount": 3,
+          "bestWindow": [0, 9],
+          "highlightedElements": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+          "k": 3
+        },
+        "jarvisMessage": "🎉 Congratulations! You've completed the walkthrough. Best consecutive ones length is 10 (after flipping 3 zeros).",
+        "codeHint": "// Done\nreturn maxLength;",
+        "codeBotMessage": "Sliding window + zero counting: O(n) time, O(1) space. We tracked zeros and maintained ≤k zeros in our window.",
+        "codeSnippet": "// Final answer\nreturn maxLength;"
+      }
+    ],
+    "jarvisConfig": {
+      "personality": "encouraging",
+      "hintLevels": ["subtle", "helpful", "explicit"],
+      "motivationalMessages": [
+        "Great thinking! Expand until zeros > k, then contract to restore validity.",
+        "Exactly! The zero counter ensures we don't exceed our flip limit.",
+        "You're mastering variable-size windows with zero constraints!",
+        "Awesome! This technique generalizes to many binary array problems."
+      ]
+    }
+  },
+  "solution": {
+    "optimal": {
+      "idea": "Use variable-size window with zero counting; expand when zeros ≤ k and contract when zeros > k to find longest consecutive ones sequence.",
+      "timeComplexity": "O(n)",
+      "spaceComplexity": "O(1)",
+      "walkthrough": [
+        "Initialize windowStart = 0, maxLength = 0, zeroCount = 0.",
+        "For windowEnd from 0..n-1, increment zeroCount if nums[windowEnd] === 0.",
+        "While zeroCount > k, decrement zeroCount if nums[windowStart] === 0 and increment windowStart.",
+        "Update maxLength with current window size.",
+        "Return maxLength."
+      ]
+    }
+  },
+  "code": {
+    "cpp": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nclass Solution {\npublic:\n    int longestOnes(vector<int>& nums, int k) {\n        int windowStart = 0, maxLength = 0, zeroCount = 0;\n        \n        for (int windowEnd = 0; windowEnd < nums.size(); ++windowEnd) {\n            if (nums[windowEnd] == 0) {\n                zeroCount++;\n            }\n            \n            while (zeroCount > k) {\n                if (nums[windowStart] == 0) {\n                    zeroCount--;\n                }\n                windowStart++;\n            }\n            \n            maxLength = max(maxLength, windowEnd - windowStart + 1);\n        }\n        return maxLength;\n    }\n};\n\nint main() {\n    Solution sol;\n    vector<int> nums1 = {1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0};\n    cout << \"Maximum consecutive ones: \" << sol.longestOnes(nums1, 3) << endl; // 10\n    \n    vector<int> nums2 = {0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1};\n    cout << \"Maximum consecutive ones: \" << sol.longestOnes(nums2, 3) << endl; // 9\n    return 0;\n}"
+  }
+}

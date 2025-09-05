@@ -1,0 +1,17 @@
+{
+  "problemId": "tp1",
+  "title": "Two Sum in Sorted Array",
+  "description": "Given a sorted array of integers and a target sum, find two numbers that add up to the target.",
+  "aim": "Learn how two pointers can efficiently find pairs in a sorted array without nested loops.",
+  "moduleId": "two_pointers",
+  "submoduleId": "basic_two_pointers",
+  "difficulty": "Easy",
+  "tags": ["Array", "Two Pointers", "Sorted Array", "Sum"],
+  "examples": [
+    {
+      "input": "arr = [1, 2, 3, 4, 5], target = 7",
+      "output": "[2, 5]",
+      "explanation": "Use left and right pointers, move left if sum < target, right if sum > target"
+    }
+  ]
+}
