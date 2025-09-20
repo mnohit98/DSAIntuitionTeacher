@@ -50,8 +50,6 @@
           "highlightedElements": []
         },
         "jarvisMessage": "🎓 Welcome to the Sliding Window technique! Think of this like looking through a window that slides across an array. Our mission: find the contiguous subarray of size 3 with the maximum sum. Instead of checking every possible subarray (which would be slow), we'll use a 'sliding window' that moves efficiently across the array. First, we need to set up our tracking variables - click 'Initialize Variables' to begin our journey!",
-        "codeHint": "// We need to set up our algorithm variables\n// Click Initialize to begin",
-        "codeBotMessage": "Hi! I'm CodeBot. Before we start the sliding window algorithm, we need to set up our tracking variables. Click the Initialize button to create windowSum, maxSum, and windowStart variables!",
         "codeSnippet": "// Step 0: Ready to initialize variables\nlet windowSum = 0;  // Will track current window sum\nlet maxSum = 0;     // Will remember best sum found\nlet windowStart = 0; // Will mark window beginning",
         "codeExplanation": "Before we start our algorithm, we need three key variables: windowSum tracks the sum of elements currently in our window, maxSum remembers the highest sum we've discovered so far, and windowStart marks where our sliding window begins in the array."
       },
@@ -77,8 +75,6 @@
           "highlightedElements": [0]
         },
         "jarvisMessage": "🎯 Excellent! Our variables are ready: windowSum = 0 (tracks current window's sum), maxSum = 0 (remembers the best sum we've found), windowStart = 0 (marks where our window begins). Now comes the exciting part - building our first window! Think of it like placing the left edge of a picture frame. Click on the first element (value 2) to start forming our window of size 3.",
-        "codeHint": "// Variables are set up, now add first element\nwindowSum += arr[windowEnd];",
-        "codeBotMessage": "Great! Now we have our variables set up. Time to start the sliding window algorithm by adding the first element to our window!",
         "codeSnippet": "// Add first element to window\nwindowSum += arr[0];  // windowSum = 0 + 2 = 2\nwindowEnd = 0;        // Track window end position",
         "codeExplanation": "The intuition is simple: we're starting to build our window by adding the first element. In code, we add arr[0] to our windowSum and track that our window now ends at position 0. This is like placing the first piece of a puzzle."
       },
@@ -104,7 +100,6 @@
           "highlightedElements": [0,1]
         },
         "jarvisMessage": "🌟 Beautiful! Our window now contains its first element (2), and windowSum = 2. Notice how the element turned green - that's our visual cue that it's inside the window! We're building our window step by step, like constructing a house brick by brick. We need 2 more elements to complete our window of size 3. Click on the second element (value 1) to expand our window further.",
-        "codeHint": "// Move to next element\nwindowEnd++;\nwindowSum += arr[windowEnd];",
         "codeSnippet": "// Expand window to include second element\nwindowEnd++;          // Move end pointer: 0 → 1\nwindowSum += arr[1];  // Add new element: 2 + 1 = 3",
         "codeExplanation": "We're expanding our window by moving the end pointer forward and adding the new element to our sum. Think of it as extending a measuring tape - we keep one end fixed (windowStart = 0) and stretch the other end (windowEnd) to include more elements."
       },
@@ -130,7 +125,6 @@
           "highlightedElements": [0, 1,2]
         },
         "jarvisMessage": "🔥 Fantastic progress! Our window is growing: [2, 1] with windowSum = 3. See how both elements are now green? That's our window expanding! We're like detectives gathering clues - each element we add gives us more information about this subarray's sum. Just one more element needed to complete our first window of size 3. Click on the third element (value 5) to finish building our first complete window!",
-        "codeHint": "// Complete first window\nwindowEnd++;\nwindowSum += arr[windowEnd];\nif (windowEnd >= k - 1) maxSum = Math.max(maxSum, windowSum);",
         "codeSnippet": "// Complete the first window\nwindowEnd++;          // Move end: 1 → 2\nwindowSum += arr[2];  // Add element: 3 + 5 = 8\nif (windowEnd >= k-1) {\n  maxSum = Math.max(maxSum, windowSum); // maxSum = 8\n}",
         "codeExplanation": "Now we complete our first window of size k=3. The intuition is: once we have k elements, we can start comparing sums. The code checks if windowEnd >= k-1 (meaning we have a full window), then updates maxSum if this window is better than any previous ones."
       },
@@ -156,8 +150,6 @@
           "highlightedElements": [ 1, 2,3]
         },
         "jarvisMessage": "🎉 MILESTONE ACHIEVED! Our first complete window [2, 1, 5] has sum = 8, and we've recorded this as our maxSum = 8. This is our first 'candidate' for the maximum sum! Now comes the revolutionary part of sliding window - instead of starting over with a new window, we'll 'slide' our existing window one position to the right. Imagine sliding a picture frame across a painting. We'll remove the leftmost element (2) and add a new rightmost element (1). Click on element at index 3 (value 1) to experience the sliding magic!",
-        "codeHint": "// Slide window: remove leftmost, add rightmost\nwindowSum -= arr[windowStart];\nwindowStart++;\nwindowSum += arr[windowEnd + 1];\nwindowEnd++;",
-        "codeBotMessage": "Great job! Now the code checks if we have a complete window (when windowEnd >= k-1). Since we do, it updates maxSum to 8. This is the first time we've found a valid subarray sum!",
         "codeSnippet": "// Slide the window efficiently\nwindowSum -= arr[windowStart]; // Remove left: 8 - 2 = 6\nwindowStart++;                  // Move start: 0 → 1\nwindowEnd++;                    // Move end: 2 → 3\nwindowSum += arr[windowEnd];    // Add right: 6 + 1 = 7",
         "codeExplanation": "Here's the sliding window magic! Instead of recalculating the sum from scratch (slow), we efficiently update it: subtract the element leaving the window, then add the element entering the window. This transforms an O(n×k) problem into O(n)!"
       },
@@ -166,8 +158,6 @@
         "description": "Window slid! Removed arr[0] = 2, added arr[3] = 1. windowSum = 7. Now let's slide again.",
         "expectedAction": "slide_window",
         "expectedElementIndex": 4,
-        "expectedRemoveIndex": 1,
-        "expectedAddIndex": 4,
         "uiState": {
           "arrayElements": [
             {"value": 2, "state": "out_of_window_past", "index": 0},
@@ -185,8 +175,6 @@
           "highlightedElements": [2, 3,4]
         },
         "jarvisMessage": "🚀 INCREDIBLE! You just witnessed the sliding window technique in action! Notice what happened: the leftmost element (2) turned red (meaning it's no longer in our window), and the new element (1) turned green (joining our window). Our window has efficiently slid from [2, 1, 5] to [1, 5, 1]. The sum changed from 8 to 7 (we subtracted 2 and added 1). This is the genius of sliding window - we didn't recalculate the entire sum, we just updated it! Since 7 < 8, our maxSum stays 8. Ready for another slide? Click element at index 4 (value 3).",
-        "codeHint": "// Slide the window\nwindowSum -= arr[windowStart];\nwindowStart++;\nwindowSum += arr[windowEnd];",
-        "codeBotMessage": "This is where the magic happens! The code efficiently slides the window by subtracting the leftmost element and adding the new rightmost element. No need to recalculate the entire sum - that's why it's O(n) instead of O(n*k)!",
         "codeSnippet": "windowSum -= arr[windowStart]; // Remove left element (2)\nwindowStart++;                  // Move start pointer\nwindowSum += arr[windowEnd];   // Add new element (1)\n// Result: 8 - 2 + 1 = 7"
       },
       {
@@ -194,8 +182,6 @@
         "description": "Window slid again! Removed arr[1] = 1, added arr[4] = 3. windowSum = 9, maxSum = 9. Final slide coming up!",
         "expectedAction": "slide_window",
         "expectedElementIndex": 5,
-        "expectedRemoveIndex": 2,
-        "expectedAddIndex": 5,
         "uiState": {
           "arrayElements": [
             {"value": 2, "state": "out_of_window_past", "index": 0},
@@ -213,7 +199,6 @@
           "highlightedElements": [3, 4,5]
         },
         "jarvisMessage": "🏆 BREAKTHROUGH MOMENT! Our window has slid again to [5, 1, 3] with sum = 9! This is BIGGER than our previous maxSum of 8, so we've found a better solution! This is the beauty of the sliding window - as we slide across the array, we're constantly comparing and keeping track of the best sum we've seen. Our maxSum is now updated to 9. We're getting closer to finding the optimal answer! One more slide to complete our journey - click element at index 5 (value 2).",
-        "codeHint": "// Update maxSum if current window is better\nmaxSum = Math.max(maxSum, windowSum);",
         "codeSnippet": "// Slide and update maximum\nwindowSum -= arr[1];    // Remove: 7 - 1 = 6\nwindowStart++;          // Move start: 1 → 2\nwindowEnd++;            // Move end: 3 → 4\nwindowSum += arr[4];    // Add: 6 + 3 = 9\nmaxSum = Math.max(maxSum, windowSum); // maxSum = max(8, 9) = 9",
         "codeExplanation": "The intuition of 'always remember the best' translates to Math.max() in code. Every time we slide the window, we compare the new sum with our best-so-far (maxSum). If the new window is better, we update our record. This ensures we never lose track of the optimal solution!"
       },
@@ -238,60 +223,12 @@
           "highlightedElements": [3, 4, 5]
         },
         "jarvisMessage": "🎓 MISSION ACCOMPLISHED! Our final window [1, 3, 2] has sum = 6. Since 6 < 9, our maxSum remains 9. You've just mastered the sliding window technique!\n\n🚀 **Algorithm Complete - Ready to analyze complexity!**\n\n**Time Complexity: O(n)** - We visit each element exactly once\n**Space Complexity: O(1)** - Only using a few variables\n\nThink about what we achieved: instead of checking all possible subarrays (which would require O(n×k) operations), we efficiently slid our window across the array, updating the sum in constant time at each step. The maximum sum subarray of size 3 is [5, 1, 3] with sum = 9.\n\nClick 'Complete Algorithm' to see the full complexity analysis and celebrate your success! 🎉",
-        "codeHint": "// Final result\nreturn maxSum; // Returns 9",
         "codeSnippet": "// Algorithm complete - return the answer\nreturn maxSum;  // Returns 9\n\n// The winning subarray: [5, 1, 3]\n// Found at indices 2, 3, 4\n// Sum: 5 + 1 + 3 = 9",
         "codeExplanation": "The beautiful conclusion! Our intuition of 'keep track of the best' becomes a simple return statement. The maxSum variable has been our faithful companion, remembering the optimal solution throughout our journey. The algorithm efficiently found the answer in O(n) time instead of O(n×k).\n\n**Time Complexity (TC): O(n)** - We visit each element exactly once in our single loop. No nested loops means linear time!\n\n**Space Complexity (SC): O(1)** - We only use a fixed number of variables (windowSum, maxSum, windowStart) regardless of input size. Constant space!\n\n🎯 **Why this matters**: Sliding window transforms a naive O(n×k) brute force approach into an elegant O(n) solution. For an array of 1000 elements with k=100, we go from 100,000 operations to just 1,000 operations - that's 100x faster!"
-      },
-      {
-        "stepId": 8,
-        "description": "Algorithm completed!",
-        "expectedAction": "complete_algorithm",
-        "uiState": {
-          "arrayElements": [
-            {"value": 2, "state": "out_of_window_past", "index": 0},
-            {"value": 1, "state": "out_of_window_past", "index": 1},
-            {"value": 5, "state": "out_of_window_past", "index": 2},
-            {"value": 1, "state": "in_window", "index": 3},
-            {"value": 3, "state": "in_window", "index": 4},
-            {"value": 2, "state": "in_window", "index": 5}
-          ],
-          "windowStart": 3,
-          "windowEnd": 5,
-          "windowSum": 6,
-          "maxSum": 9,
-          "k": 3,
-          "highlightedElements": [3, 4, 5]
-        },
-        "jarvisMessage": "🌟 CONGRATULATIONS! You've successfully completed the sliding window algorithm walkthrough! You now understand the intuition behind one of the most powerful optimization techniques in computer science. Remember: sliding window is about efficiency - instead of recalculating everything from scratch, we smartly update our calculations as we move. This pattern applies to many problems involving contiguous subarrays or substrings. You're now equipped with a technique that can transform slow algorithms into fast ones!",
-        "codeHint": "// Algorithm completed successfully\n// Final result: maxSum = 9",
-        "codeBotMessage": "Fantastic! You've completed the entire sliding window algorithm. The code has successfully found the maximum sum subarray of size 3, which is [5, 1, 3] with sum = 9. You now understand both the intuition and implementation!",
-        "codeSnippet": "// Algorithm completed!\n// Final result: maxSum = 9\n// Subarray [5, 1, 3] has maximum sum\nreturn maxSum; // Returns 9"
       }
-    ],
-    "jarvisConfig": {
-      "personality": "encouraging",
-      "hintLevels": ["subtle", "helpful", "explicit"],
-      "motivationalMessages": [
-        "Great thinking! You're building the foundation step by step.",
-        "That's exactly right! You're seeing the pattern now.",
-        "Excellent intuition! You're understanding the sliding window concept.",
-        "You've got this! Each step brings you closer to mastery."
-      ]
-    }
+    ]
   },
   "solution": {
-    "bruteForce": {
-      "idea": "Check every subarray of size k, compute its sum, and track the maximum.",
-      "timeComplexity": "O(n*k)",
-      "spaceComplexity": "O(1)",
-      "walkthrough": [
-        "Initialize maxSum = 0.",
-        "Iterate i from 0 to n - k.",
-        "For each i, compute windowSum by adding arr[i] to arr[i+k-1].",
-        "Update maxSum if windowSum > maxSum.",
-        "Return maxSum at the end."
-      ]
-    },
     "optimal": {
       "idea": "Use a sliding window to maintain the sum of the last k elements and update in O(1) time as the window slides.",
       "timeComplexity": "O(n)",
