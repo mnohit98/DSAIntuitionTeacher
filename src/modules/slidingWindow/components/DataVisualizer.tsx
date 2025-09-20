@@ -12,6 +12,35 @@ interface Props {
     highlightedElements: number[];
     windowStart?: number;
     windowEnd?: number;
+    windowSum?: number;
+    maxSum?: number;
+    minLength?: number;
+    maxLength?: number;
+    currentLength?: number;
+    targetSum?: number;
+    distinctCount?: number;
+    maxDistinct?: number;
+    windowSize?: number;
+    isValidWindow?: boolean;
+    charCount?: Record<string, number>;
+    uniqueChars?: number;
+    repeatingChars?: number;
+    distinctChars?: number;
+    zeroCount?: number;
+    charFrequency?: Record<string, number>;
+    maxRepeatLetterCount?: number;
+    onesCount?: number;
+    prefixSum?: number;
+    count?: number;
+    prefixCount?: Record<string, number>;
+    currentIndex?: number;
+    binaryArray?: number[];
+    targetString?: string;
+    pattern?: string;
+    patternFreq?: Record<string, number>;
+    windowFreq?: Record<string, number>;
+    matches?: number;
+    requiredMatches?: number;
   };
   onElementPress: (index: number) => void;
   expectedIndex?: number;
@@ -35,6 +64,8 @@ export default function DataVisualizer({
   const blinkAnim = useRef(new Animated.Value(0)).current;
   const windowBoxAnim = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current;
   const windowBoxWidthAnim = useRef(new Animated.Value(0)).current;
+  const startPointerAnim = useRef(new Animated.Value(1)).current;
+  const endPointerAnim = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
     // Single blink animation - runs only once
@@ -52,6 +83,16 @@ export default function DataVisualizer({
   // Calculate element center position
   const elementCenterX = (index: number) => {
     return index * ELEMENT_SPACING + ELEMENT_MARGIN + ELEMENT_WIDTH / 2;
+  };
+
+  // Calculate element left edge position
+  const elementLeftX = (index: number) => {
+    return index * ELEMENT_SPACING + ELEMENT_MARGIN;
+  };
+
+  // Calculate element right edge position
+  const elementRightX = (index: number) => {
+    return index * ELEMENT_SPACING + ELEMENT_MARGIN + ELEMENT_WIDTH;
   };
 
   // Calculate symmetric window box dimensions
@@ -98,6 +139,48 @@ export default function DataVisualizer({
     }
   }, [uiState.windowStart, uiState.windowEnd, windowBoxAnim, windowBoxWidthAnim]);
 
+  // Animate pointers when they change
+  useEffect(() => {
+    const { windowStart, windowEnd } = uiState;
+    
+    // Animate start pointer
+    if (windowStart !== null && windowStart !== undefined) {
+      Animated.sequence([
+        Animated.timing(startPointerAnim, {
+          toValue: 1.2,
+          duration: 150,
+          easing: Easing.out(Easing.quad),
+          useNativeDriver: true,
+        }),
+        Animated.timing(startPointerAnim, {
+          toValue: 1,
+          duration: 150,
+          easing: Easing.out(Easing.quad),
+          useNativeDriver: true,
+        }),
+      ]).start();
+    }
+
+    // Animate end pointer
+    if (windowEnd !== null && windowEnd !== undefined) {
+      Animated.sequence([
+        Animated.timing(endPointerAnim, {
+          toValue: 1.2,
+          duration: 150,
+          easing: Easing.out(Easing.quad),
+          useNativeDriver: true,
+        }),
+        Animated.timing(endPointerAnim, {
+          toValue: 1,
+          duration: 150,
+          easing: Easing.out(Easing.quad),
+          useNativeDriver: true,
+        }),
+      ]).start();
+    }
+
+  }, [uiState.windowStart, uiState.windowEnd, startPointerAnim, endPointerAnim]);
+
   const getElementStyle = (element: DataElement) => {
     switch (element.state) {
       case 'in_window':
@@ -122,6 +205,87 @@ export default function DataVisualizer({
       default:
         return styles.elementText;
     }
+  };
+
+  // Function to render window start pointer
+  const renderWindowStartPointer = () => {
+    const { windowStart } = uiState;
+    
+    if (windowStart === null || windowStart === undefined) {
+      return null;
+    }
+
+    const pointerX = elementLeftX(windowStart) - 10; // Point at the left edge of the start element
+    
+    return (
+      <View style={[styles.pointerContainer, { left: pointerX }]}>
+        <View style={styles.pointerLabel}>
+          <Text style={styles.pointerLabelText}>windowStart</Text>
+          <Text style={styles.pointerValueText}>{windowStart}</Text>
+        </View>
+        <Animated.View style={[styles.pointerArrow, { transform: [{ scale: startPointerAnim }] }]}>
+          <Text style={styles.pointerSymbol}>↓</Text>
+        </Animated.View>
+      </View>
+    );
+  };
+
+  // Function to render window end pointer
+  const renderWindowEndPointer = () => {
+    const { windowEnd } = uiState;
+    
+    if (windowEnd === null || windowEnd === undefined) {
+      return null;
+    }
+
+    const pointerX = elementLeftX(windowEnd) - 10; // Point at the left edge of the end element (same as windowStart)
+    
+    return (
+      <View style={[styles.pointerContainerBottom, { left: pointerX }]}>
+        <Animated.View style={[styles.pointerArrow, { transform: [{ scale: endPointerAnim }] }]}>
+          <Text style={styles.pointerSymbol}>↑</Text>
+        </Animated.View>
+        <View style={styles.pointerLabelBottom}>
+          <Text style={styles.pointerLabelText}>windowEnd</Text>
+          <Text style={styles.pointerValueText}>{windowEnd}</Text>
+        </View>
+      </View>
+    );
+  };
+
+
+  // Function to render algorithm variables display
+  const renderVariablesDisplay = () => {
+    const { windowStart, windowEnd, windowSum, maxSum, windowSize } = uiState;
+    
+    // Calculate current window size if not provided
+    const currentWindowSize = windowStart !== undefined && windowEnd !== undefined 
+      ? windowEnd - windowStart + 1 
+      : windowSize || 0;
+    
+    // Get target size k from the problem context (assuming k=3 for this problem)
+    const targetSizeK = 3;
+    
+    return (
+      <View style={styles.variablesDisplay}>
+        <View style={styles.variableItem}>
+          <Text style={styles.variableLabel}>target size k:</Text>
+          <Text style={styles.variableValue}>{targetSizeK}</Text>
+        </View>
+        <View style={styles.variableItem}>
+          <Text style={styles.variableLabel}>windowSize:</Text>
+          <Text style={styles.variableValue}>{currentWindowSize}</Text>
+        </View>
+        <View style={styles.variableItem}>
+          <Text style={styles.variableLabel}>windowSum:</Text>
+          <Text style={styles.variableValue}>{windowSum || 0}</Text>
+        </View>
+        <View style={styles.variableItem}>
+          <Text style={styles.variableLabel}>maxSum:</Text>
+          <Text style={styles.variableValue}>{maxSum || 0}</Text>
+        </View>
+      </View>
+    );
   };
 
   // Function to render animated window box around elements
@@ -161,6 +325,10 @@ export default function DataVisualizer({
       <View style={styles.dataContainer}>
         {/* Window Box - positioned behind elements */}
         {renderWindowBox()}
+        
+        {/* Window Pointers - positioned above elements */}
+        {renderWindowStartPointer()}
+        {renderWindowEndPointer()}
         
         {uiState.arrayElements.map((element: DataElement, index: number) => {
           const content = (
@@ -242,6 +410,9 @@ export default function DataVisualizer({
           </Animated.View>
         </View>
       )}
+      
+      {/* Variables Display - positioned below the array */}
+      {renderVariablesDisplay()}
     </View>
   );
 }
@@ -424,5 +595,108 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.15,
     shadowRadius: 4,
     elevation: 2,
+  },
+
+  // Visual Pointers Styles
+  pointerContainer: {
+    position: 'absolute',
+    top: -80, // Position above elements with margin
+    zIndex: 10, // Above elements
+    alignItems: 'center',
+  },
+  pointerContainerBottom: {
+    position: 'absolute',
+    top: 96, // Position below elements with margin (60px element + 16px index text + 20px margin)
+    zIndex: 10, // Above elements
+    alignItems: 'center',
+  },
+  pointerArrow: {
+    width: 20,
+    height: 20,
+    backgroundColor: '#10B981', // Green background
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: '#059669',
+    shadowColor: '#10B981',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  pointerSymbol: {
+    fontSize: 12,
+    color: '#FFFFFF',
+    fontWeight: 'bold',
+  },
+  pointerLabel: {
+    backgroundColor: '#1A1D23',
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    marginTop: 4,
+    borderWidth: 1,
+    borderColor: '#2D3748',
+    alignItems: 'center',
+    minWidth: 50,
+  },
+  pointerLabelBottom: {
+    backgroundColor: '#1A1D23',
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    marginBottom: 4,
+    borderWidth: 1,
+    borderColor: '#2D3748',
+    alignItems: 'center',
+    minWidth: 50,
+  },
+  pointerLabelText: {
+    fontSize: 10,
+    color: '#10B981',
+    fontWeight: '600',
+  },
+  pointerValueText: {
+    fontSize: 12,
+    color: '#E8ECF2',
+    fontWeight: 'bold',
+    marginTop: 2,
+  },
+
+  // Variables Display Styles
+  variablesDisplay: {
+    backgroundColor: '#111720',
+    borderRadius: 12,
+    padding: 12,
+    marginTop: 120, // Enough distance so windowEnd pointer is visible
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: '#1E2632',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  variableItem: {
+    backgroundColor: '#1A1D23',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderWidth: 1,
+    borderColor: '#2D3748',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  variableLabel: {
+    fontSize: 12,
+    color: '#B4BCC8',
+    fontWeight: '500',
+  },
+  variableValue: {
+    fontSize: 12,
+    color: '#3B82F6',
+    fontWeight: 'bold',
   },
 });

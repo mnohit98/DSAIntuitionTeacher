@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Platform } from 'react-native';
 import { ConfigService, PlaygroundContainer } from '../../../core';
 import { StandardEngine } from '../../../core/types/engine';
-import AlgorithmState from '../../../core/ui/AlgorithmState';
 import CompletionScreen from '../../../core/ui/CompletionScreen';
 import DataVisualizer from '../components/DataVisualizer';
 import { EngineFactory } from '../engines/EngineFactory';
@@ -258,29 +257,7 @@ export default function SlidingWindowPlayground({ problemData }: Props) {
             onCompletePress={() => handleUserAction('complete_algorithm', undefined)}
           />
           
-          {/* Algorithm State - Below Array */}
-          <AlgorithmState 
-            variables={engine.getVariables()}
-            title="Algorithm State"
-          />
           
-          {/* Window Info */}
-          {currentState.uiState.highlightedElements && currentState.uiState.highlightedElements.length > 0 && (
-            <div style={{
-              backgroundColor: '#111720',
-              borderRadius: '8px',
-              padding: '12px',
-              border: '1px solid #1E2632',
-              textAlign: 'center'
-            }}>
-              <div style={{ fontSize: '14px', color: '#29D3FF', fontWeight: '600' }}>
-                📍 Current Window: [{currentState.uiState.highlightedElements.map((i: number) => elements[i]?.value).join(', ')}]
-              </div>
-              <div style={{ fontSize: '12px', color: '#B4BCC8', marginTop: '4px' }}>
-                📏 Size: {currentState.uiState.highlightedElements.length}
-              </div>
-            </div>
-          )}
         </div>
       )}
     </PlaygroundContainer>
