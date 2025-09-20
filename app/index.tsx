@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Dimensions,
   SafeAreaView,
@@ -10,6 +10,7 @@ import {
   View
 } from 'react-native';
 // @ts-ignore
+import { useFocusEffect } from '@react-navigation/native';
 import { ResizeMode, Video } from 'expo-av';
 import { useTheme } from '../src/contexts/ThemeContext';
 
@@ -18,11 +19,68 @@ const { width: screenWidth } = Dimensions.get('window');
 export default function Index() {
   const { theme } = useTheme();
   const [isMuted, setIsMuted] = useState(true);
+  const [shouldPlay, setShouldPlay] = useState(true);
+  const videoRef = useRef<any>(null);
 
   useEffect(() => {
     if (typeof document !== 'undefined') {
       document.title = 'DSA Intuition Teacher - Master Algorithms Through Interactive Learning';
     }
+  }, []);
+
+  // Control video playback based on page focus
+  useFocusEffect(
+    useCallback(() => {
+      // Page is focused - restart video from beginning
+      setShouldPlay(true);
+      console.log('Home page focused - restarting video from beginning');
+      
+      // Reset video to start position
+      if (videoRef.current) {
+        videoRef.current.setPositionAsync(0).then(() => {
+          videoRef.current.playAsync();
+        });
+      }
+      
+      return () => {
+        // Page is unfocused - stop video
+        setShouldPlay(false);
+        console.log('Home page unfocused - stopping video');
+        if (videoRef.current) {
+          videoRef.current.pauseAsync();
+        }
+      };
+    }, [])
+  );
+
+  // Additional web-specific visibility handling
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        setShouldPlay(false);
+        if (videoRef.current) {
+          videoRef.current.pauseAsync();
+        }
+        console.log('Browser tab hidden - stopping video');
+      } else {
+        setShouldPlay(true);
+        console.log('Browser tab visible - restarting video from beginning');
+        // Reset video to start position when tab becomes visible
+        if (videoRef.current) {
+          videoRef.current.setPositionAsync(0).then(() => {
+            videoRef.current.playAsync();
+          });
+        }
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
   }, []);
 
   const features = [
@@ -83,9 +141,10 @@ export default function Index() {
           {/* Video Background */}
           <View style={styles.videoContainer}>
             <Video
+              ref={videoRef}
               source={require('../assets/video/hero-background.mov')}
               style={styles.heroVideo}
-              shouldPlay={true}
+              shouldPlay={shouldPlay}
               isLooping={true}
               isMuted={isMuted}
               volume={isMuted ? 0 : 1.0}
@@ -125,7 +184,7 @@ export default function Index() {
                 onPress={() => router.push('/home')}
                 activeOpacity={0.8}
               >
-                <Text style={styles.primaryCTAText}>🚀 Start Learning</Text>
+                <Text style={styles.primaryCTAText}>Start Learning</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -175,10 +234,10 @@ export default function Index() {
             </View>
             <TouchableOpacity 
               style={styles.demoButton}
-              onPress={() => router.push('/playground/sliding-window/p1')}
+              onPress={() => router.push('/practice/sliding-window/p1')}
               activeOpacity={0.8}
             >
-              <Text style={styles.demoButtonText}>Try Interactive Demo</Text>
+              <Text style={styles.demoButtonText}>Try Demo</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -221,7 +280,7 @@ export default function Index() {
             onPress={() => router.push('/home')}
             activeOpacity={0.8}
           >
-            <Text style={styles.finalCTAButtonText}>Start Your Journey</Text>
+            <Text style={styles.finalCTAButtonText}>Get Started</Text>
           </TouchableOpacity>
         </View>
 

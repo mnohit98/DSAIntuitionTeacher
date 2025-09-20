@@ -1,195 +1,76 @@
-# DSA Intuition Teacher
+Great choice 👍 Let’s make a **specialized teaching prompt template just for Sliding Window problems**. This will force the AI (or even you, if you practice self-explaining) to always break it down in the same way — step by step, intuitive, with diagrams.
 
-A lightweight React Native/Expo app for learning Data Structures and Algorithms with interactive modules.
+---
 
-## Project Structure
+# 📌 Sliding Window Teaching Prompt Template
 
-```
-DSAIntuitionTeacher/
-├── app/                    # Expo Router app directory
-│   ├── _layout.tsx        # Root layout and navigation configuration
-│   ├── index.tsx          # Landing page (redirects to /home)
-│   ├── home.tsx           # Home screen with module cards
-│   ├── module/            # Module-related screens
-│   │   ├── index.tsx      # Module index (shows all modules)
-│   │   └── [id].tsx       # Dynamic module detail screen
-│   └── problem/           # Problem-related screens
-│       └── [id].tsx       # Dynamic problem detail screen
-├── src/
-│   ├── modules.json       # Global module definitions
-│   └── modules/           # Module-level organization
-│       ├── basics/        # Basics module
-│       │   ├── module.json    # Module content and submodules
-│       │   └── problems/      # Module-specific problems
-│       │       └── b1.json    # Reverse an Array
-│       ├── patterns/      # Patterns module
-│       │   ├── module.json    # Module content and submodules
-│       │   └── problems/      # Module-specific problems
-│       │       └── p1.json    # Right Triangle Star Pattern
-│       ├── slidingWindow/ # Sliding Window module
-│       │   ├── module.json    # Module content and submodules
-│       │   └── problems/      # Module-specific problems
-│       │       ├── p1.json    # Maximum Sum Subarray of Size K
-│       │       ├── p2.json    # First Negative Number in Every Window
-│       │       ├── p3.json    # Count Occurrences of Anagrams
-│       │       └── p4.json    # Longest Substring Without Repeating
-│       └── twoPointers/   # Two Pointers module
-│           ├── module.json    # Module content and submodules
-│           └── problems/      # Module-specific problems
-│               └── tp1.json   # Two Sum in Sorted Array
-└── Essential config files
-    ├── package.json        # Dependencies
-    ├── app.json           # Expo configuration
-    ├── tsconfig.json      # TypeScript configuration
-    └── eslint.config.js   # Linting rules
-```
+**Prompt:**
+You are a teacher explaining the **Sliding Window technique** step by step to a beginner. Take the following problem:
 
-## Features
+**Problem:**
+`{paste sliding window problem description here}`
 
-- **Lightweight**: Minimal dependencies, focused on core functionality
-- **Module-based**: Each DSA concept is a separate module
-- **Collapsible UI**: Interactive submodule and problem lists
-- **Problem Details**: Individual problem screens with rich content
-- **Interactive Elements**: Collapsible description and aim sections
-- **User Playground**: Module-specific interactive learning area (placeholder)
-- **Understanding Mapping**: Visual learning tools (placeholder)
-- **Type-safe**: Full TypeScript support
-- **Cross-platform**: Works on iOS, Android, and Web
-- **Clean Architecture**: Proper separation of concerns and file organization
-- **Module-Level Development**: Each module is completely self-contained
+**Example Input & Output:**
+`{paste example(s) here}`
 
-## How It Works
+**Your task:**
+Explain the solution **without writing code**. Build intuition gradually.
 
-1. **Landing Page** (`app/index.tsx`): Redirects to the home screen
-2. **Home Screen** (`app/home.tsx`): Beautiful landing page with module cards
-3. **Module Index** (`app/module/index.tsx`): Alternative view of all modules
-4. **Module Detail** (`app/module/[id].tsx`): Dynamic screen showing submodules and problems
-5. **Problem Detail** (`app/problem/[id].tsx`): Individual problem with description, aim, examples, and actions
-6. **Data Structure**: Each module has its own folder with module.json and problems/
+For every example:
 
-## Problem Screen Features
+### Step 0 — Setup
 
-Each problem screen includes:
+- Show the array.
+- Place the initial window of size `k` (or explain how window size is determined if it’s variable).
+- Define all key variables clearly:
 
-- **Problem Title**: Clear problem statement
-- **Difficulty Badge**: Easy/Medium/Hard indicators
-- **Tags**: Relevant concepts and techniques
-- **Collapsible Description**: Click to show/hide problem details
-- **🎯 What Aim to Achieve**: Click to show/hide learning objectives
-- **Examples**: Input/output pairs with explanations
-- **🚀 User Playground**: Module-specific interactive area (placeholder)
-- **🧠 Map Your Understanding**: Learning visualization tools (placeholder)
+  - `windowStart`
+  - `windowEnd`
+  - `windowSum` (or relevant metric)
+  - `maxSum / minLen / result` (depending on the problem).
 
-## File Organization Benefits
+- Show initial diagram with the window placement.
+- Explain what this starting step means.
 
-- **`index.tsx`**: Clean landing page that redirects to home
-- **`home.tsx`**: Dedicated home screen with proper styling
-- **`module/index.tsx`**: Alternative module listing view
-- **`module/[id].tsx`**: Dynamic route for individual modules
-- **`problem/[id].tsx`**: Global problem screen (works for all modules)
-- **`_layout.tsx`**: Centralized navigation configuration
+### Step-by-step Sliding
 
-## Adding New Problems
+For each move of the window:
 
-1. Create a new JSON file in `src/modules/[moduleName]/problems/[problemId].json`:
+1. **What happens in the array / window:** show which element leaves, which enters.
+2. **Variable updates:** update the running sum/count/condition using subtraction & addition (not full recomputation).
+3. **Diagram:** show array with brackets around the current window.
+4. **Check condition:** explain whether this window gives a better result (max, min, shortest, etc.).
+5. **Lesson learned:** highlight what this step teaches about the sliding window idea.
+6. **Next step:** say what will happen in the following slide.
 
-```json
-{
-  "problemId": "unique_id",
-  "title": "Problem Title",
-  "description": "Detailed problem description",
-  "aim": "What the user aims to achieve",
-  "moduleId": "module_id",
-  "submoduleId": "submodule_id",
-  "difficulty": "Easy|Medium|Hard",
-  "tags": ["Tag1", "Tag2"],
-  "examples": [
-    {
-      "input": "Sample input",
-      "output": "Expected output",
-      "explanation": "How to get the output"
-    }
-  ]
-}
-```
+### Final Step
 
-2. Add the problem to the corresponding module's submodule in `src/modules/[moduleName]/module.json`
-3. The problem screen will automatically work with the new problem
+- State the final result (answer).
+- Show the window or subarray that gave this result.
 
-## Adding New Modules
+### Recap & General Pattern
 
-1. Create a new module folder: `src/modules/[moduleName]/`
-2. Create `module.json` in the module folder:
+- What’s the **core reusable sliding window principle** in this problem?
+- What optimization did we use compared to brute force?
+- When would this sliding window template apply again? (max sum, min size subarray, longest substring, etc.)
+- Variants to try next (e.g., max average, min sum, variable window problems).
 
-```json
-{
-  "moduleId": "your_module_id",
-  "moduleName": "Your Module Name",
-  "description": "Module description",
-  "submodules": [
-    {
-      "submoduleId": "unique_id",
-      "title": "Submodule Title",
-      "description": "Submodule description",
-      "problems": [
-        {
-          "problemId": "unique_problem_id",
-          "title": "Problem Title"
-        }
-      ]
-    }
-  ]
-}
-```
+⚠️ Rules:
 
-3. Create `problems/` folder and add problem JSON files
-4. Add the module to `src/modules.json`
-5. Import the data file in `app/module/[id].tsx`
-6. Add the case in the `getModuleData` function
+- No code.
+- Use clear variable tracking.
+- Use diagrams in text (e.g., `2 [1 5 1] 3 2`).
+- Teach like I’m solving it live with you.
 
-## Development
+---
 
-- `npm start` - Start the Expo development server
-- `npm run web` - Run on web
-- `npm run ios` - Run on iOS simulator
-- `npm run android` - Run on Android emulator
+👉 This way, if you paste **any sliding window problem** (fixed-size or variable-size), you’ll always get:
 
-## Current Modules
+- a story-like step-by-step walkthrough,
+- diagrams,
+- intuition,
+- and a general takeaway pattern.
 
-- **Basics**: Arrays, loops, and fundamental concepts
-- **Patterns**: Star patterns, number patterns
-- **Sliding Window**: Fixed, variable, and advanced sliding window techniques
-- **Two Pointers**: Basic and advanced two pointer problems
+---
 
-## Dependencies
-
-This project uses only essential dependencies:
-
-- **Core**: React Native, Expo, Expo Router
-- **Navigation**: Built-in Expo Router navigation
-- **Styling**: React Native StyleSheet
-- **Type Safety**: TypeScript
-
-## Navigation Flow
-
-```
-/ → /home → /module/[id] → /problem/[id]
-     ↓
-/module/index → /module/[id] → /problem/[id]
-```
-
-- **Root** (`/`): Redirects to home
-- **Home** (`/home`): Main landing page with module cards
-- **Module Index** (`/module/index`): Alternative module listing
-- **Module Detail** (`/module/[id]`): Individual module with submodules
-- **Problem Detail** (`/problem/[id]`): Individual problem with full details
-
-## Module-Level Development
-
-- **Global Components**: Problem screen, navigation, layout, modules.json
-- **Module-Specific**: Each module has its own folder with:
-  - `module.json`: Module content and submodules
-  - `problems/`: Module-specific problem files
-- **Easy Extension**: Add new problems without touching global code
-- **Scalable**: Each module can have its own problem types and interactions
-- **Self-Contained**: Each module folder contains everything needed for that module
+Do you want me to also **add a second mode inside this template** for **variable-size sliding window** (like "smallest subarray with sum ≥ target") so you have both fixed-size and variable-size flows?

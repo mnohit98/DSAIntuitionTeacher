@@ -1,0 +1,99 @@
+{
+  "problemId": "ts2",
+  "title": "Topological Sort using Kahn's Algorithm (BFS-based)",
+  "difficulty": "Medium",
+  "category": "Graph",
+  "moduleId": "topological_sort",
+  "submoduleId": "fundamentals",
+  "tags": ["Graph", "BFS", "Kahn's Algorithm", "In-degree", "Queue"],
+  "description": "Given a directed acyclic graph (DAG), return a linear ordering of vertices using Kahn's algorithm. Calculate in-degrees, use a queue to process nodes with 0 in-degree, and reduce in-degrees of neighbors.",
+  "aim": "Master Kahn's algorithm and understand how in-degree reduction ensures correct topological ordering.",
+  "input_format": "Number of vertices V and list of directed edges",
+  "output_format": "A valid topological ordering of vertices",
+  "max_input": 1000,
+  "example": {
+    "input": "V=6, edges=[[5,2],[5,0],[4,0],[4,1],[2,3],[3,1]]",
+    "output": "[4,5,0,2,3,1]"
+  },
+  "examples": [
+    {
+      "input": "V=6, edges=[[5,2],[5,0],[4,0],[4,1],[2,3],[3,1]]",
+      "output": "[4,5,0,2,3,1]",
+      "explanation": "Start with nodes having in-degree 0 (4,5). Process them and reduce neighbors' in-degrees until all are processed."
+    },
+    {
+      "input": "V=4, edges=[[0,1],[1,2],[0,3]]",
+      "output": "[0,1,3,2]",
+      "explanation": "Start with 0 (in-degree 0), then process 1 and 3 (both become in-degree 0), finally 2."
+    }
+  ],
+  "constraints": [
+    "1 <= V <= 1000",
+    "0 <= edges.length <= V*(V-1)/2",
+    "Graph is guaranteed to be a DAG (no cycles)",
+    "All vertices are numbered from 0 to V-1"
+  ],
+  "approach": "1) Calculate in-degree for each vertex. 2) Add all 0 in-degree vertices to queue. 3) Process queue: remove vertex, add to result, decrease neighbors' in-degrees. 4) Add newly 0 in-degree vertices to queue. Repeat until queue is empty.",
+  "timeComplexity": "O(V + E)",
+  "spaceComplexity": "O(V + E)",
+  "playground": {
+    "initialState": {
+      "vertices": [0, 1, 2, 3, 4, 5],
+      "edges": [[5,2],[5,0],[4,0],[4,1],[2,3],[3,1]],
+      "inDegrees": [2, 2, 1, 1, 0, 0],
+      "queue": [4, 5],
+      "result": [],
+      "step": 0,
+      "algorithm": "kahn"
+    }
+  },
+  "ui_config": {
+    "visualizer": {
+      "type": "kahn_topological_sort",
+      "show_in_degrees": true,
+      "show_queue": true,
+      "show_in_degree_updates": true,
+      "animate_queue_processing": true,
+      "highlight_zero_indegree": true
+    },
+    "colors": {
+      "node_zero_indegree": "#4CAF50",
+      "node_in_queue": "#FFC107",
+      "node_processing": "#FF5722",
+      "node_completed": "#2196F3",
+      "node_blocked": "#666",
+      "in_degree_update": "#9C27B0"
+    }
+  },
+  "jarvis_prompts": {
+    "welcome": "Welcome to Kahn's Algorithm! 🔄 This BFS-based approach is intuitive and great for detecting cycles too.",
+    "in_degree_explanation": "First, we calculate in-degrees. Nodes with 0 in-degree have no dependencies - perfect starting points!",
+    "queue_processing": "We process nodes with 0 in-degree from our queue. Each processed node 'unlocks' its neighbors!",
+    "degree_reduction": "Great! Removing this node reduces its neighbors' in-degrees. Some might reach 0 and join the queue!",
+    "queue_empty_success": "Queue is empty and we processed all nodes - perfect! This means no cycles exist.",
+    "intuitive_approach": "🧠 Key insight: Kahn's algorithm mimics real dependency resolution - handle independent tasks first, then unlock dependent ones!",
+    "success": "🎉 Excellent! You've mastered Kahn's algorithm. Notice how it naturally handles dependencies in the right order!"
+  },
+  "validation": {
+    "output": {
+      "validation_type": "topological_order",
+      "check_all_edges": true,
+      "allow_multiple_valid": true,
+      "preferred_algorithm": "kahn"
+    }
+  },
+  "learning_objectives": [
+    "Understand Kahn's algorithm mechanics",
+    "Master in-degree calculation and updates",
+    "Learn BFS-based graph processing",
+    "Apply queue-based algorithms to graphs",
+    "Understand intuitive dependency resolution"
+  ],
+  "algorithm_focus": "Kahn",
+  "key_concepts": [
+    "In-degree calculation",
+    "Queue processing",
+    "Dependency unlocking",
+    "BFS traversal"
+  ]
+}

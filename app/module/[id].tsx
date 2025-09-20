@@ -1,46 +1,20 @@
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import {
-    Platform,
-    SafeAreaView,
-    ScrollView,
-    Share,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    TouchableWithoutFeedback,
-    View
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  Share,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View
 } from "react-native";
 import { useTheme } from "../../src/contexts/ThemeContext";
 
-// Import all module data files statically
-import basicsModule from "../../src/modules/basics/module.json";
-import patternsModule from "../../src/modules/patterns/module.json";
-import slidingWindowModule from "../../src/modules/slidingWindow/module.json";
-import twoPointersModule from "../../src/modules/twoPointers/module.json";
-
-// Import all problem data files statically
-import b1Data from "../../src/modules/basics/problems/b1.json";
-import pat1Data from "../../src/modules/patterns/problems/p1.json";
-import p1Data from "../../src/modules/slidingWindow/problems/p1.json";
-import p10Data from "../../src/modules/slidingWindow/problems/p10.json";
-import p11Data from "../../src/modules/slidingWindow/problems/p11.json";
-import p12Data from "../../src/modules/slidingWindow/problems/p12.json";
-import p13Data from "../../src/modules/slidingWindow/problems/p13.json";
-import p14Data from "../../src/modules/slidingWindow/problems/p14.json";
-import p15Data from "../../src/modules/slidingWindow/problems/p15.json";
-import p16Data from "../../src/modules/slidingWindow/problems/p16.json";
-import p17Data from "../../src/modules/slidingWindow/problems/p17.json";
-import p2Data from "../../src/modules/slidingWindow/problems/p2.json";
-import p3Data from "../../src/modules/slidingWindow/problems/p3.json";
-import p4Data from "../../src/modules/slidingWindow/problems/p4.json";
-import p5Data from "../../src/modules/slidingWindow/problems/p5.json";
-import p6Data from "../../src/modules/slidingWindow/problems/p6.json";
-import p7Data from "../../src/modules/slidingWindow/problems/p7.json";
-import p8Data from "../../src/modules/slidingWindow/problems/p8.json";
-import p9Data from "../../src/modules/slidingWindow/problems/p9.json";
-import tp1Data from "../../src/modules/twoPointers/problems/tp1.json";
+import { DynamicDataService } from "../../src/services/DynamicDataService";
 
 export default function ModuleDetailScreen() {
   const { id } = useLocalSearchParams();
@@ -50,15 +24,14 @@ export default function ModuleDetailScreen() {
   const [moduleInfo, setModuleInfo] = useState<any>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [difficultyFilter, setDifficultyFilter] = useState('All');
-  const [topicFilter, setTopicFilter] = useState('All');
   const [bookmarkFilter, setBookmarkFilter] = useState('All');
   const [completionFilter, setCompletionFilter] = useState('All');
   const [showDifficultyDropdown, setShowDifficultyDropdown] = useState(false);
-  const [showTopicDropdown, setShowTopicDropdown] = useState(false);
   const [showBookmarkDropdown, setShowBookmarkDropdown] = useState(false);
   const [showCompletionDropdown, setShowCompletionDropdown] = useState(false);
   const [bookmarkedProblems, setBookmarkedProblems] = useState<Set<string>>(new Set());
   const [completedProblems, setCompletedProblems] = useState<Set<string>>(new Set());
+  const [hoveredAction, setHoveredAction] = useState<{problemId: string, action: string} | null>(null);
 
   // Set document title for web
   useEffect(() => {
@@ -85,51 +58,19 @@ export default function ModuleDetailScreen() {
     loadModuleData();
   }, [id]);
 
-  const loadModuleData = () => {
+  const loadModuleData = async () => {
     try {
-      // Get module info based on ID
-      let moduleData;
-      switch (id) {
-        case 'basics':
-          moduleData = basicsModule;
-          break;
-        case 'patterns':
-          moduleData = patternsModule;
-          break;
-        case 'slidingWindow':
-          moduleData = slidingWindowModule;
-          break;
-        case 'twoPointers':
-          moduleData = twoPointersModule;
-          break;
-        default:
-          console.error('Module not found:', id);
-          return;
+      // Get module info using dynamic service
+      const moduleData = await DynamicDataService.getModuleData(id as string);
+      if (!moduleData) {
+        console.error('Module not found:', id);
+        return;
       }
       
       setModuleInfo(moduleData);
 
-      // Get problems for this module
-      let problemDataArray: any[] = [];
-      switch (id) {
-        case 'basics':
-          problemDataArray = [b1Data];
-          break;
-        case 'patterns':
-          problemDataArray = [pat1Data];
-          break;
-        case 'slidingWindow':
-          problemDataArray = [
-            p1Data, p2Data, p3Data, p4Data, p5Data, p6Data, p7Data, p8Data, p9Data,
-            p10Data, p11Data, p12Data, p13Data, p14Data, p15Data, p16Data, p17Data
-          ];
-          break;
-        case 'twoPointers':
-          problemDataArray = [tp1Data];
-          break;
-        default:
-          problemDataArray = [];
-      }
+      // Get problems for this module using dynamic service
+      const problemDataArray = await DynamicDataService.getModuleProblems(id as string);
 
       // Map problem data to include IDs
       const problemsWithIds = problemDataArray.map((problemData, index) => ({
@@ -148,8 +89,10 @@ export default function ModuleDetailScreen() {
   };
 
   const handlePlaygroundPress = (problemId: string) => {
-    if (id === 'slidingWindow') {
-      router.push(`/playground/sliding-window/${problemId}`);
+    if (id === 'sliding-window') {
+      router.push(`/practice/sliding-window/${problemId}`);
+    } else if (id === 'topological-sort') {
+      router.push(`/practice/topological-sort/${problemId}`);
     } else {
       // For other modules, navigate to problem detail
       router.push(`/problem/${problemId}`);
@@ -218,17 +161,25 @@ export default function ModuleDetailScreen() {
     }
   };
 
+  const getDifficultyTime = (difficulty: string) => {
+    switch (difficulty.toLowerCase()) {
+      case 'easy':
+        return '5-10 min';
+      case 'medium':
+        return '15-20 min';
+      case 'hard':
+        return '25-30 min';
+      default:
+        return '>30 min'; // For very hard or unknown difficulties
+    }
+  };
+
   const handleDifficultyFilter = (difficulty: string) => {
     setDifficultyFilter(difficulty);
     // Small delay to show the selection before closing
     setTimeout(() => setShowDifficultyDropdown(false), 150);
   };
 
-  const handleTopicFilter = (topic: string) => {
-    setTopicFilter(topic);
-    // Small delay to show the selection before closing
-    setTimeout(() => setShowTopicDropdown(false), 150);
-  };
 
   const handleBookmarkFilter = (filter: string) => {
     setBookmarkFilter(filter);
@@ -270,48 +221,20 @@ export default function ModuleDetailScreen() {
     const matchesSearch = problem.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          problem.description.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesDifficulty = difficultyFilter === 'All' || problem.difficulty === difficultyFilter;
-    const matchesTopic = topicFilter === 'All' || problem.submoduleId === topicFilter;
     const matchesBookmark = bookmarkFilter === 'All' || 
                            (bookmarkFilter === 'Bookmarked' && bookmarkedProblems.has(problem.id)) ||
                            (bookmarkFilter === 'Not Bookmarked' && !bookmarkedProblems.has(problem.id));
     const matchesCompletion = completionFilter === 'All' || 
                              (completionFilter === 'Completed' && completedProblems.has(problem.id)) ||
                              (completionFilter === 'Not Completed' && !completedProblems.has(problem.id));
-    return matchesSearch && matchesDifficulty && matchesTopic && matchesBookmark && matchesCompletion;
+    return matchesSearch && matchesDifficulty && matchesBookmark && matchesCompletion;
   });
 
   // Get available difficulties for this module
   const availableDifficulties = ['All', ...Array.from(new Set(problems.map(p => p.difficulty)))];
   
-  // Get available topics for this module
-  const getAvailableTopics = () => {
-    if (id === 'slidingWindow') {
-      return [
-        'All',
-        'sw_fixed',      // Fixed Window
-        'sw_variable',   // Variable Window  
-        'sw_advanced'    // Advanced Problems
-      ];
-    }
-    return ['All'];
-  };
-  
-  const availableTopics = getAvailableTopics();
   const availableBookmarkFilters = ['All', 'Bookmarked', 'Not Bookmarked'];
   const availableCompletionFilters = ['All', 'Completed', 'Not Completed'];
-  
-  const getTopicDisplayName = (topicId: string) => {
-    switch (topicId) {
-      case 'sw_fixed':
-        return 'Fixed Window';
-      case 'sw_variable':
-        return 'Variable Window';
-      case 'sw_advanced':
-        return 'Advanced';
-      default:
-        return topicId;
-    }
-  };
 
   const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
@@ -336,6 +259,32 @@ export default function ModuleDetailScreen() {
     }
   };
 
+  const getTooltipText = (problemId: string, action: string) => {
+    switch (action) {
+      case 'bookmark':
+        return bookmarkedProblems.has(problemId) ? 'Remove Bookmark' : 'Add Bookmark';
+      case 'completion':
+        return completedProblems.has(problemId) ? 'Mark as Not Done' : 'Mark as Done';
+      case 'share':
+        return 'Share Problem';
+      default:
+        return '';
+    }
+  };
+
+  const renderTooltip = (problemId: string, action: string) => {
+    if (hoveredAction?.problemId === problemId && hoveredAction?.action === action) {
+      return (
+        <View style={styles.tooltip}>
+          <Text style={styles.tooltipText}>
+            {getTooltipText(problemId, action)}
+          </Text>
+        </View>
+      );
+    }
+    return null;
+  };
+
   if (!moduleInfo) {
     return (
       <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
@@ -350,7 +299,6 @@ export default function ModuleDetailScreen() {
     <SafeAreaView style={[styles.container, { backgroundColor: '#080A0D' }]}>
       <TouchableWithoutFeedback onPress={() => {
         setShowDifficultyDropdown(false);
-        setShowTopicDropdown(false);
         setShowBookmarkDropdown(false);
         setShowCompletionDropdown(false);
       }}>
@@ -378,7 +326,7 @@ export default function ModuleDetailScreen() {
                 color: theme.colors.textPrimary,
                 borderColor: 'transparent'
               }]}
-              placeholder="Search problems, tags, or code patterns…"
+              placeholder="Search problems or code patterns…"
               placeholderTextColor="#B4BCC8"
               value={searchQuery}
               onChangeText={setSearchQuery}
@@ -428,43 +376,6 @@ export default function ModuleDetailScreen() {
             )}
           </View>
 
-          {/* Topic Dropdown */}
-          <View style={styles.dropdownContainer}>
-            <TouchableOpacity 
-              style={[styles.dropdownButton, { borderColor: theme.colors.border }]}
-              onPress={() => setShowTopicDropdown(!showTopicDropdown)}
-            >
-              <Text style={[styles.dropdownLabel, { color: theme.colors.textSecondary }]}>Topic</Text>
-              <Text style={[styles.dropdownValue, { color: theme.colors.textPrimary }]}>
-                {getTopicDisplayName(topicFilter)}
-              </Text>
-              <Text style={[styles.dropdownArrow, { color: theme.colors.textSecondary }]}>
-                {showTopicDropdown ? '▲' : '▼'}
-              </Text>
-            </TouchableOpacity>
-            
-            {showTopicDropdown && (
-              <View style={[styles.dropdownMenu, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
-                {availableTopics.map((topic) => (
-                  <TouchableOpacity
-                    key={topic}
-                    style={[
-                      styles.dropdownItem,
-                      { backgroundColor: topic === topicFilter ? theme.colors.primaryLight : 'transparent' }
-                    ]}
-                    onPress={() => handleTopicFilter(topic)}
-                  >
-                    <Text style={[
-                      styles.dropdownItemText,
-                      { color: topic === topicFilter ? theme.colors.primary : theme.colors.textPrimary }
-                    ]}>
-                      {getTopicDisplayName(topic)}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            )}
-          </View>
 
           {/* Bookmark Filter Dropdown */}
           <View style={styles.dropdownContainer}>
@@ -576,7 +487,7 @@ export default function ModuleDetailScreen() {
                 {/* Meta Row */}
                 <View style={styles.metaRow}>
                   <Text style={[styles.metaText, { color: '#B4BCC8' }]}>
-                    ⏱ 15 min
+                    ⏱ {getDifficultyTime(problem.difficulty)}
                   </Text>
                 </View>
                 
@@ -585,18 +496,6 @@ export default function ModuleDetailScreen() {
                   {renderHighlighted(problem.description)}
                 </Text>
                 
-                {/* Features Row */}
-                <View style={styles.featuresRow}>
-                  <View style={[styles.featureTag, { backgroundColor: 'rgba(41, 211, 255, 0.1)' }]}>
-                    <Text style={[styles.featureText, { color: '#29D3FF' }]}>Array</Text>
-                  </View>
-                  <View style={[styles.featureTag, { backgroundColor: 'rgba(245, 217, 10, 0.1)' }]}>
-                    <Text style={[styles.featureText, { color: '#F5D90A' }]}>Two Pointers</Text>
-                  </View>
-                  <View style={[styles.featureTag, { backgroundColor: 'rgba(16, 185, 129, 0.1)' }]}>
-                    <Text style={[styles.featureText, { color: '#10B981' }]}>Sliding Window</Text>
-                  </View>
-                </View>
                 
                 {/* Footer Actions */}
                 <View style={styles.cardFooter}>
@@ -612,7 +511,7 @@ export default function ModuleDetailScreen() {
                       onPress={() => handlePlaygroundPress(problem.id)}
                     >
                       <Text style={[styles.secondaryButtonText, { color: '#29D3FF' }]}>
-                        {id === 'slidingWindow' ? '🎮 Playground' : 'Playground'}
+                        Practice
                       </Text>
                     </TouchableOpacity>
                   </View>
@@ -624,6 +523,10 @@ export default function ModuleDetailScreen() {
                         { backgroundColor: bookmarkedProblems.has(problem.id) ? 'rgba(245, 217, 10, 0.2)' : '#0C1116' }
                       ]}
                       onPress={() => toggleBookmark(problem.id)}
+                      {...(Platform.OS === 'web' && {
+                        onMouseEnter: () => setHoveredAction({problemId: problem.id, action: 'bookmark'}),
+                        onMouseLeave: () => setHoveredAction(null)
+                      })}
                     >
                       <Text style={[
                         styles.quickActionIcon,
@@ -631,16 +534,31 @@ export default function ModuleDetailScreen() {
                       ]}>
                         {bookmarkedProblems.has(problem.id) ? '🔖' : '🔖'}
                       </Text>
+                      {renderTooltip(problem.id, 'bookmark')}
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.quickActionButton} onPress={() => shareProblem(problem.id)}>
+                    
+                    <TouchableOpacity 
+                      style={styles.quickActionButton} 
+                      onPress={() => shareProblem(problem.id)}
+                      {...(Platform.OS === 'web' && {
+                        onMouseEnter: () => setHoveredAction({problemId: problem.id, action: 'share'}),
+                        onMouseLeave: () => setHoveredAction(null)
+                      })}
+                    >
                       <Text style={styles.quickActionIcon}>📤</Text>
+                      {renderTooltip(problem.id, 'share')}
                     </TouchableOpacity>
+                    
                     <TouchableOpacity 
                       style={[
                         styles.quickActionButton,
                         { backgroundColor: completedProblems.has(problem.id) ? 'rgba(16, 185, 129, 0.2)' : '#0C1116' }
                       ]}
                       onPress={() => toggleCompletion(problem.id)}
+                      {...(Platform.OS === 'web' && {
+                        onMouseEnter: () => setHoveredAction({problemId: problem.id, action: 'completion'}),
+                        onMouseLeave: () => setHoveredAction(null)
+                      })}
                     >
                       <Text style={[
                         styles.quickActionIcon,
@@ -648,6 +566,7 @@ export default function ModuleDetailScreen() {
                       ]}>
                         {completedProblems.has(problem.id) ? '✅' : '⭕'}
                       </Text>
+                      {renderTooltip(problem.id, 'completion')}
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -996,6 +915,7 @@ const styles = StyleSheet.create({
     gap: 8, // 8px between icons
   },
   quickActionButton: {
+    position: 'relative', // Enable absolute positioning for tooltips
     width: 32, // 32px width
     height: 32, // 32px height
     borderRadius: 8, // 8px radius as specified
@@ -1023,5 +943,30 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 4,
+  },
+  tooltip: {
+    position: 'absolute',
+    bottom: -35, // Position below the button
+    left: '50%',
+    transform: [{ translateX: -50 }], // Center horizontally
+    backgroundColor: '#1A1D23',
+    borderRadius: 6,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderWidth: 1,
+    borderColor: '#2D3748',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    zIndex: 1000,
+    minWidth: 80,
+  },
+  tooltipText: {
+    fontSize: 11,
+    fontWeight: '500',
+    color: '#E2E8F0',
+    textAlign: 'center',
   },
 });

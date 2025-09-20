@@ -1,0 +1,99 @@
+{
+  "problemId": "ts1",
+  "title": "Topological Sort using DFS (Depth-First Search)",
+  "difficulty": "Medium",
+  "category": "Graph",
+  "moduleId": "topological_sort",
+  "submoduleId": "fundamentals",
+  "tags": ["Graph", "DFS", "Topological Sort", "Recursion", "Postorder"],
+  "description": "Given a directed acyclic graph (DAG), return a linear ordering of vertices using DFS-based topological sort. Use DFS to visit all nodes, add them to result in postorder (when finishing), then reverse the result.",
+  "aim": "Master the DFS-based approach to topological sorting and understand why postorder + reverse works.",
+  "input_format": "Number of vertices V and list of directed edges",
+  "output_format": "A valid topological ordering of vertices",
+  "max_input": 1000,
+  "example": {
+    "input": "V=6, edges=[[5,2],[5,0],[4,0],[4,1],[2,3],[3,1]]",
+    "output": "[5,4,2,3,1,0]"
+  },
+  "examples": [
+    {
+      "input": "V=6, edges=[[5,2],[5,0],[4,0],[4,1],[2,3],[3,1]]",
+      "output": "[5,4,2,3,1,0]",
+      "explanation": "DFS visits nodes and adds them to stack when finishing. Reverse gives valid topological order."
+    },
+    {
+      "input": "V=4, edges=[[0,1],[1,2],[0,3]]",
+      "output": "[0,3,1,2]",
+      "explanation": "DFS from 0: visits 1→2 (adds 2), backtracks (adds 1), visits 3 (adds 3), backtracks (adds 0). Reverse: [0,3,1,2]."
+    }
+  ],
+  "constraints": [
+    "1 <= V <= 1000",
+    "0 <= edges.length <= V*(V-1)/2",
+    "Graph is guaranteed to be a DAG (no cycles)",
+    "All vertices are numbered from 0 to V-1"
+  ],
+  "approach": "Use DFS with a stack. Visit each unvisited node, perform DFS recursively, and add nodes to stack when finishing (postorder). Finally, pop all nodes from stack to get topological order.",
+  "timeComplexity": "O(V + E)",
+  "spaceComplexity": "O(V + E)",
+  "playground": {
+    "initialState": {
+      "vertices": [0, 1, 2, 3, 4, 5],
+      "edges": [[5,2],[5,0],[4,0],[4,1],[2,3],[3,1]],
+      "visited": [false, false, false, false, false, false],
+      "stack": [],
+      "result": [],
+      "currentNode": null,
+      "algorithm": "dfs"
+    }
+  },
+  "ui_config": {
+    "visualizer": {
+      "type": "dfs_topological_sort",
+      "show_visited": true,
+      "show_stack": true,
+      "show_recursion_stack": true,
+      "animate_dfs_traversal": true,
+      "highlight_postorder": true
+    },
+    "colors": {
+      "node_unvisited": "#666",
+      "node_visiting": "#FFC107",
+      "node_finished": "#4CAF50",
+      "node_in_stack": "#2196F3",
+      "edge_traversing": "#FF5722",
+      "edge_backtrack": "#9C27B0"
+    }
+  },
+  "jarvis_prompts": {
+    "welcome": "Let's master DFS-based Topological Sort! 🌳 This approach uses the beautiful property of postorder traversal.",
+    "dfs_explanation": "We'll use DFS and add nodes to our result when we finish processing them (postorder). This ensures dependencies are processed first!",
+    "visiting_node": "Starting DFS from this node. We'll explore all its neighbors before marking it as finished.",
+    "postorder_add": "Perfect! We've finished processing this node's subtree. Adding it to our stack (postorder).",
+    "reverse_result": "Now we reverse our stack to get the final topological order. Why? Because we added nodes in finishing order!",
+    "why_it_works": "🧠 Key insight: In postorder, a node is added only after ALL its descendants are processed. Reversing gives us the correct dependency order!",
+    "success": "🎉 Excellent! You've mastered DFS-based topological sorting. Notice how postorder + reverse naturally respects all dependencies!"
+  },
+  "validation": {
+    "output": {
+      "validation_type": "topological_order",
+      "check_all_edges": true,
+      "allow_multiple_valid": true,
+      "preferred_algorithm": "dfs"
+    }
+  },
+  "learning_objectives": [
+    "Understand DFS-based topological sorting",
+    "Master postorder traversal in graphs",
+    "Learn why postorder + reverse works",
+    "Apply DFS to dependency problems",
+    "Understand recursion in graph algorithms"
+  ],
+  "algorithm_focus": "DFS",
+  "key_concepts": [
+    "Postorder traversal",
+    "Recursion stack",
+    "Finishing times",
+    "Reverse operation"
+  ]
+}

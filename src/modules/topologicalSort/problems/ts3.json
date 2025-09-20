@@ -1,0 +1,90 @@
+{
+  "problemId": "ts3",
+  "title": "Course Schedule — Cycle Detection",
+  "difficulty": "Medium",
+  "category": "Graph",
+  "moduleId": "topological_sort",
+  "submoduleId": "fundamentals",
+  "tags": ["Graph", "Cycle Detection", "Kahn's Algorithm", "BFS"],
+  "description": "Given numCourses and prerequisites where [a,b] means take b before a, return true if you can finish all courses (i.e., graph has no directed cycle), else false.",
+  "aim": "Learn to use topo logic or DFS 3-state visited array to detect directed cycles reliably.",
+  "input_format": "Number of courses and list of prerequisite pairs",
+  "output_format": "Boolean indicating if all courses can be completed",
+  "max_input": 5000,
+  "example": {
+    "input": "numCourses=2, prerequisites=[[1,0]]",
+    "output": "true"
+  },
+  "examples": [
+    {
+      "input": "numCourses=2, prerequisites=[[1,0]]",
+      "output": "true",
+      "explanation": "Course 0 → Course 1. No cycle exists, so all courses can be completed."
+    },
+    {
+      "input": "numCourses=2, prerequisites=[[1,0],[0,1]]",
+      "output": "false",
+      "explanation": "Course 0 → Course 1 → Course 0. Cycle detected, impossible to complete all courses."
+    }
+  ],
+  "constraints": [
+    "1 <= numCourses <= 5000",
+    "0 <= prerequisites.length <= 5000",
+    "prerequisites[i].length == 2",
+    "0 <= ai, bi < numCourses",
+    "All the pairs prerequisites[i] are unique"
+  ],
+  "approach": "Use Kahn's algorithm: calculate in-degrees, process nodes with 0 in-degree. If we process all nodes, no cycle exists. This problem focuses on the Kahn's approach for cycle detection.",
+  "timeComplexity": "O(V + E)",
+  "spaceComplexity": "O(V + E)",
+  "playground": {
+    "initialState": {
+      "numCourses": 4,
+      "prerequisites": [[1,0],[2,0],[3,1],[3,2]],
+      "graph": {"0": [1,2], "1": [3], "2": [3], "3": []},
+      "inDegrees": [0, 1, 1, 2],
+      "queue": [0],
+      "processed": 0,
+      "canFinish": null
+    }
+  },
+  "ui_config": {
+    "visualizer": {
+      "type": "course_dependency_graph",
+      "show_in_degrees": true,
+      "show_queue": true,
+      "show_processed_count": true,
+      "highlight_cycles": true
+    },
+    "colors": {
+      "course_available": "#4CAF50",
+      "course_blocked": "#F44336",
+      "course_processing": "#FFC107",
+      "course_completed": "#2196F3",
+      "dependency_edge": "#666",
+      "cycle_edge": "#F44336"
+    }
+  },
+  "jarvis_prompts": {
+    "welcome": "Let's solve the Course Schedule problem! 📚 This is a classic application of cycle detection in graphs.",
+    "problem_explanation": "Each prerequisite creates a directed edge. If there's a cycle, some courses depend on each other - impossible to complete!",
+    "algorithm_start": "We'll use Kahn's algorithm. If we can process all courses, there's no cycle!",
+    "processing": "Great! We're processing courses with no prerequisites first, then unlocking dependent courses.",
+    "cycle_detected": "⚠️ Cycle detected! Some courses have circular dependencies - they can't all be completed.",
+    "success": "🎉 Perfect! All courses can be completed. No cycles found in the dependency graph!"
+  },
+  "validation": {
+    "output": {
+      "validation_type": "boolean",
+      "expected_logic": "cycle_detection"
+    }
+  },
+  "learning_objectives": [
+    "Understand cycle detection using Kahn's algorithm",
+    "Apply topological sorting for feasibility checking",
+    "Master the course scheduling problem pattern",
+    "Learn to model real-world dependencies as graphs"
+  ],
+  "algorithm_focus": "Kahn",
+  "recommended_approach": "Use Kahn's algorithm - it naturally detects cycles when queue becomes empty but not all nodes are processed"
+}

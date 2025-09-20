@@ -1,7 +1,7 @@
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
-import { useColorScheme } from 'react-native';
+import { StatusBar, useColorScheme } from 'react-native';
 import { ThemeProvider } from '../src/contexts/ThemeContext';
 
 // Keep the splash screen visible while we fetch resources
@@ -22,6 +22,7 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider>
+      <StatusBar barStyle="light-content" backgroundColor="#080A0D" />
       <Stack>
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="home" options={{ headerShown: false }} />
@@ -48,11 +49,37 @@ export default function RootLayout() {
         />
         <Stack.Screen name="playground" options={{ headerShown: false }} />
         <Stack.Screen 
-          name="playground/sliding-window/[id]" 
+          name="playground/[topic]/[id]" 
           options={{ 
             headerShown: false,
-            title: "Sliding Window Playground",
-            headerTitle: "Sliding Window Playground",
+            title: "Redirecting...",
+            presentation: 'card'
+          }} 
+        />
+        <Stack.Screen 
+          name="practice/[module]/[id]" 
+          options={{ 
+            headerShown: false,
+            title: "Playground",
+            headerTitle: "Playground",
+            presentation: 'card'
+          }} 
+        />
+        <Stack.Screen 
+          name="practice/[topic]/[id]" 
+          options={{ 
+            headerShown: false,
+            title: "Playground",
+            headerTitle: "Playground",
+            presentation: 'card'
+          }} 
+        />
+        <Stack.Screen 
+          name="[id]" 
+          options={{ 
+            headerShown: false,
+            title: "Playground",
+            headerTitle: "Playground",
             presentation: 'card'
           }} 
         />

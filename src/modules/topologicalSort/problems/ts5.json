@@ -1,0 +1,94 @@
+{
+  "problemId": "ts5",
+  "title": "Sequence Reconstruction — Unique Topological Order",
+  "difficulty": "Medium",
+  "category": "Graph",
+  "moduleId": "topological_sort",
+  "submoduleId": "advanced_ordering",
+  "tags": ["Graph", "Uniqueness", "Kahn's Algorithm", "Queue Size Check"],
+  "description": "Given an original sequence org and a list of subsequences seqs, determine whether org is the unique sequence that can be reconstructed (i.e., topo order is unique and equals org). Uniqueness is checked by ensuring the Kahn queue has exactly one candidate at each step.",
+  "aim": "Learn how to check uniqueness of a topological ordering — a common interview twist.",
+  "input_format": "Original sequence array and list of subsequence arrays",
+  "output_format": "Boolean indicating if org is the unique reconstruction",
+  "max_input": 10000,
+  "example": {
+    "input": "org=[1,2,3], seqs=[[1,2],[1,3]]",
+    "output": "false"
+  },
+  "examples": [
+    {
+      "input": "org=[1,2,3], seqs=[[1,2],[1,3]]",
+      "output": "false",
+      "explanation": "From seqs, we can construct graph: 1→2, 1→3. Multiple valid orderings exist: [1,2,3] and [1,3,2]."
+    },
+    {
+      "input": "org=[1,2,3], seqs=[[1,2],[2,3]]",
+      "output": "true",
+      "explanation": "From seqs: 1→2→3. Only one valid ordering exists: [1,2,3], which matches org."
+    }
+  ],
+  "constraints": [
+    "1 <= org.length <= 10^4",
+    "1 <= seqs.length <= 10^4",
+    "1 <= seqs[i].length <= org.length",
+    "All values in org are unique",
+    "All values in seqs[i] are unique"
+  ],
+  "approach": "Build graph from subsequences, then use modified Kahn's algorithm. For uniqueness, queue must have exactly one element at each step, and the order must match org.",
+  "timeComplexity": "O(N + E)",
+  "spaceComplexity": "O(N + E)",
+  "playground": {
+    "initialState": {
+      "org": [1,2,3],
+      "seqs": [[1,2],[2,3]],
+      "graph": {"1": [2], "2": [3], "3": []},
+      "inDegrees": {"1": 0, "2": 1, "3": 1},
+      "queue": [1],
+      "result": [],
+      "isUnique": true,
+      "step": 0
+    }
+  },
+  "ui_config": {
+    "visualizer": {
+      "type": "sequence_reconstruction",
+      "show_original": true,
+      "show_subsequences": true,
+      "show_graph_construction": true,
+      "show_uniqueness_check": true,
+      "highlight_queue_size": true
+    },
+    "colors": {
+      "original_sequence": "#4CAF50",
+      "subsequence": "#2196F3",
+      "graph_edge": "#666",
+      "unique_path": "#4CAF50",
+      "multiple_paths": "#F44336",
+      "queue_single": "#4CAF50",
+      "queue_multiple": "#FFC107"
+    }
+  },
+  "jarvis_prompts": {
+    "welcome": "Let's solve Sequence Reconstruction! 🧩 This problem tests whether a topological order is unique.",
+    "graph_construction": "First, we build a graph from the subsequences. Each adjacent pair creates a directed edge.",
+    "uniqueness_check": "For uniqueness, our queue must have exactly ONE element at each step of Kahn's algorithm!",
+    "queue_size_one": "Perfect! Queue has one element - the ordering is still unique at this step.",
+    "queue_size_multiple": "⚠️ Queue has multiple elements - multiple valid orderings exist, so it's not unique!",
+    "order_mismatch": "The reconstructed order doesn't match the original sequence!",
+    "success": "🎉 Excellent! The original sequence is the unique topological ordering!"
+  },
+  "validation": {
+    "output": {
+      "validation_type": "boolean",
+      "expected_logic": "uniqueness_check"
+    }
+  },
+  "learning_objectives": [
+    "Understand uniqueness in topological sorting",
+    "Learn to check queue size during Kahn's algorithm",
+    "Master sequence reconstruction problems",
+    "Apply to dependency verification scenarios"
+  ],
+  "algorithm_focus": "Kahn",
+  "recommended_approach": "Use Kahn's algorithm with queue size checking - uniqueness requires exactly one node in queue at each step"
+}

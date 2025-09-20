@@ -1,56 +1,16 @@
 import { router, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
-    Alert,
-    SafeAreaView,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View
+  Alert,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
 } from "react-native";
 import { useTheme } from "../../src/contexts/ThemeContext";
-
-// Import problem data
-import b1Data from "../../src/modules/basics/problems/b1.json";
-import pat1Data from "../../src/modules/patterns/problems/p1.json";
-import p1Data from "../../src/modules/slidingWindow/problems/p1.json";
-import p10Data from "../../src/modules/slidingWindow/problems/p10.json";
-import p11Data from "../../src/modules/slidingWindow/problems/p11.json";
-import p12Data from "../../src/modules/slidingWindow/problems/p12.json";
-import p13Data from "../../src/modules/slidingWindow/problems/p13.json";
-import p14Data from "../../src/modules/slidingWindow/problems/p14.json";
-import p15Data from "../../src/modules/slidingWindow/problems/p15.json";
-import p16Data from "../../src/modules/slidingWindow/problems/p16.json";
-import p17Data from "../../src/modules/slidingWindow/problems/p17.json";
-import p2Data from "../../src/modules/slidingWindow/problems/p2.json";
-import p3Data from "../../src/modules/slidingWindow/problems/p3.json";
-import p4Data from "../../src/modules/slidingWindow/problems/p4.json";
-import p5Data from "../../src/modules/slidingWindow/problems/p5.json";
-import p6Data from "../../src/modules/slidingWindow/problems/p6.json";
-import p7Data from "../../src/modules/slidingWindow/problems/p7.json";
-import p8Data from "../../src/modules/slidingWindow/problems/p8.json";
-import p9Data from "../../src/modules/slidingWindow/problems/p9.json";
-import tp1Data from "../../src/modules/twoPointers/problems/tp1.json";
-
-// Define types for problem data
-interface ProblemExample {
-  input: string;
-  output: string;
-  explanation: string;
-}
-
-interface ProblemData {
-  problemId: string;
-  title: string;
-  description: string;
-  aim: string;
-  moduleId: string;
-  submoduleId: string;
-  difficulty: string;
-  tags: string[];
-  examples: ProblemExample[];
-}
+import { DynamicDataService, ProblemData } from "../../src/services/DynamicDataService";
 
 export default function ProblemScreen() {
   const params = useLocalSearchParams();
@@ -60,6 +20,8 @@ export default function ProblemScreen() {
   
   const [showDescription, setShowDescription] = useState(true);
   const [showAim, setShowAim] = useState(true);
+  const [problem, setProblem] = useState<ProblemData | null>(null);
+  const [loading, setLoading] = useState(true);
 
   // Set document title for web
   useEffect(() => {
@@ -68,59 +30,31 @@ export default function ProblemScreen() {
     }
   }, [problemId]);
 
-  // Get problem data based on ID
-  const getProblemData = (id: string): ProblemData | null => {
-    switch (id) {
-      // Sliding Window problems
-      case "p1":
-        return p1Data as ProblemData;
-      case "p2":
-        return p2Data as ProblemData;
-      case "p3":
-        return p3Data as ProblemData;
-      case "p4":
-        return p4Data as ProblemData;
-      case "p5":
-        return p5Data as ProblemData;
-      case "p6":
-        return p6Data as ProblemData;
-      case "p7":
-        return p7Data as ProblemData;
-      case "p8":
-        return p8Data as ProblemData;
-      case "p9":
-        return p9Data as ProblemData;
-      case "p10":
-        return p10Data as ProblemData;
-      case "p11":
-        return p11Data as ProblemData;
-      case "p12":
-        return p12Data as ProblemData;
-      case "p13":
-        return p13Data as ProblemData;
-      case "p14":
-        return p14Data as ProblemData;
-      case "p15":
-        return p15Data as ProblemData;
-      case "p16":
-        return p16Data as ProblemData;
-      case "p17":
-        return p17Data as ProblemData;
-      // Basics problems
-      case "b1":
-        return b1Data as ProblemData;
-      // Patterns problems
-      case "pat1":
-        return pat1Data as ProblemData;
-      // Two Pointers problems
-      case "tp1":
-        return tp1Data as ProblemData;
-      default:
-        return null;
+  useEffect(() => {
+    loadProblemData();
+  }, [problemId]);
+
+  const loadProblemData = async () => {
+    try {
+      setLoading(true);
+      const data = await DynamicDataService.getProblemData(problemId);
+      setProblem(data);
+    } catch (error) {
+      console.error('Error loading problem data:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const problem = getProblemData(problemId);
+  if (loading) {
+    return (
+      <SafeAreaView style={[styles.container, { backgroundColor: '#080A0D' }]}>
+        <View style={styles.center}>
+          <Text style={styles.errorText}>Loading problem...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   if (!problem) {
     return (
@@ -133,9 +67,9 @@ export default function ProblemScreen() {
   }
 
   const handleUserPlayground = () => {
-    if (problem.moduleId === 'slidingWindow') {
-      // Navigate directly to playground
-      router.push(`/playground/sliding-window/${problemId}`);
+    const route = DynamicDataService.getPlaygroundRoute(problemId);
+    if (route) {
+      router.push(route as any);
     } else {
       Alert.alert(
         "User Playground",
@@ -144,12 +78,6 @@ export default function ProblemScreen() {
     }
   };
 
-  const handleMapUnderstanding = () => {
-    Alert.alert(
-      "Map Your Understanding",
-      "This feature will help you visualize and map your understanding of the problem."
-    );
-  };
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: '#080A0D' }]}>
@@ -182,14 +110,6 @@ export default function ProblemScreen() {
         {/* Problem Title */}
         <Text style={styles.problemTitle}>{problem.title}</Text>
         
-        {/* Tags */}
-        <View style={styles.tagsContainer}>
-          {problem.tags.map((tag, index) => (
-            <View key={index} style={styles.tag}>
-              <Text style={styles.tagText}>{tag}</Text>
-            </View>
-          ))}
-        </View>
 
         {/* Description Section */}
         <View style={styles.section}>
@@ -258,19 +178,10 @@ export default function ProblemScreen() {
             onPress={handleUserPlayground}
           >
             <Text style={styles.primaryActionButtonText}>
-              🎮 Open Playground
+              Practice Step-by-Step
             </Text>
             <Text style={styles.playgroundSubtext}>
-              {problem.moduleId === 'slidingWindow' ? 'Interactive learning available!' : 'Coming soon...'}
-            </Text>
-          </TouchableOpacity>
-          
-          <TouchableOpacity 
-            style={styles.secondaryActionButton}
-            onPress={handleMapUnderstanding}
-          >
-            <Text style={styles.secondaryActionButtonText}>
-              🧠 Map Understanding
+              {problem.moduleId === 'slidingWindow' || problem.moduleId === 'topological_sort' ? 'Learn by doing with guided practice' : 'Coming soon...'}
             </Text>
           </TouchableOpacity>
         </View>
@@ -477,21 +388,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '700',
     color: '#080A0D',
-    textAlign: 'center',
-  },
-  secondaryActionButton: {
-    backgroundColor: 'transparent',
-    borderWidth: 2,
-    borderColor: '#29D3FF',
-    paddingVertical: 18,
-    paddingHorizontal: 30,
-    borderRadius: 16,
-    alignItems: "center",
-  },
-  secondaryActionButtonText: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#29D3FF',
     textAlign: 'center',
   },
   playgroundSubtext: {

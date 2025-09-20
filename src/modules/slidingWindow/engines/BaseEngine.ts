@@ -52,6 +52,21 @@ export interface UIState {
   stringElements?: StringElement[];
   // Binary transformation
   binaryArray?: number[];
+  // Advanced engine specific fields
+  targetString?: string;
+  pattern?: string;
+  anagramCount?: number;
+  minWindow?: string;
+  product?: number;
+  targetProduct?: number;
+  validSubarrays?: number;
+  charMap?: Record<string, number>;
+  left?: number;
+  right?: number;
+  patternFreq?: Record<string, number>;
+  windowFreq?: Record<string, number>;
+  matches?: number;
+  requiredMatches?: number;
 }
 
 export interface ArrayElement {

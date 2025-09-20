@@ -1,0 +1,91 @@
+{
+  "problemId": "ts7",
+  "title": "Longest Path in a Directed Acyclic Graph — DP on Topo Order",
+  "difficulty": "Medium",
+  "category": "Graph",
+  "moduleId": "topological_sort",
+  "submoduleId": "dp_applications",
+  "tags": ["Graph", "DP", "Kahn's Algorithm", "Relaxation"],
+  "description": "Given a DAG (optionally weighted), compute the longest path from a source to all vertices (or the overall longest path). After producing a topological order, relax edges in that order to compute longest distances (DP).",
+  "aim": "Master DP on topo order — how topo converts otherwise-hard longest path problems into linear-time DP on DAGs.",
+  "input_format": "Number of vertices, edges with optional weights, and source vertex",
+  "output_format": "Length of longest path from source (or overall longest path)",
+  "max_input": 1000,
+  "example": {
+    "input": "V=6, edges=[[0,1],[0,2],[1,3],[2,3],[3,4],[2,5]], source=0",
+    "output": "3"
+  },
+  "examples": [
+    {
+      "input": "V=6, edges=[[0,1],[0,2],[1,3],[2,3],[3,4],[2,5]], source=0",
+      "output": "3",
+      "explanation": "Longest path from 0: 0→2→3→4 (length 3). Unweighted edges have weight 1."
+    },
+    {
+      "input": "V=3, weighted_edges=[(0,1,5),(1,2,3),(0,2,2)], source=0",
+      "output": "8",
+      "explanation": "Longest path from 0: 0→1→2 with total weight 5+3=8."
+    }
+  ],
+  "constraints": [
+    "1 <= V <= 1000",
+    "0 <= edges.length <= V*(V-1)/2",
+    "Graph is guaranteed to be a DAG",
+    "Edge weights can be positive, negative, or zero"
+  ],
+  "approach": "Get topological order, then relax edges in that order. For each vertex in topo order, update distances to its neighbors using DP recurrence.",
+  "timeComplexity": "O(V + E)",
+  "spaceComplexity": "O(V + E)",
+  "playground": {
+    "initialState": {
+      "vertices": [0, 1, 2, 3, 4, 5],
+      "edges": [[0,1,1],[0,2,1],[1,3,1],[2,3,1],[3,4,1],[2,5,1]],
+      "topoOrder": [],
+      "distances": {"0": 0, "1": -1, "2": -1, "3": -1, "4": -1, "5": -1},
+      "source": 0,
+      "step": 0,
+      "phase": "topo_sort"
+    }
+  },
+  "ui_config": {
+    "visualizer": {
+      "type": "longest_path_dag",
+      "show_topo_order": true,
+      "show_distances": true,
+      "show_relaxation": true,
+      "highlight_longest_path": true,
+      "animate_dp_updates": true
+    },
+    "colors": {
+      "vertex_source": "#4CAF50",
+      "vertex_reachable": "#2196F3",
+      "vertex_unreachable": "#666",
+      "vertex_processing": "#FFC107",
+      "edge_relaxed": "#4CAF50",
+      "edge_not_relaxed": "#666",
+      "longest_path": "#F44336"
+    }
+  },
+  "jarvis_prompts": {
+    "welcome": "Let's find the longest path in a DAG! 📏 This is where topological sort shines for DP problems.",
+    "topo_sort_phase": "First, we get a topological ordering. This ensures we process vertices in the right order for DP!",
+    "dp_initialization": "We initialize distances: source gets 0, all others get negative infinity (unreachable initially).",
+    "relaxation_phase": "Now we relax edges in topological order. Each vertex updates its neighbors' distances!",
+    "distance_update": "Great! We found a longer path to this vertex and updated its distance.",
+    "success": "🎉 Perfect! We found the longest path using topological sort and dynamic programming!"
+  },
+  "validation": {
+    "output": {
+      "validation_type": "integer",
+      "expected_logic": "longest_path_from_source"
+    }
+  },
+  "learning_objectives": [
+    "Master DP on topologically sorted DAGs",
+    "Understand edge relaxation in correct order",
+    "Apply to longest path problems",
+    "Learn why topo order enables efficient DP"
+  ],
+  "algorithm_focus": "Kahn",
+  "recommended_approach": "Use Kahn's algorithm to get topological order, then relax edges in that order for DP"
+}

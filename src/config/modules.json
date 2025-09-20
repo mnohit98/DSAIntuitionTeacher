@@ -1,0 +1,26 @@
+{
+  "modules": [
+    {
+      "id": "sliding-window",
+      "internalId": "slidingWindow",
+      "name": "Sliding Window",
+      "description": "Master the sliding window technique for array problems",
+      "difficulty": "Intermediate",
+      "color": "#F59E0B",
+      "path": "slidingWindow",
+      "component": "SlidingWindowPlayground",
+      "problemPrefix": "p"
+    },
+    {
+      "id": "topological-sort", 
+      "internalId": "topological_sort",
+      "name": "Topological Sort",
+      "description": "Master topological sorting algorithms and their applications in dependency resolution, scheduling, and graph analysis",
+      "difficulty": "Advanced",
+      "color": "#EF4444", 
+      "path": "topologicalSort",
+      "component": "TopologicalSortPlayground",
+      "problemPrefix": "ts"
+    }
+  ]
+}

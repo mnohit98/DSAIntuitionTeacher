@@ -1,0 +1,104 @@
+{
+  "id": "topological-sort",
+  "name": "Topological Sort",
+  "description": "Learn topological sorting algorithms for directed graphs",
+  "ui": {
+    "header": {
+      "title": "Topological Sort"
+    },
+    "chat": {
+      "initialMessage": "Welcome to Topological Sort! Let's explore how to order dependencies step by step. Click on a node to start the algorithm.",
+      "aiAssistantEnabled": false
+    },
+    "sidebar": {
+      "enabled": true,
+      "sections": [
+        {
+          "id": "currentStep",
+          "title": "Step Progress",
+          "type": "currentStep",
+          "icon": "",
+          "enabled": true
+        },
+        {
+          "id": "variables",
+          "title": "Algorithm State",
+          "type": "variables",
+          "icon": "",
+          "enabled": true
+        },
+        {
+          "id": "codeHint",
+          "title": "Code Reference",
+          "type": "codeHint",
+          "icon": "",
+          "enabled": false
+        }
+      ]
+    },
+    "legend": {
+      "enabled": true,
+      "items": [
+        {
+          "color": "#F59E0B",
+          "borderColor": "#D97706",
+          "label": "Not yet reached",
+          "icon": "⏳"
+        },
+        {
+          "color": "#22C55E",
+          "borderColor": "#16A34A",
+          "label": "In current process",
+          "icon": "🎯"
+        },
+        {
+          "color": "#EF4444",
+          "borderColor": "#DC2626",
+          "label": "Completed",
+          "icon": "✅"
+        },
+        {
+          "color": "#8B5CF6",
+          "borderColor": "#7C3AED",
+          "label": "In result order",
+          "icon": "📋"
+        }
+      ]
+    },
+    "stepTracking": {
+      "enabled": true,
+      "showProgress": true
+    }
+  },
+  "engine": {
+    "type": "topological-sort",
+    "variableExtractors": [
+      {
+        "name": "visited",
+        "path": "$.uiState.visited",
+        "description": "Nodes visited",
+        "type": "object",
+        "formatter": "countKeys"
+      },
+      {
+        "name": "inDegree",
+        "path": "$.uiState.inDegree",
+        "description": "In-degree map",
+        "type": "object",
+        "formatter": "jsonStringify"
+      },
+      {
+        "name": "result",
+        "path": "$.uiState.result",
+        "description": "Topological order",
+        "type": "array"
+      },
+      {
+        "name": "currentNode",
+        "path": "$.uiState.currentNode",
+        "description": "Currently processing node",
+        "type": "string"
+      }
+    ]
+  }
+}

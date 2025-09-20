@@ -5,44 +5,34 @@
     {
       "submoduleId": "sw_fixed",
       "title": "Fixed-size Sliding Window",
-      "description": "Learn how to solve problems where the window size is constant.",
+      "description": "Learn the core fixed window template with sum, max, min, and auxiliary structures.",
       "problems": [
         { "problemId": "p1", "title": "Maximum Sum Subarray of Size K" },
-        { "problemId": "p2", "title": "Maximum Points You Can Obtain from Cards" },
-        { "problemId": "p3", "title": "First Negative Number in Every Window of Size K" }
+        { "problemId": "p2", "title": "First Negative Number in Every Window of Size K" }
       ]
     },
     {
       "submoduleId": "sw_variable",
       "title": "Variable-size Sliding Window",
-      "description": "Handle problems where the window expands or shrinks dynamically.",
+      "description": "Master the expand/shrink technique for dynamic window problems.",
       "problems": [
-        { "problemId": "p4", "title": "Smallest Subarray With a Greater Sum" },
-        { "problemId": "p5", "title": "Longest Substring Without Repeating Characters" },
-        { "problemId": "p6", "title": "Longest Substring With At Most K Distinct Characters" },
-        { "problemId": "p7", "title": "Fruit Into Baskets" },
-        { "problemId": "p8", "title": "Max Consecutive Ones III" },
-        { "problemId": "p9", "title": "Longest Repeating Character Replacement" },
-        { "problemId": "p10", "title": "Longest Subarray with Ones after Replacement" },
-        { "problemId": "p11", "title": "Number of Substrings Containing All Three Characters" },
-        { "problemId": "p12", "title": "Binary Subarray With Sum" },
-        { "problemId": "p13", "title": "Count Number of Nice Subarrays" }
+        { "problemId": "p3", "title": "Smallest Subarray With a Greater Sum" },
+        { "problemId": "p4", "title": "Longest Substring Without Repeating Characters" },
+        { "problemId": "p5", "title": "Longest Substring with At Most K Distinct Characters" },
+        { "problemId": "p6", "title": "Fruit Into Baskets" },
+        { "problemId": "p7", "title": "Max Consecutive Ones III" }
       ]
     },
     {
       "submoduleId": "sw_advanced",
       "title": "Advanced Sliding Window",
-      "description": "Complex problems combining sliding window with hashing, prefix sums, or two pointers.",
+      "description": "Complex problems combining sliding window with hashing, frequency maps, and advanced techniques.",
       "problems": [
-        { "problemId": "p14", "title": "Longest Substring with Same Letters After Replacement" },
-        { "problemId": "p15", "title": "Permutation in String" },
-        { "problemId": "p16", "title": "String Anagrams" },
-        { "problemId": "p17", "title": "Smallest Window Containing Substring" },
-        { "problemId": "p18", "title": "Minimum Window Subsequence" },
-        { "problemId": "p19", "title": "Words Concatenation" },
-        { "problemId": "p20", "title": "Subarray with K Different Integers" },
-        { "problemId": "p21", "title": "Counting Subarrays with Product Less than a Target" },
-        { "problemId": "p22", "title": "Subarrays with Product Less than a Target" }
+        { "problemId": "p8", "title": "Longest Repeating Character Replacement" },
+        { "problemId": "p9", "title": "Permutation in String" },
+        { "problemId": "p10", "title": "Smallest Window Containing Substring" },
+        { "problemId": "p11", "title": "Words Concatenation" },
+        { "problemId": "p12", "title": "Subarray with K Different Integers" }
       ]
     }
   ]

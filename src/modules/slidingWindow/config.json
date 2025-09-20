@@ -1,0 +1,102 @@
+{
+  "id": "sliding-window",
+  "name": "Sliding Window",
+  "description": "Learn sliding window technique for array problems",
+  "ui": {
+    "header": {
+      "title": "Sliding Window"
+    },
+    "chat": {
+      "initialMessage": "Welcome to Sliding Window! Let's start by initializing our variables. Click the 'Initialize' button to set up windowSum = 0, maxSum = 0, and windowStart = 0.",
+      "aiAssistantEnabled": true
+    },
+    "sidebar": {
+      "enabled": false,
+      "sections": [
+        {
+          "id": "currentStep",
+          "title": "Step Progress",
+          "type": "currentStep",
+          "icon": "",
+          "enabled": false
+        },
+        {
+          "id": "codeHint",
+          "title": "Code Reference",
+          "type": "codeHint",
+          "icon": "",
+          "enabled": false
+        }
+      ]
+    },
+    "legend": {
+      "enabled": false,
+      "items": [
+        {
+          "color": "#F59E0B",
+          "borderColor": "#D97706",
+          "label": "Upcoming",
+          "icon": ""
+        },
+        {
+          "color": "#22C55E",
+          "borderColor": "#16A34A",
+          "label": "Current Window",
+          "icon": ""
+        },
+        {
+          "color": "#EF4444",
+          "borderColor": "#DC2626",
+          "label": "Processed",
+          "icon": ""
+        }
+      ]
+    },
+    "stepTracking": {
+      "enabled": true,
+      "showProgress": true
+    }
+  },
+  "engine": {
+    "type": "sliding-window",
+    "variableExtractors": [
+      {
+        "name": "k",
+        "path": "$.problemData.playground.initialState.k",
+        "description": "Target window size",
+        "type": "number"
+      },
+      {
+        "name": "windowSum",
+        "path": "$.uiState.windowSum",
+        "description": "Current window sum",
+        "type": "number"
+      },
+      {
+        "name": "maxSum",
+        "path": "$.uiState.maxSum",
+        "description": "Maximum sum found",
+        "type": "number"
+      },
+      {
+        "name": "currentWindowSize",
+        "path": "$.uiState.highlightedElements",
+        "description": "Current window size",
+        "type": "number",
+        "formatter": "arrayLength"
+      },
+      {
+        "name": "windowStart",
+        "path": "$.uiState.windowStart",
+        "description": "Window start index",
+        "type": "number"
+      },
+      {
+        "name": "windowEnd",
+        "path": "$.uiState.windowEnd",
+        "description": "Window end index",
+        "type": "number"
+      }
+    ]
+  }
+}

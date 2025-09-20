@@ -1,0 +1,44 @@
+{
+  "moduleId": "topological_sort",
+  "moduleName": "Topological Sort",
+  "description": "Master topological sorting algorithms and their applications in dependency resolution, scheduling, and graph analysis.",
+  "submodules": [
+    {
+      "submoduleId": "ts_fundamentals",
+      "title": "Foundation Algorithms",
+      "description": "Master both DFS and Kahn's algorithms - the two core approaches to topological sorting.",
+      "problems": [
+        { "problemId": "ts1", "title": "Topological Sort using DFS (Depth-First Search)" },
+        { "problemId": "ts2", "title": "Topological Sort using Kahn's Algorithm (BFS-based)" }
+      ]
+    },
+    {
+      "submoduleId": "ts_applications", 
+      "title": "Core Applications",
+      "description": "Learn practical applications: cycle detection and order construction for scheduling problems.",
+      "problems": [
+        { "problemId": "ts3", "title": "Course Schedule — Cycle Detection" },
+        { "problemId": "ts4", "title": "Course Schedule II — Construct a Valid Order" }
+      ]
+    },
+    {
+      "submoduleId": "ts_constraints",
+      "title": "Advanced Constraints & Validation",
+      "description": "Handle complex constraint validation and graph construction from implicit relationships.",
+      "problems": [
+        { "problemId": "ts5", "title": "Sequence Reconstruction — Unique Topological Order" },
+        { "problemId": "ts6", "title": "Alien Dictionary — Build Graph From Lexicographic Constraints" }
+      ]
+    },
+    {
+      "submoduleId": "ts_advanced",
+      "title": "DP Integration & Complex Scenarios",
+      "description": "Combine topological sort with dynamic programming, aggregation, and multi-level hierarchies.",
+      "problems": [
+        { "problemId": "ts7", "title": "Longest Path in a Directed Acyclic Graph — DP on Topo Order" },
+        { "problemId": "ts8", "title": "Largest Color Value in a Directed Graph — Aggregate Counts Along Topo" },
+        { "problemId": "ts9", "title": "Sort Items by Groups Respecting Dependencies — Two-level Topological Sort" }
+      ]
+    }
+  ]
+}

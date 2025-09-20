@@ -1,0 +1,94 @@
+{
+  "problemId": "ts9",
+  "title": "Sort Items by Groups Respecting Dependencies — Two-level Topological Sort",
+  "difficulty": "Hard",
+  "category": "Graph",
+  "moduleId": "topological_sort",
+  "submoduleId": "hierarchical_sorting",
+  "tags": ["Graph", "Grouping", "Hierarchical Topo", "Kahn's Algorithm"],
+  "description": "Given n items and m groups (group[i] = group id or -1), plus beforeItems constraints, return an ordering of items that respects both item-level and group-level dependencies. Typical solution: assign unique groups for ungrouped items, build a group graph and item graph, topologically sort groups, then sort items within group respecting order.",
+  "aim": "Learn how to collapse and combine multiple dependency layers into coordinated topo orders.",
+  "input_format": "Number of items, groups, group assignments, and item dependencies",
+  "output_format": "Array of item ordering or empty array if impossible",
+  "max_input": 30000,
+  "example": {
+    "input": "n=8, m=2, group=[-1,-1,1,0,0,1,0,-1], beforeItems=[[],[6],[5],[6],[3,6],[],[],[]]",
+    "output": "[6,3,4,0,5,2,1,7]"
+  },
+  "examples": [
+    {
+      "input": "n=8, m=2, group=[-1,-1,1,0,0,1,0,-1], beforeItems=[[],[6],[5],[6],[3,6],[],[],[]]",
+      "output": "[6,3,4,0,5,2,1,7]",
+      "explanation": "Group dependencies and item dependencies within groups are both respected."
+    }
+  ],
+  "constraints": [
+    "1 <= m <= n <= 3 * 10^4",
+    "group.length == beforeItems.length == n",
+    "-1 <= group[i] <= m-1",
+    "1 <= beforeItems[i].length <= n-1",
+    "0 <= beforeItems[i][j] <= n-1",
+    "beforeItems[i] does not contain i"
+  ],
+  "approach": "1) Assign unique groups to ungrouped items. 2) Build group graph and item graph. 3) Topologically sort groups. 4) For each group in order, topologically sort its items.",
+  "timeComplexity": "O(V + E)",
+  "spaceComplexity": "O(V + E)",
+  "playground": {
+    "initialState": {
+      "n": 8,
+      "m": 2,
+      "group": [-1,-1,1,0,0,1,0,-1],
+      "beforeItems": [[],[6],[5],[6],[3,6],[],[],[]],
+      "groupGraph": {},
+      "itemGraph": {},
+      "groupOrder": [],
+      "result": [],
+      "step": 0,
+      "phase": "assign_groups"
+    }
+  },
+  "ui_config": {
+    "visualizer": {
+      "type": "hierarchical_topo_sort",
+      "show_group_assignment": true,
+      "show_group_graph": true,
+      "show_item_graph": true,
+      "show_group_ordering": true,
+      "show_item_ordering": true,
+      "animate_two_level_sort": true
+    },
+    "colors": {
+      "group_0": "#F44336",
+      "group_1": "#4CAF50",
+      "group_new": "#2196F3",
+      "item_in_group": "#FFC107",
+      "dependency_group": "#9C27B0",
+      "dependency_item": "#FF5722",
+      "result_item": "#607D8B"
+    }
+  },
+  "jarvis_prompts": {
+    "welcome": "Let's tackle Two-level Topological Sort! 🏗️ We need to respect both group and item dependencies.",
+    "assign_groups": "First, we assign unique groups to ungrouped items (those with group -1).",
+    "build_graphs": "Now we build two graphs: one for group dependencies and one for item dependencies within groups.",
+    "sort_groups": "Let's topologically sort the groups first. This gives us the order to process groups!",
+    "sort_items": "Now for each group in order, we topologically sort the items within that group.",
+    "cycle_detected": "⚠️ Cycle detected in dependencies! No valid ordering exists.",
+    "success": "🎉 Excellent! We successfully created a two-level topological ordering!"
+  },
+  "validation": {
+    "output": {
+      "validation_type": "hierarchical_topo_order",
+      "check_group_constraints": true,
+      "check_item_constraints": true
+    }
+  },
+  "learning_objectives": [
+    "Handle multi-level dependency systems",
+    "Combine multiple topological sorts",
+    "Manage complex constraint hierarchies",
+    "Apply to real-world scheduling systems"
+  ],
+  "algorithm_focus": "Kahn",
+  "recommended_approach": "Use Kahn's algorithm for both group-level and item-level sorting"
+}

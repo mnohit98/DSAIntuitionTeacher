@@ -54,10 +54,16 @@ export class FixedSizeEngine extends BaseEngine {
       if (!isStepComplete) {
         this.currentState.currentStep++;
         this.currentState.uiState = nextState;
-        console.log(`Moved to step ${this.currentState.currentStep + 1}`);
+        console.log(`Moved to step index ${this.currentState.currentStep} (stepId: ${this.problemData.playground.steps[this.currentState.currentStep].stepId})`);
       } else {
-        this.currentState.isCompleted = true;
-        console.log('Playground completed!');
+        // Handle completion
+        if (currentStep.expectedAction === 'complete_algorithm') {
+          this.currentState.isCompleted = true;
+          console.log('Algorithm completed successfully!');
+        } else {
+          this.currentState.isCompleted = true;
+          console.log('Playground completed!');
+        }
         // Don't update uiState for the last step - keep current state
       }
 
@@ -107,8 +113,7 @@ export class FixedSizeEngine extends BaseEngine {
         return isValid;
       
       case 'complete_algorithm':
-        return action === 'complete_algorithm' && 
-               elementIndex === step.expectedElementIndex;
+        return action === 'complete_algorithm';
       
       default:
         return false;

@@ -13,20 +13,31 @@ interface Props {
   };
   onElementPress: (index: number) => void;
   expectedIndex?: number;
+  showInitializeButton?: boolean;
+  onInitializePress?: () => void;
+  showCompleteButton?: boolean;
+  onCompletePress?: () => void;
 }
 
-export default function DataVisualizer({ uiState, onElementPress, expectedIndex }: Props) {
+export default function DataVisualizer({ 
+  uiState, 
+  onElementPress, 
+  expectedIndex, 
+  showInitializeButton = false, 
+  onInitializePress,
+  showCompleteButton = false,
+  onCompletePress
+}: Props) {
   const [/*showInfoDropdown*/, /*setShowInfoDropdown*/] = useState(false);
 
   const blinkAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(blinkAnim, { toValue: 1, duration: 700, easing: Easing.inOut(Easing.quad), useNativeDriver: false }),
-        Animated.timing(blinkAnim, { toValue: 0, duration: 700, easing: Easing.inOut(Easing.quad), useNativeDriver: false }),
-      ])
-    ).start();
+    // Single blink animation - runs only once
+    Animated.sequence([
+      Animated.timing(blinkAnim, { toValue: 1, duration: 700, easing: Easing.inOut(Easing.quad), useNativeDriver: false }),
+      Animated.timing(blinkAnim, { toValue: 0, duration: 700, easing: Easing.inOut(Easing.quad), useNativeDriver: false }),
+    ]).start();
   }, [blinkAnim]);
 
   const getElementStyle = (element: DataElement) => {
@@ -59,48 +70,85 @@ export default function DataVisualizer({ uiState, onElementPress, expectedIndex 
     <View style={styles.container}>
       <View style={styles.dataContainer}>
         {uiState.arrayElements.map((element: DataElement, index: number) => {
-          const isExpected = typeof expectedIndex === 'number' && expectedIndex === index && element.state !== 'out_of_window_past';
-          const highlightOpacity = blinkAnim.interpolate({ inputRange: [0, 1], outputRange: [0.25, 1] });
-          const highlightBorder = blinkAnim.interpolate({ inputRange: [0, 1], outputRange: [0, 1] });
-
           const content = (
-            <TouchableOpacity
-              style={getElementStyle(element)}
-              onPress={() => onElementPress(index)}
-              disabled={element.state === 'out_of_window_past'}
-            >
-              <Text style={getElementTextStyle(element)}>{element.value}</Text>
-            </TouchableOpacity>
+            <View style={styles.elementContainer}>
+              <TouchableOpacity
+                style={getElementStyle(element)}
+                onPress={() => onElementPress(index)}
+                disabled={element.state === 'out_of_window_past'}
+              >
+                <Text style={getElementTextStyle(element)}>{element.value}</Text>
+              </TouchableOpacity>
+              <Text style={styles.indexText}>{index}</Text>
+            </View>
           );
 
-          if (!isExpected) {
-            return (
-              <View key={index} style={styles.elementWrapper}>
-                {content}
-              </View>
-            );
-          }
-
           return (
-            <Animated.View
-              key={index}
-              style={[
-                styles.elementWrapper,
-                styles.blinkWrapper,
-                {
-                  borderColor: '#F5D90A',
-                  borderWidth: 2,
-                  shadowColor: '#F5D90A',
-                  shadowOpacity: highlightOpacity as unknown as number,
-                  opacity: highlightOpacity as unknown as number,
-                },
-              ]}
-            >
+            <View key={index} style={styles.elementWrapper}>
               {content}
-            </Animated.View>
+            </View>
           );
         })}
       </View>
+      
+      {/* Initialize Button */}
+      {showInitializeButton && onInitializePress && (
+        <View style={styles.initializeButtonContainer}>
+          <Animated.View
+            style={[
+              styles.initializeButtonWrapper,
+              {
+                shadowOpacity: blinkAnim.interpolate({ inputRange: [0, 1], outputRange: [0.3, 0.8] }),
+                transform: [
+                  {
+                    scale: blinkAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 1.05] })
+                  }
+                ]
+              }
+            ]}
+          >
+            <TouchableOpacity
+              style={styles.initializeButton}
+              onPress={onInitializePress}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.initializeButtonText}>Initialize Variables</Text>
+              <Text style={styles.initializeButtonSubtext}>Click to set up algorithm variables</Text>
+            </TouchableOpacity>
+          </Animated.View>
+        </View>
+      )}
+      
+      {/* Complete Algorithm Button */}
+      {showCompleteButton && onCompletePress && (
+        <View style={styles.completeButtonContainer}>
+          <Animated.View
+            style={[
+              styles.completeButtonWrapper,
+              {
+                shadowOpacity: blinkAnim.interpolate({ inputRange: [0, 1], outputRange: [0.3, 0.8] }),
+                transform: [
+                  {
+                    scale: blinkAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 1.05] })
+                  }
+                ]
+              }
+            ]}
+          >
+            <TouchableOpacity
+              style={styles.completeButton}
+              onPress={() => {
+                console.log('Complete Algorithm button pressed!');
+                onCompletePress();
+              }}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.completeButtonText}>🎉 Complete Algorithm</Text>
+              <Text style={styles.completeButtonSubtext}>Click to finish the walkthrough</Text>
+            </TouchableOpacity>
+          </Animated.View>
+        </View>
+      )}
     </View>
   );
 }
@@ -139,9 +187,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginHorizontal: 6,
   },
-  blinkWrapper: {
-    borderRadius: 14,
-    padding: 2,
+  elementContainer: {
+    alignItems: 'center',
   },
   element: {
     width: 60,
@@ -195,6 +242,77 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#64748B',
     fontWeight: '600',
+    textAlign: 'center',
+    marginTop: 4,
+  },
+  
+  // Initialize Button Styles
+  initializeButtonContainer: {
+    marginTop: 24,
+    alignItems: 'center',
+  },
+  initializeButtonWrapper: {
+    shadowColor: '#F5D90A',
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 8,
+    elevation: 8,
+    borderRadius: 12,
+  },
+  initializeButton: {
+    backgroundColor: '#F5D90A',
+    borderRadius: 12,
+    paddingVertical: 16,
+    paddingHorizontal: 24,
+    borderWidth: 2,
+    borderColor: '#D97706',
+    alignItems: 'center',
+    minWidth: 200,
+  },
+  initializeButtonText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#080A0D',
+    marginBottom: 4,
+  },
+  initializeButtonSubtext: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: '#1F2937',
+    textAlign: 'center',
+  },
+  
+  // Complete Algorithm Button Styles
+  completeButtonContainer: {
+    marginTop: 24,
+    alignItems: 'center',
+  },
+  completeButtonWrapper: {
+    shadowColor: '#10B981',
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 8,
+    elevation: 8,
+    borderRadius: 12,
+  },
+  completeButton: {
+    backgroundColor: '#10B981',
+    borderRadius: 12,
+    paddingVertical: 16,
+    paddingHorizontal: 24,
+    borderWidth: 2,
+    borderColor: '#059669',
+    alignItems: 'center',
+    minWidth: 200,
+  },
+  completeButtonText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    marginBottom: 4,
+  },
+  completeButtonSubtext: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: '#D1FAE5',
     textAlign: 'center',
   },
 });

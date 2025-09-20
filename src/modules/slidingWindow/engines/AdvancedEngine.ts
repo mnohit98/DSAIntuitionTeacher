@@ -5,7 +5,7 @@ export class AdvancedEngine extends BaseEngine {
     const initialState = this.problemData.playground.initialState;
     return {
       currentStep: 0,
-      totalSteps: this.problemData.playground.steps.length,
+      totalSteps: this.problemData.playground.steps?.length || 0,
       uiState: {
         arrayElements: initialState.array?.map((value: number, index: number) => ({
           value,

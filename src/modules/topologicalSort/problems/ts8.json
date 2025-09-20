@@ -1,0 +1,94 @@
+{
+  "problemId": "ts8",
+  "title": "Largest Color Value in a Directed Graph — Aggregate Counts Along Topo",
+  "difficulty": "Hard",
+  "category": "Graph",
+  "moduleId": "topological_sort",
+  "submoduleId": "aggregation_problems",
+  "tags": ["Graph", "DP", "Aggregation", "Kahn's Algorithm"],
+  "description": "Given n colored nodes (colors string) and directed edges, return the largest number of occurrences of any color along any path. If a cycle exists return -1. Use topo sort and propagate color-count vectors: for each neighbor, count[neighbor][c] = max(count[neighbor][c], count[node][c]), incrementing the node's own color.",
+  "aim": "Practice maintaining and propagating aggregated state per node during topo traversal and handling memory/complexity tradeoffs.",
+  "input_format": "String of node colors and list of directed edges",
+  "output_format": "Maximum count of any color along any path, or -1 if cycle exists",
+  "max_input": 100000,
+  "example": {
+    "input": "colors=\"abaca\", edges=[[0,1],[0,2],[2,3],[3,4]]",
+    "output": "3"
+  },
+  "examples": [
+    {
+      "input": "colors=\"abaca\", edges=[[0,1],[0,2],[2,3],[3,4]]",
+      "output": "3",
+      "explanation": "Path 0→2→3→4 has colors a→a→c→a. Color 'a' appears 3 times, which is the maximum."
+    },
+    {
+      "input": "colors=\"a\", edges=[[0,0]]",
+      "output": "-1",
+      "explanation": "Self-loop creates a cycle, so return -1."
+    }
+  ],
+  "constraints": [
+    "n == colors.length",
+    "1 <= n <= 10^5",
+    "0 <= edges.length <= 10^5",
+    "colors consists of lowercase English letters",
+    "0 <= edges[i][j] < n"
+  ],
+  "approach": "Use Kahn's algorithm with color count arrays. For each node, maintain count of each color on paths ending at that node. Propagate and update counts during topological traversal.",
+  "timeComplexity": "O(V + E) * 26",
+  "spaceComplexity": "O(V * 26)",
+  "playground": {
+    "initialState": {
+      "colors": "abaca",
+      "edges": [[0,1],[0,2],[2,3],[3,4]],
+      "graph": {"0": [1,2], "1": [], "2": [3], "3": [4], "4": []},
+      "inDegrees": [0, 1, 1, 1, 1],
+      "colorCounts": {},
+      "queue": [0],
+      "maxCount": 0,
+      "step": 0
+    }
+  },
+  "ui_config": {
+    "visualizer": {
+      "type": "color_value_aggregation",
+      "show_node_colors": true,
+      "show_color_counts": true,
+      "show_propagation": true,
+      "highlight_max_path": true,
+      "animate_count_updates": true
+    },
+    "colors": {
+      "node_color_a": "#F44336",
+      "node_color_b": "#4CAF50",
+      "node_color_c": "#2196F3",
+      "count_increasing": "#FFC107",
+      "count_max": "#9C27B0",
+      "propagation_arrow": "#666",
+      "max_path": "#FF5722"
+    }
+  },
+  "jarvis_prompts": {
+    "welcome": "Let's find the largest color value along any path! 🎨 We'll use topological sort with color counting.",
+    "initialization": "We initialize color counts for each node. Each node starts with count 1 for its own color!",
+    "propagation": "As we process nodes in topological order, we propagate color counts to neighbors!",
+    "count_update": "Great! We're updating the color counts by taking the maximum from all incoming paths.",
+    "max_found": "Excellent! We found a path with higher color count - updating our maximum!",
+    "cycle_detected": "⚠️ Cycle detected! We can't process all nodes, so return -1.",
+    "success": "🎉 Perfect! We found the maximum color value along any path in the DAG!"
+  },
+  "validation": {
+    "output": {
+      "validation_type": "integer",
+      "expected_logic": "max_color_count_or_cycle"
+    }
+  },
+  "learning_objectives": [
+    "Maintain aggregated state during topological traversal",
+    "Handle multi-dimensional DP on graphs",
+    "Optimize memory usage for large state spaces",
+    "Apply to path aggregation problems"
+  ],
+  "algorithm_focus": "Kahn",
+  "recommended_approach": "Use Kahn's algorithm with color count arrays - natural for state propagation"
+}

@@ -1,303 +1,47 @@
 {
   "problemId": "p11",
-  "title": "Number of Substrings Containing All Three Characters",
-  "description": "Given a string s consisting only of characters 'a', 'b', and 'c', find the number of substrings that contain at least one occurrence of each character: 'a', 'b', and 'c'.",
-  "aim": "Demonstrate variable-size sliding window with character frequency tracking; expand until all three characters are present, then count all valid substrings ending at current position.",
+  "title": "Words Concatenation",
+  "description": "Given a string and an array of words of equal length, find all starting indices where a concatenation of all words appears as a substring.",
+  "aim": "Master the technique of using sliding window with fixed chunking and hashmap for complex pattern matching.",
   "moduleId": "slidingWindow",
-  "submoduleId": "sw_variable",
-  "difficulty": "Medium",
-  "tags": ["String", "Sliding Window", "Variable Size", "Character Frequency", "Substring Counting", "Hash Map"],
+  "submoduleId": "sw_advanced",
+  "difficulty": "Hard",
+  "tags": ["sliding-window", "hashmap", "string", "chunking", "advanced"],
   "examples": [
-    { "input": "s = \"abcba\"", "output": "5", "explanation": "The substrings containing all 'a', 'b', and 'c' are: \"abc\", \"abcb\", \"abcba\", \"bcba\", \"cba\"." },
-    { "input": "s = \"ccabcc\"", "output": "8", "explanation": "The substrings containing all 'a', 'b', and 'c' are: \"ccab\", \"ccabc\", \"ccabcc\", \"cab\", \"cabc\", \"cabcc\", \"abc\", \"abcc\"." }
+    {
+      "input": "s = \"barfoothefoobarman\", words = [\"foo\", \"bar\"]",
+      "output": "[0, 9]",
+      "explanation": "The substring starting at index 0 is \"barfoo\". It is a concatenation of [\"bar\", \"foo\"] which is a permutation of words. The substring starting at index 9 is \"foobar\". It is a concatenation of [\"foo\", \"bar\"] which is a permutation of words."
+    },
+    {
+      "input": "s = \"wordgoodgoodgoodbestword\", words = [\"word\", \"good\", \"best\", \"good\"]",
+      "output": "[]",
+      "explanation": "No valid concatenation exists."
+    }
   ],
   "playground": {
     "initialState": {
-      "string": "abcba",
-      "windowStart": 0,
-      "windowEnd": 0,
-      "count": 0,
-      "charFrequency": {},
-      "bestWindow": null
+      "string": "barfoothefoobarman",
+      "words": ["foo", "bar"],
+      "windowSize": 6,
+      "wordLength": 3,
+      "wordCount": 2
     },
-    "steps": [
-      {
-        "stepId": 1,
-        "description": "Initialize variables. We'll track character frequencies to know when our window contains all three characters.",
-        "expectedAction": "click_initialize",
-        "uiState": {
-          "stringElements": [
-            {"value": "a", "state": "not_yet_reached", "index": 0},
-            {"value": "b", "state": "not_yet_reached", "index": 1},
-            {"value": "c", "state": "not_yet_reached", "index": 2},
-            {"value": "b", "state": "not_yet_reached", "index": 3},
-            {"value": "a", "state": "not_yet_reached", "index": 4}
-          ],
-          "windowStart": null,
-          "windowEnd": null,
-          "count": 0,
-          "charFrequency": {},
-          "bestWindow": null,
-          "highlightedElements": []
-        },
-        "jarvisMessage": "Welcome! We'll use a sliding window to find all substrings containing 'a', 'b', and 'c'. We'll track character frequencies and count valid substrings.",
-        "codeHint": "// Initialize\nlet windowStart = 0;\nlet count = 0;\nlet charFrequency = {a: 0, b: 0, c: 0};",
-        "codeBotMessage": "We'll expand the window until it contains all three characters, then count all valid substrings ending at the current position.",
-        "codeSnippet": "let windowStart = 0;\nlet count = 0;\nlet charFrequency = {a: 0, b: 0, c: 0};"
-      },
-      {
-        "stepId": 2,
-        "description": "Expand: add 'a'. freq[a]=1, freq[b]=0, freq[c]=0. Window doesn't contain all three characters yet.",
-        "expectedAction": "expand_window",
-        "expectedElementIndex": 0,
-        "uiState": {
-          "stringElements": [
-            {"value": "a", "state": "in_window", "index": 0},
-            {"value": "b", "state": "not_yet_reached", "index": 1},
-            {"value": "c", "state": "not_yet_reached", "index": 2},
-            {"value": "b", "state": "not_yet_reached", "index": 3},
-            {"value": "a", "state": "not_yet_reached", "index": 4}
-          ],
-          "windowStart": 0,
-          "windowEnd": 0,
-          "count": 0,
-          "charFrequency": {"a": 1, "b": 0, "c": 0},
-          "bestWindow": [0, 0],
-          "highlightedElements": [0]
-        },
-        "jarvisMessage": "Added 'a'. Now freq[a]=1, freq[b]=0, freq[c]=0. Our window doesn't contain all three characters yet, so we can't count any valid substrings.",
-        "codeHint": "// Expand\ncharFrequency[s[windowEnd]]++;\n// Check if window contains all three characters",
-        "codeBotMessage": "Window \"a\" is not valid yet. We need 'b' and 'c' to make it valid.",
-        "codeSnippet": "// freq[a] = 1; freq[b] = 0; freq[c] = 0; count = 0;"
-      },
-      {
-        "stepId": 3,
-        "description": "Expand: add 'b'. freq[a]=1, freq[b]=1, freq[c]=0. Window still doesn't contain all three characters.",
-        "expectedAction": "expand_window",
-        "expectedElementIndex": 1,
-        "uiState": {
-          "stringElements": [
-            {"value": "a", "state": "in_window", "index": 0},
-            {"value": "b", "state": "in_window", "index": 1},
-            {"value": "c", "state": "not_yet_reached", "index": 2},
-            {"value": "b", "state": "not_yet_reached", "index": 3},
-            {"value": "a", "state": "not_yet_reached", "index": 4}
-          ],
-          "windowStart": 0,
-          "windowEnd": 1,
-          "count": 0,
-          "charFrequency": {"a": 1, "b": 1, "c": 0},
-          "bestWindow": [0, 1],
-          "highlightedElements": [0, 1]
-        },
-        "jarvisMessage": "Added 'b'. Now freq[a]=1, freq[b]=1, freq[c]=0. Our window still doesn't contain all three characters yet, so we can't count any valid substrings.",
-        "codeHint": "// Expand and check if valid",
-        "codeBotMessage": "Window \"ab\" is not valid yet. We still need 'c' to make it valid.",
-        "codeSnippet": "// freq[a] = 1; freq[b] = 1; freq[c] = 0; count = 0;"
-      },
-      {
-        "stepId": 4,
-        "description": "Expand: add 'c'. freq[a]=1, freq[b]=1, freq[c]=1. Window now contains all three characters! Count valid substrings.",
-        "expectedAction": "expand_window",
-        "expectedElementIndex": 2,
-        "uiState": {
-          "stringElements": [
-            {"value": "a", "state": "in_window", "index": 0},
-            {"value": "b", "state": "in_window", "index": 1},
-            {"value": "c", "state": "in_window", "index": 2},
-            {"value": "b", "state": "not_yet_reached", "index": 3},
-            {"value": "a", "state": "not_yet_reached", "index": 4}
-          ],
-          "windowStart": 0,
-          "windowEnd": 2,
-          "count": 3,
-          "charFrequency": {"a": 1, "b": 1, "c": 1},
-          "bestWindow": [0, 2],
-          "highlightedElements": [0, 1, 2]
-        },
-        "jarvisMessage": "Added 'c'! Now freq[a]=1, freq[b]=1, freq[c]=1. Our window contains all three characters! We can count valid substrings ending at position 2.",
-        "codeHint": "// Window is valid, count substrings\nwhile (charFrequency.a > 0 && charFrequency.b > 0 && charFrequency.c > 0) {\n  count += (n - windowEnd);\n  charFrequency[s[windowStart]]--;\n  windowStart++;\n}",
-        "codeBotMessage": "Window \"abc\" is valid! All substrings ending at position 2 are valid: \"abc\" (length 3), \"bc\" (length 2), \"c\" (length 1). Total: 3.",
-        "codeSnippet": "// freq[a] = 1; freq[b] = 1; freq[c] = 1; count = 3;"
-      },
-      {
-        "stepId": 5,
-        "description": "Contract: remove 'a'. freq[a]=0, freq[b]=1, freq[c]=1. Window no longer valid, stop contracting.",
-        "expectedAction": "contract_window",
-        "expectedElementIndex": 2,
-        "uiState": {
-          "stringElements": [
-            {"value": "a", "state": "out_of_window_past", "index": 0},
-            {"value": "b", "state": "in_window", "index": 1},
-            {"value": "c", "state": "in_window", "index": 2},
-            {"value": "b", "state": "not_yet_reached", "index": 3},
-            {"value": "a", "state": "not_yet_reached", "index": 4}
-          ],
-          "windowStart": 1,
-          "windowEnd": 2,
-          "count": 3,
-          "charFrequency": {"a": 0, "b": 1, "c": 1},
-          "bestWindow": [0, 2],
-          "highlightedElements": [1, 2]
-        },
-        "jarvisMessage": "Removed 'a'. Now freq[a]=0, freq[b]=1, freq[c]=1. Our window no longer contains all three characters, so we stop contracting.",
-        "codeHint": "// Stop contracting when window becomes invalid",
-        "codeBotMessage": "Window \"bc\" is not valid anymore. We need 'a' to make it valid again.",
-        "codeSnippet": "// freq[a] = 0; freq[b] = 1; freq[c] = 1; count = 3;"
-      },
-      {
-        "stepId": 6,
-        "description": "Expand: add 'b'. freq[a]=0, freq[b]=2, freq[c]=1. Window still doesn't contain all three characters.",
-        "expectedAction": "expand_window",
-        "expectedElementIndex": 3,
-        "uiState": {
-          "stringElements": [
-            {"value": "a", "state": "out_of_window_past", "index": 0},
-            {"value": "b", "state": "in_window", "index": 1},
-            {"value": "c", "state": "in_window", "index": 2},
-            {"value": "b", "state": "in_window", "index": 3},
-            {"value": "a", "state": "not_yet_reached", "index": 4}
-          ],
-          "windowStart": 1,
-          "windowEnd": 3,
-          "count": 3,
-          "charFrequency": {"a": 0, "b": 2, "c": 1},
-          "bestWindow": [0, 2],
-          "highlightedElements": [1, 2, 3]
-        },
-        "jarvisMessage": "Added 'b'. Now freq[a]=0, freq[b]=2, freq[c]=1. Our window still doesn't contain all three characters yet, so we can't count any valid substrings.",
-        "codeHint": "// Expand and check if valid",
-        "codeBotMessage": "Window \"bcb\" is not valid yet. We still need 'a' to make it valid.",
-        "codeSnippet": "// freq[a] = 0; freq[b] = 2; freq[c] = 1; count = 3;"
-      },
-      {
-        "stepId": 7,
-        "description": "Expand: add 'a'. freq[a]=1, freq[b]=2, freq[c]=1. Window now contains all three characters! Count valid substrings.",
-        "expectedAction": "expand_window",
-        "expectedElementIndex": 4,
-        "uiState": {
-          "stringElements": [
-            {"value": "a", "state": "out_of_window_past", "index": 0},
-            {"value": "b", "state": "in_window", "index": 1},
-            {"value": "c", "state": "in_window", "index": 2},
-            {"value": "b", "state": "in_window", "index": 3},
-            {"value": "a", "state": "in_window", "index": 4}
-          ],
-          "windowStart": 1,
-          "windowEnd": 4,
-          "count": 4,
-          "charFrequency": {"a": 1, "b": 2, "c": 1},
-          "bestWindow": [1, 4],
-          "highlightedElements": [1, 2, 3, 4]
-        },
-        "jarvisMessage": "Added 'a'! Now freq[a]=1, freq[b]=2, freq[c]=1. Our window contains all three characters again! We can count valid substrings ending at position 4.",
-        "codeHint": "// Window is valid again, count substrings",
-        "codeBotMessage": "Window \"bcba\" is valid! All substrings ending at position 4 are valid: \"bcba\" (length 4), \"cba\" (length 3), \"ba\" (length 2), \"a\" (length 1). But we already counted some, so we add 1 more.",
-        "codeSnippet": "// freq[a] = 1; freq[b] = 2; freq[c] = 1; count = 4;"
-      },
-      {
-        "stepId": 8,
-        "description": "Contract: remove 'b'. freq[a]=1, freq[b]=1, freq[c]=1. Window still valid, continue contracting and counting.",
-        "expectedAction": "contract_window",
-        "expectedElementIndex": 4,
-        "uiState": {
-          "stringElements": [
-            {"value": "a", "state": "out_of_window_past", "index": 0},
-            {"value": "b", "state": "out_of_window_past", "index": 1},
-            {"value": "c", "state": "in_window", "index": 2},
-            {"value": "b", "state": "in_window", "index": 3},
-            {"value": "a", "state": "in_window", "index": 4}
-          ],
-          "windowStart": 2,
-          "windowEnd": 4,
-          "count": 5,
-          "charFrequency": {"a": 1, "b": 1, "c": 1},
-          "bestWindow": [2, 4],
-          "highlightedElements": [2, 3, 4]
-        },
-        "jarvisMessage": "Removed 'b'. Now freq[a]=1, freq[b]=1, freq[c]=1. Our window still contains all three characters! We can count more valid substrings ending at position 4.",
-        "codeHint": "// Continue contracting while valid",
-        "codeBotMessage": "Window \"cba\" is still valid! All substrings ending at position 4 are valid: \"cba\" (length 3), \"ba\" (length 2), \"a\" (length 1). We add 1 more to our count.",
-        "codeSnippet": "// freq[a] = 1; freq[b] = 1; freq[c] = 1; count = 5;"
-      },
-      {
-        "stepId": 9,
-        "description": "Contract: remove 'c'. freq[a]=1, freq[b]=1, freq[c]=0. Window no longer valid, stop contracting.",
-        "expectedAction": "contract_window",
-        "expectedElementIndex": 4,
-        "uiState": {
-          "stringElements": [
-            {"value": "a", "state": "out_of_window_past", "index": 0},
-            {"value": "b", "state": "out_of_window_past", "index": 1},
-            {"value": "c", "state": "out_of_window_past", "index": 2},
-            {"value": "b", "state": "in_window", "index": 3},
-            {"value": "a", "state": "in_window", "index": 4}
-          ],
-          "windowStart": 3,
-          "windowEnd": 4,
-          "count": 5,
-          "charFrequency": {"a": 1, "b": 1, "c": 0},
-          "bestWindow": [2, 4],
-          "highlightedElements": [3, 4]
-        },
-        "jarvisMessage": "Removed 'c'. Now freq[a]=1, freq[b]=1, freq[c]=0. Our window no longer contains all three characters, so we stop contracting.",
-        "codeHint": "// Stop contracting when window becomes invalid",
-        "codeBotMessage": "Window \"ba\" is not valid anymore. We need 'c' to make it valid again.",
-        "codeSnippet": "// freq[a] = 1; freq[b] = 1; freq[c] = 0; count = 5;"
-      },
-      {
-        "stepId": 10,
-        "description": "Algorithm completed! Total valid substrings = 5.",
-        "expectedAction": "complete_algorithm",
-        "expectedElementIndex": 4,
-        "uiState": {
-          "stringElements": [
-            {"value": "a", "state": "out_of_window_past", "index": 0},
-            {"value": "b", "state": "out_of_window_past", "index": 1},
-            {"value": "c", "state": "out_of_window_past", "index": 2},
-            {"value": "b", "state": "in_window", "index": 3},
-            {"value": "a", "state": "in_window", "index": 4}
-          ],
-          "windowStart": 3,
-          "windowEnd": 4,
-          "count": 5,
-          "charFrequency": {"a": 1, "b": 1, "c": 0},
-          "bestWindow": [2, 4],
-          "highlightedElements": [3, 4]
-        },
-        "jarvisMessage": "🎉 Congratulations! You've completed the walkthrough. Total valid substrings = 5. The valid substrings are: \"abc\", \"abcb\", \"abcba\", \"bcba\", \"cba\".",
-        "codeHint": "// Done\nreturn count;",
-        "codeBotMessage": "Sliding window + frequency tracking: O(n) time, O(1) space. We tracked character frequencies and counted all valid substrings ending at each position.",
-        "codeSnippet": "// Final answer\nreturn count;"
-      }
-    ],
-    "jarvisConfig": {
-      "personality": "encouraging",
-      "hintLevels": ["subtle", "helpful", "explicit"],
-      "motivationalMessages": [
-        "Great thinking! Once the window is valid, all substrings ending at that position are valid.",
-        "Exactly! The key insight is to count (n - windowEnd) when the window contains all three characters.",
-        "You're mastering substring counting with sliding windows!",
-        "Awesome! This technique works for any character frequency problems."
-      ]
+    "visualization": {
+      "type": "string_chunking",
+      "showWordBoundaries": true,
+      "showHashMap": true,
+      "showWindow": true
     }
   },
   "solution": {
-    "optimal": {
-      "idea": "Use variable-size window with character frequency tracking; expand until all three characters are present, then count all valid substrings ending at current position by adding (n - windowEnd).",
-      "timeComplexity": "O(n)",
-      "spaceComplexity": "O(1)",
-      "walkthrough": [
-        "Initialize windowStart = 0, count = 0, charFrequency = {a: 0, b: 0, c: 0}.",
-        "For windowEnd from 0..n-1, update character frequency.",
-        "While window contains all three characters (freq[a] > 0 && freq[b] > 0 && freq[c] > 0):",
-        "  Add (n - windowEnd) to count (all substrings ending at or after windowEnd are valid).",
-        "  Shrink window from left (windowStart++), updating freq.",
-        "Return count."
-      ]
-    }
+    "approach": "Fixed window with word-level sliding and hashmap frequency matching",
+    "timeComplexity": "O(n * m)",
+    "spaceComplexity": "O(m)",
+    "keyInsight": "Use fixed window size (total word length) and slide word by word, maintaining frequency maps"
   },
   "code": {
-    "cpp": "#include <iostream>\n#include <string>\n#include <vector>\nusing namespace std;\n\nclass Solution {\npublic:\n    int numberOfSubstrings(string s) {\n        int n = s.size();\n        int count = 0;\n        int windowStart = 0;\n        vector<int> freq(3, 0); // index 0->'a', 1->'b', 2->'c'\n        \n        for (int windowEnd = 0; windowEnd < n; windowEnd++) {\n            freq[s[windowEnd] - 'a']++;\n            \n            // while window contains at least one 'a','b','c'\n            while (freq[0] > 0 && freq[1] > 0 && freq[2] > 0) {\n                count += (n - windowEnd); // all substrings ending at or after windowEnd\n                freq[s[windowStart] - 'a']--;\n                windowStart++;\n            }\n        }\n        return count;\n    }\n};\n\nint main() {\n    Solution sol;\n    string s1 = \"abcba\";\n    cout << \"Number of valid substrings: \" << sol.numberOfSubstrings(s1) << endl; // 5\n    \n    string s2 = \"ccabcc\";\n    cout << \"Number of valid substrings: \" << sol.numberOfSubstrings(s2) << endl; // 8\n    return 0;\n}"
+    "template": "vector<int> findSubstring(string s, vector<string>& words) {\n    // Your code here\n}",
+    "solution": "vector<int> findSubstring(string s, vector<string>& words) {\n    if (s.empty() || words.empty()) return {};\n    \n    int wordLen = words[0].length();\n    int wordCount = words.size();\n    int totalLen = wordLen * wordCount;\n    \n    unordered_map<string, int> wordMap;\n    for (const string& word : words) {\n        wordMap[word]++;\n    }\n    \n    vector<int> result;\n    \n    for (int i = 0; i < wordLen; i++) {\n        int left = i;\n        unordered_map<string, int> windowMap;\n        int count = 0;\n        \n        for (int right = i; right <= s.length() - wordLen; right += wordLen) {\n            string word = s.substr(right, wordLen);\n            \n            if (wordMap.find(word) != wordMap.end()) {\n                windowMap[word]++;\n                count++;\n                \n                while (windowMap[word] > wordMap[word]) {\n                    string leftWord = s.substr(left, wordLen);\n                    windowMap[leftWord]--;\n                    count--;\n                    left += wordLen;\n                }\n                \n                if (count == wordCount) {\n                    result.push_back(left);\n                }\n            } else {\n                windowMap.clear();\n                count = 0;\n                left = right + wordLen;\n            }\n        }\n    }\n    \n    return result;\n}"
   }
 }

@@ -1,14 +1,15 @@
 import { router } from "expo-router";
 import React, { useEffect } from "react";
 import {
-    SafeAreaView,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { useTheme } from "../../src/contexts/ThemeContext";
+import { DynamicDataService } from "../../src/services/DynamicDataService";
 
 export default function ModuleIndexScreen() {
   const { theme } = useTheme();
@@ -20,36 +21,14 @@ export default function ModuleIndexScreen() {
     }
   }, []);
 
-  const modules = [
-    {
-      id: "basics",
-      title: "Basics",
-      description: "Fundamental concepts and basic problems",
-      problems: 1,
-      color: "#3B82F6",
-    },
-    {
-      id: "patterns",
-      title: "Patterns",
-      description: "Common algorithmic patterns and techniques",
-      problems: 1,
-      color: "#10B981",
-    },
-    {
-      id: "slidingWindow",
-      title: "Sliding Window",
-      description: "Master the sliding window technique",
-      problems: 17,
-      color: "#F59E0B",
-    },
-    {
-      id: "twoPointers",
-      title: "Two Pointers",
-      description: "Two pointer technique problems",
-      problems: 1,
-      color: "#8B5CF6",
-    },
-  ];
+  // Get modules from JSON configuration - completely dynamic!
+  const modules = DynamicDataService.getAllModules().map(config => ({
+    id: config.id,
+    title: config.name,
+    description: config.description,
+    problems: config.problemCount,
+    color: config.color,
+  }));
 
   const handleModulePress = (moduleId: string) => {
     router.push(`/module/${moduleId}`);

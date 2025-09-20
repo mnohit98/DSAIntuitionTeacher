@@ -2,42 +2,21 @@ import { router } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
 import { SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 import { useTheme } from '../src/contexts/ThemeContext';
+import { DynamicDataService } from '../src/services/DynamicDataService';
 
 export default function Home() {
   const { theme } = useTheme();
   const [searchQuery, setSearchQuery] = useState('');
   const searchInputRef = useRef<TextInput | null>(null);
 
-  const modules = [
-    {
-      id: 'basics',
-      title: '🔰 Basics',
-      description: 'Fundamental concepts and problem-solving approaches',
-      problems: 1,
-      difficulty: 'Beginner'
-    },
-    {
-      id: 'patterns',
-      title: '📐 Patterns',
-      description: 'Common algorithmic patterns and techniques',
-      problems: 1,
-      difficulty: 'Intermediate'
-    },
-    {
-      id: 'slidingWindow',
-      title: '🪟 Sliding Window',
-      description: 'Master the sliding window technique for array problems',
-      problems: 17,
-      difficulty: 'Intermediate'
-    },
-    {
-      id: 'twoPointers',
-      title: '👆 Two Pointers',
-      description: 'Efficient array traversal with two pointers',
-      problems: 1,
-      difficulty: 'Intermediate'
-    }
-  ];
+  // Get modules from JSON configuration - completely dynamic!
+  const modules = DynamicDataService.getAllModules().map(config => ({
+    id: config.id,
+    title: config.name,
+    description: config.description,
+    problems: config.problemCount,
+    difficulty: config.difficulty
+  }));
 
   useEffect(() => {
     if (typeof document !== 'undefined') {

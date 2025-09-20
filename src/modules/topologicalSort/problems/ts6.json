@@ -1,0 +1,93 @@
+{
+  "problemId": "ts6",
+  "title": "Alien Dictionary — Build Graph From Lexicographic Constraints",
+  "difficulty": "Hard",
+  "category": "Graph",
+  "moduleId": "topological_sort",
+  "submoduleId": "advanced_ordering",
+  "tags": ["Graph", "Strings", "Kahn's Algorithm", "Graph Construction"],
+  "description": "Given a list of words sorted in an unknown alphabet, deduce a valid character ordering. Build directed edges from the first differing characters of adjacent words and topo-sort the character graph; detect invalid prefix conditions.",
+  "aim": "Practice constructing the graph from non-obvious input and handling edge cases (prefix conflicts, disconnected characters, multiple valid orders).",
+  "input_format": "Array of words sorted in alien dictionary order",
+  "output_format": "String representing a valid character ordering, or empty string if invalid",
+  "max_input": 1000,
+  "example": {
+    "input": "words=[\"wrt\",\"wrf\",\"er\",\"ett\",\"rftt\"]",
+    "output": "\"wertf\""
+  },
+  "examples": [
+    {
+      "input": "words=[\"wrt\",\"wrf\",\"er\",\"ett\",\"rftt\"]",
+      "output": "\"wertf\"",
+      "explanation": "From adjacent words: w<e (wrt,er), t<f (wrt,wrf), r<t (wrf,er), e<r (er,ett). One valid order: wertf."
+    },
+    {
+      "input": "words=[\"abc\",\"ab\"]",
+      "output": "\"\"",
+      "explanation": "Invalid: 'abc' cannot come before 'ab' in any valid alphabet (prefix violation)."
+    }
+  ],
+  "constraints": [
+    "1 <= words.length <= 100",
+    "1 <= words[i].length <= 100",
+    "words[i] consists of only lowercase English letters"
+  ],
+  "approach": "Compare adjacent words to find character ordering constraints. Build directed graph, detect cycles and prefix violations, then perform topological sort.",
+  "timeComplexity": "O(N*M + V + E) where N is words count, M is average word length",
+  "spaceComplexity": "O(V + E)",
+  "playground": {
+    "initialState": {
+      "words": ["wrt","wrf","er","ett","rftt"],
+      "comparisons": [],
+      "graph": {},
+      "inDegrees": {},
+      "queue": [],
+      "result": "",
+      "step": 0,
+      "phase": "comparing"
+    }
+  },
+  "ui_config": {
+    "visualizer": {
+      "type": "alien_dictionary",
+      "show_word_comparisons": true,
+      "show_graph_construction": true,
+      "show_character_ordering": true,
+      "highlight_differences": true,
+      "show_prefix_violations": true
+    },
+    "colors": {
+      "word_current": "#4CAF50",
+      "word_next": "#2196F3",
+      "char_different": "#F44336",
+      "char_same": "#666",
+      "edge_valid": "#4CAF50",
+      "edge_invalid": "#F44336",
+      "result_char": "#9C27B0"
+    }
+  },
+  "jarvis_prompts": {
+    "welcome": "Welcome to the Alien Dictionary! 👽 We need to decode an unknown alphabet from sorted words.",
+    "comparing_words": "Let's compare adjacent words to find character ordering rules. We look for the first different character!",
+    "found_constraint": "Great! We found a constraint: this character comes before that character in the alien alphabet.",
+    "prefix_violation": "⚠️ Prefix violation detected! A longer word cannot come before its prefix.",
+    "building_graph": "Now we build a directed graph from all the character constraints we found.",
+    "cycle_detected": "⚠️ Cycle detected in the graph! No valid alphabet ordering exists.",
+    "success": "🎉 Perfect! We've decoded the alien alphabet successfully!"
+  },
+  "validation": {
+    "output": {
+      "validation_type": "alien_alphabet",
+      "check_constraints": true,
+      "allow_multiple_valid": true
+    }
+  },
+  "learning_objectives": [
+    "Build graphs from implicit constraints",
+    "Handle string comparison logic",
+    "Detect invalid input conditions",
+    "Apply Kahn's algorithm to string problems"
+  ],
+  "algorithm_focus": "Kahn",
+  "recommended_approach": "Use Kahn's algorithm after building character dependency graph from word comparisons"
+}

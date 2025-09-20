@@ -1,277 +1,428 @@
 {
   "problemId": "p3",
-  "title": "First Negative Number in Every Window of Size K",
-  "description": "Given an array arr[] and a positive integer k, find the first negative integer for each and every window (contiguous subarray) of size k. If a window does not contain a negative integer, then return 0 for that window.",
-  "aim": "The goal is to demonstrate how to find the first negative number in each fixed-size window using the sliding window technique with a queue-based approach for efficient negative number tracking.",
+  "title": "Smallest Subarray With a Greater Sum",
+  "description": "Given an array of positive integers and a target sum, find the length of the smallest contiguous subarray whose sum is greater than or equal to the target sum. If no such subarray exists, return 0.",
+  "aim": "The goal is to demonstrate variable-size sliding window technique where we expand the window until we meet the condition, then contract it to find the optimal solution.",
   "moduleId": "slidingWindow",
-  "submoduleId": "sw_fixed",
+  "submoduleId": "sw_variable",
   "difficulty": "Medium",
-  "tags": ["Array", "Sliding Window", "Fixed Size", "Queue", "Negative Numbers"],
+  "tags": ["Array", "Sliding Window", "Variable Size", "Two Pointers", "Prefix Sum"],
   "examples": [
     {
-      "input": "arr = [-8, 2, 3, -6, 10], k = 2",
-      "output": "[-8, 0, -6, -6]",
-      "explanation": "Window [-8, 2] First negative integer is -8. Window [2, 3] No negative integers, output is 0. Window [3, -6] First negative integer is -6. Window [-6, 10] First negative integer is -6."
+      "input": "arr = [2, 1, 5, 2, 3, 2], targetSum = 7",
+      "output": "2",
+      "explanation": "The smallest subarray with sum >= 7 is [5, 2] with length 2 and sum 7."
     },
     {
-      "input": "arr = [12, -1, -7, 8, -15, 30, 16, 28], k = 3",
-      "output": "[-1, -1, -7, -15, -15, 0]",
-      "explanation": "Window [12, -1, -7] First negative integer is -1. Window [-1, -7, 8] First negative integer is -1. Window [-7, 8, -15] First negative integer is -7. Window [8, -15, 30] First negative integer is -15. Window [-15, 30, 16] First negative integer is -15. Window [30, 16, 28] No negative integers, output is 0."
+      "input": "arr = [2, 1, 5, 2, 8], targetSum = 7",
+      "output": "1",
+      "explanation": "The smallest subarray with sum >= 7 is [8] with length 1 and sum 8."
     },
     {
-      "input": "arr = [12, 1, 3, 5], k = 3",
-      "output": "[0, 0]",
-      "explanation": "Window [12, 1, 3] No negative integers, output is 0. Window [1, 3, 5] No negative integers, output is 0."
+      "input": "arr = [3, 4, 1, 1, 6], targetSum = 8",
+      "output": "3",
+      "explanation": "The smallest subarray with sum >= 8 is [3, 4, 1] with length 3 and sum 8."
     }
   ],
   "playground": {
     "initialState": {
-      "array": [-8, 2, 3, -6, 10],
-      "k": 2,
+      "array": [2, 1, 5, 2, 3, 2],
+      "targetSum": 7,
       "windowStart": 0,
       "windowEnd": 0,
-      "negativeQueue": [],
-      "result": [],
-      "currentWindow": []
+      "windowSum": 0,
+      "minLength": 999999,
+      "currentLength": 0,
+      "bestWindow": null
     },
     "steps": [
       {
         "stepId": 1,
-        "description": "Initialize variables. Set windowStart = 0, windowEnd = 0, negativeQueue = [], result = []",
+        "description": "Initialize variables. Set windowStart = 0, windowEnd = 0, windowSum = 0, minLength = Infinity",
         "expectedAction": "click_initialize",
         "uiState": {
           "arrayElements": [
-            {"value": -8, "state": "not_yet_reached", "index": 0},
-            {"value": 2, "state": "not_yet_reached", "index": 1},
-            {"value": 3, "state": "not_yet_reached", "index": 2},
-            {"value": -6, "state": "not_yet_reached", "index": 3},
-            {"value": 10, "state": "not_yet_reached", "index": 4}
+            {"value": 2, "state": "not_yet_reached", "index": 0},
+            {"value": 1, "state": "not_yet_reached", "index": 1},
+            {"value": 5, "state": "not_yet_reached", "index": 2},
+            {"value": 2, "state": "not_yet_reached", "index": 3},
+            {"value": 3, "state": "not_yet_reached", "index": 4},
+            {"value": 2, "state": "not_yet_reached", "index": 5}
           ],
           "windowStart": null,
           "windowEnd": null,
           "windowSum": 0,
           "maxSum": 0,
-          "highlightedElements": [],
-          "negativeQueue": [],
-          "result": [],
-          "currentWindow": []
+          "minLength": 999999,
+          "currentLength": 0,
+          "targetSum": 7,
+          "bestWindow": null,
+          "highlightedElements": []
         },
-        "jarvisMessage": "Welcome! Let's solve the First Negative Number in Every Window problem. We need to find the first negative number in each window of size 2. Click 'Initialize' to set up our variables and start building our solution.",
-        "codeHint": "// Initialize variables\nlet windowStart = 0;\nlet windowEnd = 0;\nlet negativeQueue = [];\nlet result = [];",
-        "codeBotMessage": "Hey there! I'm CodeBot. When you click Initialize, we set up our sliding window variables. The key insight here is that we'll use a queue to track negative numbers in each window efficiently!",
-        "codeSnippet": "let windowStart = 0;    // Track window start position\nlet windowEnd = 0;      // Track window end position\nlet negativeQueue = []; // Queue to track negative numbers\nlet result = [];        // Store results for each window"
+        "jarvisMessage": "Welcome! Let's solve the Smallest Subarray With a Greater Sum problem. We need to find the shortest subarray that sums to at least 7. Click 'Initialize' to set up our sliding window variables.",
+        "codeHint": "// Initialize variables\nlet windowStart = 0;\nlet windowEnd = 0;\nlet windowSum = 0;\nlet minLength = Infinity;",
+        "codeBotMessage": "Hey there! I'm CodeBot. When you click Initialize, we set up our variable-size sliding window. The key insight is that we'll expand the window until we meet our target sum, then contract it to find the shortest valid subarray!",
+        "codeSnippet": "let windowStart = 0;    // Track window start position\nlet windowEnd = 0;      // Track window end position\nlet windowSum = 0;      // Track current window sum\nlet minLength = Infinity; // Track minimum length found"
       },
       {
         "stepId": 2,
-        "description": "Add first element to window. Check if arr[0] = -8 is negative and add to queue. Update currentWindow = [-8]",
-        "expectedAction": "add_element_to_window",
+        "description": "Preview: Next we will expand to include arr[0] = 2. Click on element 0 to expand the window.",
+        "expectedAction": "expand_window",
         "expectedElementIndex": 0,
         "uiState": {
           "arrayElements": [
-            {"value": -8, "state": "in_window", "index": 0},
-            {"value": 2, "state": "not_yet_reached", "index": 1},
-            {"value": 3, "state": "not_yet_reached", "index": 2},
-            {"value": -6, "state": "not_yet_reached", "index": 3},
-            {"value": 10, "state": "not_yet_reached", "index": 4}
+            {"value": 2, "state": "in_window", "index": 0},
+            {"value": 1, "state": "not_yet_reached", "index": 1},
+            {"value": 5, "state": "not_yet_reached", "index": 2},
+            {"value": 2, "state": "not_yet_reached", "index": 3},
+            {"value": 3, "state": "not_yet_reached", "index": 4},
+            {"value": 2, "state": "not_yet_reached", "index": 5}
           ],
           "windowStart": 0,
           "windowEnd": 0,
-          "windowSum": 0,
+          "windowSum": 2,
           "maxSum": 0,
-          "highlightedElements": [0],
-          "negativeQueue": [-8],
-          "result": [],
-          "currentWindow": [-8]
+          "minLength": 999999,
+          "currentLength": 1,
+          "targetSum": 7,
+          "bestWindow": null,
+          "highlightedElements": [0]
         },
-        "jarvisMessage": "Great! We've added the first element (-8) to our window. Since -8 is negative, we add it to our negativeQueue. This queue will help us efficiently find the first negative number in each window!",
-        "codeHint": "// Add current element to window and check if negative\nif (arr[windowEnd] < 0) {\n  negativeQueue.push(arr[windowEnd]);\n}",
-        "codeBotMessage": "Perfect! We found our first negative number (-8) and added it to the queue. The queue will maintain the order of negative numbers, so we can always get the first one in O(1) time!",
-        "codeSnippet": "// Add element to current window\ncurrentWindow.push(arr[windowEnd]);\n\n// Check if element is negative\nif (arr[windowEnd] < 0) {\n  negativeQueue.push(arr[windowEnd]);\n  // negativeQueue = [-8]\n}"
+        "jarvisMessage": "Before we start summing, let's expand the window to include the first element. Click on index 0 to add 2 to the window.",
+        "codeHint": "// Prepare to expand\n// Click element 0 to add it to the window",
+        "codeBotMessage": "This preview step aligns our action with the explanation so you’re never a step ahead or behind.",
+        "codeSnippet": "// Next: include arr[0] = 2 into the window"
+      },
+      {
+        "stepId": 2,
+        "description": "Expand window: add arr[0] = 2. Update windowSum = 2, currentLength = 1. Since 2 < 7, continue expanding.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 0,
+        "uiState": {
+          "arrayElements": [
+            {"value": 2, "state": "in_window", "index": 0},
+            {"value": 1, "state": "not_yet_reached", "index": 1},
+            {"value": 5, "state": "not_yet_reached", "index": 2},
+            {"value": 2, "state": "not_yet_reached", "index": 3},
+            {"value": 3, "state": "not_yet_reached", "index": 4},
+            {"value": 2, "state": "not_yet_reached", "index": 5}
+          ],
+          "windowStart": 0,
+          "windowEnd": 0,
+          "windowSum": 2,
+          "maxSum": 0,
+          "minLength": 999999,
+          "currentLength": 1,
+          "targetSum": 7,
+          "bestWindow": null,
+          "highlightedElements": [0]
+        },
+        "jarvisMessage": "Great! We've added the first element (2) to our window. Now windowSum = 2 and currentLength = 1. Since 2 < 7 (our target), we need to expand the window to find more elements.",
+        "codeHint": "// Expand window by adding current element\nwindowSum += arr[windowEnd];\ncurrentLength = windowEnd - windowStart + 1;",
+        "codeBotMessage": "Perfect! We're expanding our window by adding elements. The key insight is that we keep expanding until we reach our target sum. This is different from fixed-size windows - our size changes dynamically!",
+        "codeSnippet": "// Expand window\nwindowSum += arr[windowEnd]; // Add arr[0] = 2\ncurrentLength = windowEnd - windowStart + 1; // currentLength = 1\n// windowSum = 2, targetSum = 7, so continue expanding"
       },
       {
         "stepId": 3,
-        "description": "Add second element to window. Check if arr[1] = 2 is negative. Update currentWindow = [-8, 2]. Since we have a complete window of size 2, find first negative: -8",
-        "expectedAction": "complete_first_window",
+        "description": "Expand window: add arr[1] = 1. Update windowSum = 3, currentLength = 2. Since 3 < 7, continue expanding.",
+        "expectedAction": "expand_window",
         "expectedElementIndex": 1,
         "uiState": {
           "arrayElements": [
-            {"value": -8, "state": "in_window", "index": 0},
-            {"value": 2, "state": "in_window", "index": 1},
-            {"value": 3, "state": "not_yet_reached", "index": 2},
-            {"value": -6, "state": "not_yet_reached", "index": 3},
-            {"value": 10, "state": "not_yet_reached", "index": 4}
+            {"value": 2, "state": "in_window", "index": 0},
+            {"value": 1, "state": "in_window", "index": 1},
+            {"value": 5, "state": "not_yet_reached", "index": 2},
+            {"value": 2, "state": "not_yet_reached", "index": 3},
+            {"value": 3, "state": "not_yet_reached", "index": 4},
+            {"value": 2, "state": "not_yet_reached", "index": 5}
           ],
           "windowStart": 0,
           "windowEnd": 1,
-          "windowSum": 0,
+          "windowSum": 3,
           "maxSum": 0,
-          "highlightedElements": [0, 1],
-          "negativeQueue": [-8],
-          "result": [-8],
-          "currentWindow": [-8, 2]
+          "minLength": 999999,
+          "currentLength": 2,
+          "targetSum": 7,
+          "bestWindow": null,
+          "highlightedElements": [0, 1]
         },
-        "jarvisMessage": "Excellent! We now have our first complete window of size 2: [-8, 2]. Since -8 is the first negative number in this window, we add -8 to our result. This is the key insight - we use the queue to efficiently track negative numbers!",
-        "codeHint": "// Check if we have a complete window\nif (windowEnd >= k - 1) {\n  // Find first negative number\n  let firstNegative = negativeQueue.length > 0 ? negativeQueue[0] : 0;\n  result.push(firstNegative);\n}",
-        "codeBotMessage": "Great job! We've completed our first window and found the first negative number. The queue makes this efficient - we just check if it's not empty and take the first element. If no negatives, we return 0!",
-        "codeSnippet": "// Check if window is complete\nif (windowEnd >= k - 1) {\n  // Find first negative in current window\n  let firstNegative = negativeQueue.length > 0 ? negativeQueue[0] : 0;\n  result.push(firstNegative);\n  // result = [-8] for window [-8, 2]\n}"
+        "jarvisMessage": "Excellent! We've expanded to window [2, 1] with sum = 3 and length = 2. Since 3 < 7, we still need to expand. Notice how our window grows until we meet our target condition!",
+        "codeHint": "// Continue expanding window\nwindowEnd++;\nwindowSum += arr[windowEnd];\ncurrentLength = windowEnd - windowStart + 1;",
+        "codeBotMessage": "Great progress! We're building up our window sum step by step. The variable-size approach means we don't have a fixed window size - we expand until we're satisfied, then contract to optimize!",
+        "codeSnippet": "// Continue expanding\nwindowEnd++; // Move to index 1\nwindowSum += arr[windowEnd]; // Add arr[1] = 1\ncurrentLength = windowEnd - windowStart + 1; // currentLength = 2\n// windowSum = 3, still < 7, so continue expanding"
       },
       {
         "stepId": 4,
-        "description": "Slide window: remove arr[0] = -8, add arr[2] = 3. Update currentWindow = [2, 3]. Remove -8 from queue if it's no longer in window. Check if 3 is negative. Find first negative: 0 (no negatives)",
-        "expectedAction": "slide_window",
+        "description": "Expand window: add arr[2] = 5. Update windowSum = 8, currentLength = 3. Since 8 >= 7, we have a valid window! Update minLength = 3.",
+        "expectedAction": "expand_window",
         "expectedElementIndex": 2,
-        "expectedRemoveIndex": 0,
-        "expectedAddIndex": 2,
         "uiState": {
           "arrayElements": [
-            {"value": -8, "state": "out_of_window_past", "index": 0},
-            {"value": 2, "state": "in_window", "index": 1},
-            {"value": 3, "state": "in_window", "index": 2},
-            {"value": -6, "state": "not_yet_reached", "index": 3},
-            {"value": 10, "state": "not_yet_reached", "index": 4}
+            {"value": 2, "state": "in_window", "index": 0},
+            {"value": 1, "state": "in_window", "index": 1},
+            {"value": 5, "state": "in_window", "index": 2},
+            {"value": 2, "state": "not_yet_reached", "index": 3},
+            {"value": 3, "state": "not_yet_reached", "index": 4},
+            {"value": 2, "state": "not_yet_reached", "index": 5}
           ],
-          "windowStart": 1,
+          "windowStart": 0,
           "windowEnd": 2,
-          "windowSum": 0,
+          "windowSum": 8,
           "maxSum": 0,
-          "highlightedElements": [1, 2],
-          "negativeQueue": [],
-          "result": [-8, 0],
-          "currentWindow": [2, 3]
+          "minLength": 3,
+          "currentLength": 3,
+          "targetSum": 7,
+          "bestWindow": null,
+          "highlightedElements": [0, 1, 2]
         },
-        "jarvisMessage": "This is the key insight! We slide the window by removing the leftmost element (-8) and adding the new rightmost element (3). Since -8 is no longer in our window, we remove it from the queue. Window [2, 3] has no negatives, so we add 0 to result.",
-        "codeHint": "// Slide the window\ncurrentWindow.shift(); // Remove leftmost element\nif (arr[windowStart] < 0) {\n  negativeQueue.shift(); // Remove from queue if negative\n}",
-        "codeBotMessage": "This is where the magic happens! We efficiently slide the window by removing the leftmost element and adding the new rightmost element. We also maintain our queue by removing elements that are no longer in the current window!",
-        "codeSnippet": "// Slide the window\ncurrentWindow.shift(); // Remove arr[0] = -8\nif (arr[windowStart] < 0) {\n  negativeQueue.shift(); // Remove -8 from queue\n}\n\n// Add new element\ncurrentWindow.push(arr[windowEnd]); // Add arr[2] = 3\nif (arr[windowEnd] < 0) {\n  negativeQueue.push(arr[windowEnd]); // 3 is not negative\n}\n\n// Find first negative for window [2, 3]\nlet firstNegative = negativeQueue.length > 0 ? negativeQueue[0] : 0;\nresult.push(firstNegative); // result = [-8, 0]"
+        "jarvisMessage": "Fantastic! We've found our first valid window [2, 1, 5] with sum = 8 >= 7 and length = 3. This becomes our current minLength. Now the magic happens - we'll try to contract this window to see if we can make it even shorter!",
+        "codeHint": "// Found valid window - update minLength\nif (windowSum >= targetSum) {\n  minLength = Math.min(minLength, currentLength);\n}",
+        "codeBotMessage": "Excellent! We've found a valid window that meets our target sum. Now we can try to make it shorter by contracting from the left. This is the key insight of variable-size sliding window - expand until valid, then contract to optimize!",
+        "codeSnippet": "// Found valid window!\nif (windowSum >= targetSum) {\n  minLength = Math.min(minLength, currentLength); // minLength = 3\n  bestWindow = [windowStart, windowEnd]; // [0, 2]\n}\n// Now try to contract to find shorter valid windows"
       },
       {
         "stepId": 5,
-        "description": "Slide window: remove arr[1] = 2, add arr[3] = -6. Update currentWindow = [3, -6]. Add -6 to queue. Find first negative: -6",
-        "expectedAction": "slide_window",
-        "expectedElementIndex": 3,
-        "expectedRemoveIndex": 1,
-        "expectedAddIndex": 3,
+        "description": "Contract window: remove arr[0] = 2. Update windowSum = 6, currentLength = 2. Since 6 < 7, we can't contract further. Expand again.",
+        "expectedAction": "contract_window",
+        "expectedElementIndex": 0,
         "uiState": {
           "arrayElements": [
-            {"value": -8, "state": "out_of_window_past", "index": 0},
-            {"value": 2, "state": "out_of_window_past", "index": 1},
-            {"value": 3, "state": "in_window", "index": 2},
-            {"value": -6, "state": "in_window", "index": 3},
-            {"value": 10, "state": "not_yet_reached", "index": 4}
+            {"value": 2, "state": "out_of_window_past", "index": 0},
+            {"value": 1, "state": "in_window", "index": 1},
+            {"value": 5, "state": "in_window", "index": 2},
+            {"value": 2, "state": "not_yet_reached", "index": 3},
+            {"value": 3, "state": "not_yet_reached", "index": 4},
+            {"value": 2, "state": "not_yet_reached", "index": 5}
           ],
-          "windowStart": 2,
-          "windowEnd": 3,
-          "windowSum": 0,
+          "windowStart": 1,
+          "windowEnd": 2,
+          "windowSum": 6,
           "maxSum": 0,
-          "highlightedElements": [2, 3],
-          "negativeQueue": [-6],
-          "result": [-8, 0, -6],
-          "currentWindow": [3, -6]
+          "minLength": 3,
+          "currentLength": 2,
+          "targetSum": 7,
+          "bestWindow": null,
+          "highlightedElements": [1, 2]
         },
-        "jarvisMessage": "Perfect! We slide to window [3, -6]. Since 2 is not negative, we don't need to remove anything from the queue. We add -6 to the queue since it's negative. For window [3, -6], the first negative is -6.",
-        "codeHint": "// Continue sliding and updating queue\ncurrentWindow.shift(); // Remove arr[1] = 2\ncurrentWindow.push(arr[windowEnd]); // Add arr[3] = -6\nif (arr[windowEnd] < 0) {\n  negativeQueue.push(arr[windowEnd]);\n}",
-        "codeBotMessage": "Excellent! We're maintaining our queue efficiently. Since 2 wasn't negative, we don't need to update the queue when removing it. Adding -6 gives us a negative number in the current window, so we can find the first negative!",
-        "codeSnippet": "// Slide window [2, 3] -> [3, -6]\ncurrentWindow.shift(); // Remove 2 (not negative, no queue update)\ncurrentWindow.push(arr[windowEnd]); // Add -6\nif (arr[windowEnd] < 0) {\n  negativeQueue.push(arr[windowEnd]); // Add -6 to queue\n}\n\n// Find first negative for window [3, -6]\nlet firstNegative = negativeQueue.length > 0 ? negativeQueue[0] : 0;\nresult.push(firstNegative); // result = [-8, 0, -6]"
+        "jarvisMessage": "This is the key insight! We contracted our window by removing the leftmost element (2). Now window [1, 5] has sum = 6 < 7, so it's no longer valid. We can't contract further, so we'll need to expand again.",
+        "codeHint": "// Contract window from left\nwindowSum -= arr[windowStart];\nwindowStart++;\ncurrentLength = windowEnd - windowStart + 1;",
+        "codeBotMessage": "Perfect! We're demonstrating the contract phase. We remove elements from the left until our window becomes invalid. This helps us find the shortest possible valid subarray. Since 6 < 7, we can't contract more!",
+        "codeSnippet": "// Contract window from left\nwindowSum -= arr[windowStart]; // Remove arr[0] = 2\nwindowStart++; // Move start to 1\ncurrentLength = windowEnd - windowStart + 1; // currentLength = 2\n// windowSum = 6 < 7, so we can't contract further"
       },
       {
         "stepId": 6,
-        "description": "Final slide: remove arr[2] = 3, add arr[4] = 10. Update currentWindow = [-6, 10]. Remove 3 from queue if needed. Find first negative: -6",
-        "expectedAction": "slide_window",
-        "expectedElementIndex": 4,
-        "expectedRemoveIndex": 2,
-        "expectedAddIndex": 4,
+        "description": "Expand window: add arr[3] = 2. Update windowSum = 8, currentLength = 3. Since 8 >= 7, update minLength = 2 (shorter than previous 3).",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 3,
         "uiState": {
           "arrayElements": [
-            {"value": -8, "state": "out_of_window_past", "index": 0},
-            {"value": 2, "state": "out_of_window_past", "index": 1},
-            {"value": 3, "state": "out_of_window_past", "index": 2},
-            {"value": -6, "state": "in_window", "index": 3},
-            {"value": 10, "state": "in_window", "index": 4}
+            {"value": 2, "state": "out_of_window_past", "index": 0},
+            {"value": 1, "state": "in_window", "index": 1},
+            {"value": 5, "state": "in_window", "index": 2},
+            {"value": 2, "state": "in_window", "index": 3},
+            {"value": 3, "state": "not_yet_reached", "index": 4},
+            {"value": 2, "state": "not_yet_reached", "index": 5}
           ],
-          "windowStart": 3,
-          "windowEnd": 4,
-          "windowSum": 0,
+          "windowStart": 1,
+          "windowEnd": 3,
+          "windowSum": 8,
           "maxSum": 0,
-          "highlightedElements": [3, 4],
-          "negativeQueue": [-6],
-          "result": [-8, 0, -6, -6],
-          "currentWindow": [-6, 10]
+          "minLength": 2,
+          "currentLength": 3,
+          "targetSum": 7,
+          "bestWindow": null,
+          "highlightedElements": [1, 2, 3]
         },
-        "jarvisMessage": "Fantastic! Our final window is [-6, 10]. Since 3 is not negative, we don't need to update the queue when removing it. For window [-6, 10], the first negative is -6. We've successfully processed all windows!",
-        "codeHint": "// Final window processing\ncurrentWindow.shift(); // Remove arr[2] = 3\ncurrentWindow.push(arr[windowEnd]); // Add arr[4] = 10\n// Find first negative for window [-6, 10]",
-        "codeBotMessage": "Perfect! We've completed all windows. The key insight is that we only need to update the queue when removing negative numbers. Since 3 wasn't negative, our queue still contains -6, which is the first negative in the final window!",
-        "codeSnippet": "// Final slide: [3, -6] -> [-6, 10]\ncurrentWindow.shift(); // Remove 3 (not negative, no queue update)\ncurrentWindow.push(arr[windowEnd]); // Add 10 (not negative)\n\n// Find first negative for window [-6, 10]\nlet firstNegative = negativeQueue.length > 0 ? negativeQueue[0] : 0;\nresult.push(firstNegative); // result = [-8, 0, -6, -6]"
+        "jarvisMessage": "Excellent! We've expanded to window [1, 5, 2] with sum = 8 >= 7 and length = 3. But wait - we can contract this! Let's try to make it even shorter by removing elements from the left.",
+        "codeHint": "// Expand and check if we can contract further\nwindowEnd++;\nwindowSum += arr[windowEnd];\nif (windowSum >= targetSum) {\n  minLength = Math.min(minLength, currentLength);\n}",
+        "codeBotMessage": "Great! We've found another valid window. Now the key insight is that we can try to contract this window to see if we can make it even shorter while keeping it valid. This is how we find the optimal solution!",
+        "codeSnippet": "// Expand window\nwindowEnd++; // Move to index 3\nwindowSum += arr[windowEnd]; // Add arr[3] = 2\ncurrentLength = windowEnd - windowStart + 1; // currentLength = 3\n\n// Check if valid and update\nif (windowSum >= targetSum) {\n  minLength = Math.min(minLength, currentLength); // minLength = 2\n  bestWindow = [windowStart, windowEnd]; // [1, 3]\n}"
       },
       {
         "stepId": 7,
-        "description": "Algorithm completed! Final result = [-8, 0, -6, -6]",
-        "expectedAction": "complete_algorithm",
+        "description": "Contract window: remove arr[1] = 1. Update windowSum = 7, currentLength = 2. Since 7 >= 7, update minLength = 2. Continue contracting.",
+        "expectedAction": "contract_window",
+        "expectedElementIndex": 1,
+        "uiState": {
+          "arrayElements": [
+            {"value": 2, "state": "out_of_window_past", "index": 0},
+            {"value": 1, "state": "out_of_window_past", "index": 1},
+            {"value": 5, "state": "in_window", "index": 2},
+            {"value": 2, "state": "in_window", "index": 3},
+            {"value": 3, "state": "not_yet_reached", "index": 4},
+            {"value": 2, "state": "not_yet_reached", "index": 5}
+          ],
+          "windowStart": 2,
+          "windowEnd": 3,
+          "windowSum": 7,
+          "maxSum": 0,
+          "minLength": 2,
+          "currentLength": 2,
+          "targetSum": 7,
+          "bestWindow": [2, 3],
+          "highlightedElements": [2, 3]
+        },
+        "jarvisMessage": "Perfect! We contracted to window [5, 2] with sum = 7 >= 7 and length = 2. This is even better! We can try to contract further to see if we can make it length 1.",
+        "codeHint": "// Contract and check if still valid\nwindowSum -= arr[windowStart];\nwindowStart++;\nif (windowSum >= targetSum) {\n  minLength = Math.min(minLength, currentLength);\n}",
+        "codeBotMessage": "Excellent! We're finding shorter and shorter valid windows. The key insight is that we keep contracting as long as the window remains valid. This helps us find the absolute shortest subarray that meets our target!",
+        "codeSnippet": "// Contract window\nwindowSum -= arr[windowStart]; // Remove arr[1] = 1\nwindowStart++; // Move start to 2\ncurrentLength = windowEnd - windowStart + 1; // currentLength = 2\n\n// Check if still valid\nif (windowSum >= targetSum) {\n  minLength = Math.min(minLength, currentLength); // minLength = 2\n  bestWindow = [windowStart, windowEnd]; // [2, 3]\n}"
+      },
+      {
+        "stepId": 8,
+        "description": "Contract window: remove arr[2] = 5. Update windowSum = 2, currentLength = 1. Since 2 < 7, we can't contract further. Expand to continue.",
+        "expectedAction": "contract_window",
+        "expectedElementIndex": 2,
+        "uiState": {
+          "arrayElements": [
+            {"value": 2, "state": "out_of_window_past", "index": 0},
+            {"value": 1, "state": "out_of_window_past", "index": 1},
+            {"value": 5, "state": "out_of_window_past", "index": 2},
+            {"value": 2, "state": "in_window", "index": 3},
+            {"value": 3, "state": "not_yet_reached", "index": 4},
+            {"value": 2, "state": "not_yet_reached", "index": 5}
+          ],
+          "windowStart": 3,
+          "windowEnd": 3,
+          "windowSum": 2,
+          "maxSum": 0,
+          "minLength": 2,
+          "currentLength": 1,
+          "targetSum": 7,
+          "bestWindow": [2, 3],
+          "highlightedElements": [3]
+        },
+        "jarvisMessage": "Great! We contracted to window [2] with sum = 2 < 7. This is no longer valid, so we can't contract further. We'll need to expand to find more valid windows.",
+        "codeHint": "// Continue contracting until invalid\nwhile (windowSum >= targetSum) {\n  windowSum -= arr[windowStart];\n  windowStart++;\n}",
+        "codeBotMessage": "Perfect! We've reached the point where we can't contract further without making the window invalid. This is the optimal contraction phase. Now we'll expand to find more potential solutions!",
+        "codeSnippet": "// Continue contracting until invalid\nwhile (windowSum >= targetSum) {\n  windowSum -= arr[windowStart]; // Remove arr[2] = 5\n  windowStart++; // Move start to 3\n  currentLength = windowEnd - windowStart + 1; // currentLength = 1\n}\n// windowSum = 2 < 7, so we can't contract further"
+      },
+      {
+        "stepId": 9,
+        "description": "Expand window: add arr[4] = 3. Update windowSum = 5, currentLength = 2. Since 5 < 7, continue expanding.",
+        "expectedAction": "expand_window",
         "expectedElementIndex": 4,
         "uiState": {
           "arrayElements": [
-            {"value": -8, "state": "out_of_window_past", "index": 0},
-            {"value": 2, "state": "out_of_window_past", "index": 1},
-            {"value": 3, "state": "out_of_window_past", "index": 2},
-            {"value": -6, "state": "in_window", "index": 3},
-            {"value": 10, "state": "in_window", "index": 4}
+            {"value": 2, "state": "out_of_window_past", "index": 0},
+            {"value": 1, "state": "out_of_window_past", "index": 1},
+            {"value": 5, "state": "out_of_window_past", "index": 2},
+            {"value": 2, "state": "in_window", "index": 3},
+            {"value": 3, "state": "in_window", "index": 4},
+            {"value": 2, "state": "not_yet_reached", "index": 5}
           ],
           "windowStart": 3,
           "windowEnd": 4,
-          "windowSum": 0,
+          "windowSum": 5,
           "maxSum": 0,
-          "highlightedElements": [3, 4],
-          "negativeQueue": [-6],
-          "result": [-8, 0, -6, -6],
-          "currentWindow": [-6, 10]
+          "minLength": 2,
+          "currentLength": 2,
+          "targetSum": 7,
+          "bestWindow": [2, 3],
+          "highlightedElements": [3, 4]
         },
-        "jarvisMessage": "🎉 Congratulations! You've successfully completed the First Negative Number algorithm! We found [-8, 0, -6, -6] for windows of size 2. The queue-based approach made this efficient and elegant!",
-        "codeHint": "// Algorithm completed successfully\nreturn result; // Returns [-8, 0, -6, -6]",
-        "codeBotMessage": "Fantastic! You've mastered the First Negative Number algorithm! The key insight is using a queue to efficiently track negative numbers in each window. This gives us O(n) time complexity instead of O(n*k) for brute force!",
-        "codeSnippet": "// Algorithm completed!\n// Final result: [-8, 0, -6, -6]\n// Windows: [-8,2]->-8, [2,3]->0, [3,-6]->-6, [-6,10]->-6\nreturn result; // Returns [-8, 0, -6, -6]"
+        "jarvisMessage": "Good! We've expanded to window [2, 3] with sum = 5 < 7. We need to continue expanding to find more elements that will help us reach our target sum.",
+        "codeHint": "// Continue expanding\nwindowEnd++;\nwindowSum += arr[windowEnd];\ncurrentLength = windowEnd - windowStart + 1;",
+        "codeBotMessage": "We're back to the expansion phase! Since our current window sum is less than the target, we need to add more elements. This is the rhythm of variable-size sliding window - expand until valid, contract until invalid!",
+        "codeSnippet": "// Expand window\nwindowEnd++; // Move to index 4\nwindowSum += arr[windowEnd]; // Add arr[4] = 3\ncurrentLength = windowEnd - windowStart + 1; // currentLength = 2\n// windowSum = 5 < 7, so continue expanding"
+      },
+      {
+        "stepId": 10,
+        "description": "Expand window: add arr[5] = 2. Update windowSum = 7, currentLength = 3. Since 7 >= 7, we have a valid window! But 3 > 2, so minLength stays 2.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 5,
+        "uiState": {
+          "arrayElements": [
+            {"value": 2, "state": "out_of_window_past", "index": 0},
+            {"value": 1, "state": "out_of_window_past", "index": 1},
+            {"value": 5, "state": "out_of_window_past", "index": 2},
+            {"value": 2, "state": "in_window", "index": 3},
+            {"value": 3, "state": "in_window", "index": 4},
+            {"value": 2, "state": "in_window", "index": 5}
+          ],
+          "windowStart": 3,
+          "windowEnd": 5,
+          "windowSum": 7,
+          "maxSum": 0,
+          "minLength": 2,
+          "currentLength": 3,
+          "targetSum": 7,
+          "bestWindow": [2, 3],
+          "highlightedElements": [3, 4, 5]
+        },
+        "jarvisMessage": "Excellent! We've found another valid window [2, 3, 2] with sum = 7 >= 7 and length = 3. However, since 3 > 2 (our current minLength), this doesn't improve our solution.",
+        "codeHint": "// Found valid window - check if it improves minLength\nif (windowSum >= targetSum) {\n  if (currentLength < minLength) {\n    minLength = currentLength;\n    bestWindow = [windowStart, windowEnd];\n  }\n}",
+        "codeBotMessage": "Great! We've found another valid window, but it's longer than our current best solution. This demonstrates that not every valid window is optimal. Our current best is still length 2!",
+        "codeSnippet": "// Found valid window\nif (windowSum >= targetSum) {\n  if (currentLength < minLength) { // 3 < 2? No!\n    minLength = currentLength;\n    bestWindow = [windowStart, windowEnd];\n  }\n  // minLength stays 2, bestWindow stays [2, 3]\n}"
+      },
+      {
+        "stepId": 11,
+        "description": "Algorithm completed! Final minLength = 2, bestWindow = [2, 3] with sum = 7.",
+        "expectedAction": "complete_algorithm",
+        "expectedElementIndex": 5,
+        "uiState": {
+          "arrayElements": [
+            {"value": 2, "state": "out_of_window_past", "index": 0},
+            {"value": 1, "state": "out_of_window_past", "index": 1},
+            {"value": 5, "state": "out_of_window_past", "index": 2},
+            {"value": 2, "state": "in_window", "index": 3},
+            {"value": 3, "state": "in_window", "index": 4},
+            {"value": 2, "state": "in_window", "index": 5}
+          ],
+          "windowStart": 3,
+          "windowEnd": 5,
+          "windowSum": 7,
+          "maxSum": 0,
+          "minLength": 2,
+          "currentLength": 3,
+          "targetSum": 7,
+          "bestWindow": [2, 3],
+          "highlightedElements": [3, 4, 5]
+        },
+        "jarvisMessage": "🎉 Congratulations! You've successfully completed the Smallest Subarray algorithm! We found that the shortest subarray with sum >= 7 has length 2, which is [5, 2] with sum = 7.",
+        "codeHint": "// Algorithm completed successfully\nreturn minLength === Infinity ? 0 : minLength; // Returns 2",
+        "codeBotMessage": "Fantastic! You've mastered the variable-size sliding window algorithm! The key insight is the expand-contract pattern: expand until valid, then contract to find the optimal solution. This gives us O(n) time complexity!",
+        "codeSnippet": "// Algorithm completed!\n// Final result: minLength = 2\n// Best window: [5, 2] with sum = 7\nreturn minLength === Infinity ? 0 : minLength; // Returns 2"
       }
     ],
     "jarvisConfig": {
       "personality": "encouraging",
       "hintLevels": ["subtle", "helpful", "explicit"],
       "motivationalMessages": [
-        "Great thinking! You're understanding how the queue tracks negative numbers efficiently.",
-        "That's exactly right! You're seeing the pattern of maintaining the queue as the window slides.",
-        "Excellent intuition! You're understanding how to find the first negative in each window.",
-        "You've got this! Each slide brings you closer to mastering the algorithm."
+        "Great thinking! You're understanding the expand-contract pattern of variable-size windows.",
+        "That's exactly right! You're seeing how we optimize by contracting valid windows.",
+        "Excellent intuition! You're understanding the dynamic nature of variable-size sliding windows.",
+        "You've got this! Each expand-contract cycle brings you closer to the optimal solution."
       ]
     }
   },
   "solution": {
     "bruteForce": {
-      "idea": "For each window of size k, scan through the window to find the first negative number.",
-      "timeComplexity": "O(n*k)",
+      "idea": "Check every possible subarray and find the shortest one that meets the target sum.",
+      "timeComplexity": "O(n²)",
       "spaceComplexity": "O(1)",
       "walkthrough": [
-        "Initialize result array.",
-        "Iterate i from 0 to n - k.",
-        "For each window starting at i, scan from i to i+k-1.",
-        "Find the first negative number in the window.",
-        "Add the result to the result array (0 if no negative found).",
-        "Return the result array."
+        "Initialize minLength = Infinity.",
+        "For each starting index i, try all possible ending indices j.",
+        "Calculate the sum of subarray from i to j.",
+        "If sum >= targetSum, update minLength = min(minLength, j-i+1).",
+        "Return minLength (or 0 if no valid subarray found)."
       ]
     },
     "optimal": {
-      "idea": "Use a sliding window with a queue to efficiently track negative numbers in each window, avoiding repeated scanning.",
+      "idea": "Use variable-size sliding window to expand until we meet the target, then contract to find the optimal solution.",
       "timeComplexity": "O(n)",
-      "spaceComplexity": "O(k)",
+      "spaceComplexity": "O(1)",
       "walkthrough": [
-        "Initialize windowStart = 0, negativeQueue = [], result = [].",
-        "Iterate windowEnd from 0 to n-1.",
-        "If current element is negative, add its index to the queue.",
-        "When window size reaches k, check if queue is empty.",
-        "If queue is empty, add 0 to result. Otherwise, add the first negative number.",
-        "If the element at windowStart is negative, remove it from the queue.",
-        "Increment windowStart to slide the window.",
-        "Return the result array."
+        "Initialize windowStart = 0, windowEnd = 0, windowSum = 0, minLength = Infinity.",
+        "Expand window by adding arr[windowEnd] until windowSum >= targetSum.",
+        "When valid window found, update minLength and try to contract from left.",
+        "Contract window by removing arr[windowStart] while keeping it valid.",
+        "Continue expanding and contracting until windowEnd reaches the end.",
+        "Return minLength (or 0 if no valid subarray found)."
       ]
     }
   },
   "code": {
-    "cpp": "#include <iostream>\n#include <vector>\n#include <queue>\nusing namespace std;\n\nclass Solution {\npublic:\n    vector<int> firstNegativeInWindow(vector<int>& arr, int k) {\n        vector<int> result;\n        queue<int> negativeQueue;\n        int windowStart = 0;\n        \n        for (int windowEnd = 0; windowEnd < arr.size(); windowEnd++) {\n            // Add negative numbers to queue\n            if (arr[windowEnd] < 0) {\n                negativeQueue.push(windowEnd);\n            }\n            \n            // Check if window size is k\n            if (windowEnd >= k - 1) {\n                // Find first negative in current window\n                if (negativeQueue.empty()) {\n                    result.push_back(0);\n                } else {\n                    result.push_back(arr[negativeQueue.front()]);\n                }\n                \n                // Remove element that's going out of window\n                if (arr[windowStart] < 0) {\n                    negativeQueue.pop();\n                }\n                windowStart++;\n            }\n        }\n        \n        return result;\n    }\n};\n\nint main() {\n    Solution sol;\n    vector<int> arr1 = {-8, 2, 3, -6, 10};\n    vector<int> arr2 = {12, -1, -7, 8, -15, 30, 16, 28};\n    \n    vector<int> result1 = sol.firstNegativeInWindow(arr1, 2);\n    vector<int> result2 = sol.firstNegativeInWindow(arr2, 3);\n    \n    cout << \"Result 1: \";\n    for (int num : result1) cout << num << \" \";\n    cout << endl;\n    \n    cout << \"Result 2: \";\n    for (int num : result2) cout << num << \" \";\n    cout << endl;\n    \n    return 0;\n}"
+    "cpp": "#include <iostream>\n#include <vector>\n#include <climits>\nusing namespace std;\n\nclass Solution {\npublic:\n    int minSubArrayLen(int target, vector<int>& nums) {\n        int windowStart = 0;\n        int windowSum = 0;\n        int minLength = INT_MAX;\n        \n        for (int windowEnd = 0; windowEnd < nums.size(); windowEnd++) {\n            // Expand window\n            windowSum += nums[windowEnd];\n            \n            // Contract window while valid\n            while (windowSum >= target) {\n                minLength = min(minLength, windowEnd - windowStart + 1);\n                windowSum -= nums[windowStart];\n                windowStart++;\n            }\n        }\n        \n        return minLength == INT_MAX ? 0 : minLength;\n    }\n};\n\nint main() {\n    Solution sol;\n    vector<int> arr1 = {2, 1, 5, 2, 3, 2};\n    vector<int> arr2 = {2, 1, 5, 2, 8};\n    vector<int> arr3 = {3, 4, 1, 1, 6};\n    \n    cout << \"Result 1: \" << sol.minSubArrayLen(7, arr1) << endl;  // Output: 2\n    cout << \"Result 2: \" << sol.minSubArrayLen(7, arr2) << endl;  // Output: 1\n    cout << \"Result 3: \" << sol.minSubArrayLen(8, arr3) << endl;  // Output: 3\n    \n    return 0;\n}"
   }
 }
