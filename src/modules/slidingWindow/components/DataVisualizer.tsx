@@ -10,6 +10,8 @@ interface Props {
   uiState: {
     arrayElements: DataElement[];
     highlightedElements: number[];
+    windowStart?: number;
+    windowEnd?: number;
   };
   onElementPress: (index: number) => void;
   expectedIndex?: number;
@@ -31,6 +33,8 @@ export default function DataVisualizer({
   const [/*showInfoDropdown*/, /*setShowInfoDropdown*/] = useState(false);
 
   const blinkAnim = useRef(new Animated.Value(0)).current;
+  const windowBoxAnim = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current;
+  const windowBoxWidthAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     // Single blink animation - runs only once
@@ -39,6 +43,60 @@ export default function DataVisualizer({
       Animated.timing(blinkAnim, { toValue: 0, duration: 700, easing: Easing.inOut(Easing.quad), useNativeDriver: false }),
     ]).start();
   }, [blinkAnim]);
+
+  // Constants for symmetric window box calculation
+  const ELEMENT_WIDTH = 60;
+  const ELEMENT_MARGIN = 6 + 4; // 10px before element (6 from wrapper + 4 from element)
+  const ELEMENT_SPACING = 92; // center-to-center step (60 + 10 + 10 + 12 gap)
+
+  // Calculate element center position
+  const elementCenterX = (index: number) => {
+    return index * ELEMENT_SPACING + ELEMENT_MARGIN + ELEMENT_WIDTH / 2;
+  };
+
+  // Calculate symmetric window box dimensions
+  const calculateWindowBox = (startIndex: number, endIndex: number) => {
+    const startCenter = elementCenterX(startIndex);
+    const endCenter = elementCenterX(endIndex);
+
+    // Half-width of one element for symmetry padding
+    const halfElement = ELEMENT_WIDTH / 2 + ELEMENT_MARGIN;
+
+    // For symmetric padding: extend half-element width on each side
+    const boxX = startCenter - halfElement;
+    const boxWidth = (endCenter - startCenter) + ELEMENT_WIDTH + 2 * ELEMENT_MARGIN;
+
+    return {
+      x: boxX,
+      width: boxWidth,
+    };
+  };
+
+  // Animate window box when window changes
+  useEffect(() => {
+    const { windowStart, windowEnd } = uiState;
+    
+    if (windowStart !== null && windowStart !== undefined && 
+        windowEnd !== null && windowEnd !== undefined) {
+      const boxDimensions = calculateWindowBox(windowStart, windowEnd);
+      
+      // Animate to new position and width
+      Animated.parallel([
+        Animated.timing(windowBoxAnim, {
+          toValue: { x: boxDimensions.x, y: -8 }, // y: -8 for top margin offset
+          duration: 300,
+          easing: Easing.out(Easing.quad),
+          useNativeDriver: false,
+        }),
+        Animated.timing(windowBoxWidthAnim, {
+          toValue: boxDimensions.width,
+          duration: 300,
+          easing: Easing.out(Easing.quad),
+          useNativeDriver: false,
+        }),
+      ]).start();
+    }
+  }, [uiState.windowStart, uiState.windowEnd, windowBoxAnim, windowBoxWidthAnim]);
 
   const getElementStyle = (element: DataElement) => {
     switch (element.state) {
@@ -66,9 +124,44 @@ export default function DataVisualizer({
     }
   };
 
+  // Function to render animated window box around elements
+  const renderWindowBox = () => {
+    const { windowStart, windowEnd } = uiState;
+    
+    // Only show window box if we have valid window bounds
+    if (windowStart === null || windowStart === undefined || 
+        windowEnd === null || windowEnd === undefined) {
+      return null;
+    }
+
+    // Calculate box height (same for all cases)
+    const elementHeight = 60;
+    const indexTextHeight = 16;
+    const topMargin = 8;
+    const bottomMargin = 8;
+    const boxHeight = elementHeight + topMargin + indexTextHeight + bottomMargin;
+    
+    return (
+      <Animated.View
+        style={[
+          styles.windowBox,
+          {
+            left: windowBoxAnim.x,
+            top: windowBoxAnim.y,
+            width: windowBoxWidthAnim,
+            height: boxHeight,
+          }
+        ]}
+      />
+    );
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.dataContainer}>
+        {/* Window Box - positioned behind elements */}
+        {renderWindowBox()}
+        
         {uiState.arrayElements.map((element: DataElement, index: number) => {
           const content = (
             <View style={styles.elementContainer}>
@@ -182,6 +275,7 @@ const styles = StyleSheet.create({
     gap: 12,
     marginBottom: 8,
     paddingHorizontal: 0,
+    position: 'relative',
   },
   elementWrapper: {
     alignItems: 'center',
@@ -314,5 +408,21 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: '#D1FAE5',
     textAlign: 'center',
+  },
+  
+  // Window Box Styles
+  windowBox: {
+    position: 'absolute',
+    backgroundColor: 'rgba(59, 130, 246, 0.08)', // Subtle blue background
+    borderWidth: 2,
+    borderColor: '#3B82F6', // Blue border
+    borderRadius: 16,
+    zIndex: 0, // Behind elements
+    borderStyle: 'dashed',
+    shadowColor: '#3B82F6',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    elevation: 2,
   },
 });

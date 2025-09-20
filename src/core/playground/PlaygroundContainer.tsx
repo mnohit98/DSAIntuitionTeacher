@@ -41,13 +41,15 @@ interface Props {
   moduleConfig: ModuleConfiguration;
   engine: StandardEngine;
   children: React.ReactNode; // Module-specific visualization
+  onReset?: () => void; // Optional custom reset handler
 }
 
 export default function CleanGenericPlayground({ 
   problemData, 
   moduleConfig, 
   engine, 
-  children
+  children,
+  onReset: customOnReset
 }: Props) {
   const { theme } = useTheme();
 
@@ -164,15 +166,20 @@ export default function CleanGenericPlayground({
     }
   };
 
-  // Pure generic reset handler
+  // Pure generic reset handler - works like try again button
   const handleReset = () => {
-    if (engine) {
+    if (customOnReset) {
+      // Use custom reset handler if provided (e.g., from SlidingWindowPlayground)
+      customOnReset();
+    } else if (engine) {
+      // Fallback to generic reset for other modules
       engine.reset();
-      const state = engine.getCurrentState();
+      const resetState = engine.getCurrentState();
       
+      // Update playground state with reset values
       setPlaygroundState({
-        currentStep: state.currentStep,
-        totalSteps: state.totalSteps,
+        currentStep: resetState.currentStep,
+        totalSteps: resetState.totalSteps,
         jarvisMessage: {
           id: '1',
           message: engine.getJarvisMessage(),
@@ -187,8 +194,14 @@ export default function CleanGenericPlayground({
         variables: engine.getVariables(),
         currentStepDescription: engine.getStepDescription(),
         codeHint: engine.getCodeHint(),
-        isCompleted: engine.isCompleted()
+        isCompleted: resetState.isCompleted || false
       });
+      
+      // Clear any AI response and loading state
+      setAIResponse(null);
+      setIsAILoading(false);
+      
+      console.log('Playground reset to initial state:', resetState);
     }
   };
 
@@ -512,21 +525,6 @@ export default function CleanGenericPlayground({
         }}
       />
 
-      {/* Fullscreen Overlay */}
-      {isFullWindowMode && (
-        <View style={styles.fullscreenOverlay} pointerEvents="box-none">
-          <View style={styles.fullscreenControls}>
-            <Text style={styles.fullscreenHint}>Press Esc to exit</Text>
-            <TouchableOpacity 
-              style={styles.exitFullscreenButton} 
-              onPress={handleToggleFullscreen} 
-              activeOpacity={0.85}
-            >
-              <Text style={styles.exitFullscreenText}>Exit ⛶</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      )}
     </SafeAreaView>
   );
 }
@@ -1045,46 +1043,4 @@ const styles = StyleSheet.create({
     lineHeight: 16,
   },
 
-  // Fullscreen overlay
-  fullscreenOverlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 2000,
-  },
-
-  fullscreenControls: {
-    backgroundColor: '#0C1116',
-    borderRadius: 12,
-    padding: 20,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#1E2632',
-  },
-
-  fullscreenHint: {
-    fontSize: 14,
-    color: '#B4BCC8',
-    marginBottom: 12,
-  },
-
-  exitFullscreenButton: {
-    backgroundColor: '#F5D90A',
-    borderRadius: 8,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderWidth: 1,
-    borderColor: '#F5D90A',
-  },
-
-  exitFullscreenText: {
-    color: '#080A0D',
-    fontSize: 14,
-    fontWeight: '700',
-  },
 });

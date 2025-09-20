@@ -192,6 +192,17 @@ export default function SlidingWindowPlayground({ problemData }: Props) {
     setEngine(newAdapter);
   };
 
+  // Custom reset handler for the reset button - same as try again
+  const handleCustomReset = () => {
+    originalEngine.reset();
+    const resetState = originalEngine.getCurrentState();
+    setCurrentState(resetState);
+    setForceUpdate(prev => prev + 1);
+    const newAdapter = new SlidingWindowEngineAdapter(originalEngine, problemData);
+    setEngine(newAdapter);
+    console.log('SlidingWindowPlayground reset to initial state:', resetState);
+  };
+
   const handleNextProblem = () => {
     if (Platform.OS === 'web') {
       window.location.href = `/module/${problemData.moduleId}`;
@@ -209,6 +220,7 @@ export default function SlidingWindowPlayground({ problemData }: Props) {
       problemData={problemData}
       moduleConfig={moduleConfig}
       engine={engine}
+      onReset={handleCustomReset}
     >
       {/* Module-specific visualization */}
       {isCompleted ? (
@@ -234,7 +246,9 @@ export default function SlidingWindowPlayground({ problemData }: Props) {
           <DataVisualizer 
             uiState={{
               ...currentState.uiState,
-              arrayElements: elements
+              arrayElements: elements,
+              windowStart: currentState.uiState.windowStart ?? undefined,
+              windowEnd: currentState.uiState.windowEnd ?? undefined
             }}
             onElementPress={(index: number) => handleUserAction('click_element', index)}
             expectedIndex={expectedIndex}

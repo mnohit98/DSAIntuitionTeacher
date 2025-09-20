@@ -6,7 +6,11 @@
   "moduleId": "slidingWindow",
   "submoduleId": "sw_fixed",
   "difficulty": "Easy",
-  "tags": ["Array", "Sliding Window", "Fixed Size"],
+  "tags": [
+    "Array",
+    "Sliding Window",
+    "Fixed Size"
+  ],
   "examples": [
     {
       "input": "arr = [2, 1, 5, 1, 3, 2], k = 3",
@@ -21,7 +25,14 @@
   ],
   "playground": {
     "initialState": {
-      "array": [2, 1, 5, 1, 3, 2],
+      "array": [
+        2,
+        1,
+        5,
+        1,
+        3,
+        2
+      ],
       "k": 3,
       "windowSum": 0,
       "maxSum": 0,
@@ -35,12 +46,36 @@
         "expectedAction": "click_initialize",
         "uiState": {
           "arrayElements": [
-            {"value": 2, "state": "not_yet_reached", "index": 0},
-            {"value": 1, "state": "not_yet_reached", "index": 1},
-            {"value": 5, "state": "not_yet_reached", "index": 2},
-            {"value": 1, "state": "not_yet_reached", "index": 3},
-            {"value": 3, "state": "not_yet_reached", "index": 4},
-            {"value": 2, "state": "not_yet_reached", "index": 5}
+            {
+              "value": 2,
+              "state": "not_yet_reached",
+              "index": 0
+            },
+            {
+              "value": 1,
+              "state": "not_yet_reached",
+              "index": 1
+            },
+            {
+              "value": 5,
+              "state": "not_yet_reached",
+              "index": 2
+            },
+            {
+              "value": 1,
+              "state": "not_yet_reached",
+              "index": 3
+            },
+            {
+              "value": 3,
+              "state": "not_yet_reached",
+              "index": 4
+            },
+            {
+              "value": 2,
+              "state": "not_yet_reached",
+              "index": 5
+            }
           ],
           "windowStart": null,
           "windowEnd": null,
@@ -49,7 +84,7 @@
           "k": 3,
           "highlightedElements": []
         },
-        "jarvisMessage": "🎓 Welcome to the Sliding Window technique! Think of this like looking through a window that slides across an array. Our mission: find the contiguous subarray of size 3 with the maximum sum. Instead of checking every possible subarray (which would be slow), we'll use a 'sliding window' that moves efficiently across the array. First, we need to set up our tracking variables - click 'Initialize Variables' to begin our journey!",
+        "jarvisMessage": "Welcome to the Sliding Window technique! Think of this like looking through a window that slides across an array. Our mission: find the contiguous subarray of size 3 with the maximum sum. Instead of checking every possible subarray (which would be slow), we'll use a 'sliding window' that moves efficiently across the array. First, we need to set up our tracking variables - click 'Initialize Variables' to begin our journey!",
         "codeSnippet": "// Step 0: Ready to initialize variables\nlet windowSum = 0;  // Will track current window sum\nlet maxSum = 0;     // Will remember best sum found\nlet windowStart = 0; // Will mark window beginning",
         "codeExplanation": "Before we start our algorithm, we need three key variables: windowSum tracks the sum of elements currently in our window, maxSum remembers the highest sum we've discovered so far, and windowStart marks where our sliding window begins in the array."
       },
@@ -60,21 +95,47 @@
         "expectedElementIndex": 0,
         "uiState": {
           "arrayElements": [
-            {"value": 2, "state": "in_window", "index": 0},
-            {"value": 1, "state": "not_yet_reached", "index": 1},
-            {"value": 5, "state": "not_yet_reached", "index": 2},
-            {"value": 1, "state": "not_yet_reached", "index": 3},
-            {"value": 3, "state": "not_yet_reached", "index": 4},
-            {"value": 2, "state": "not_yet_reached", "index": 5}
+            {
+              "value": 2,
+              "state": "in_window",
+              "index": 0
+            },
+            {
+              "value": 1,
+              "state": "not_yet_reached",
+              "index": 1
+            },
+            {
+              "value": 5,
+              "state": "not_yet_reached",
+              "index": 2
+            },
+            {
+              "value": 1,
+              "state": "not_yet_reached",
+              "index": 3
+            },
+            {
+              "value": 3,
+              "state": "not_yet_reached",
+              "index": 4
+            },
+            {
+              "value": 2,
+              "state": "not_yet_reached",
+              "index": 5
+            }
           ],
           "windowStart": 0,
           "windowEnd": 0,
           "windowSum": 2,
           "maxSum": 0,
           "k": 3,
-          "highlightedElements": [0]
+          "highlightedElements": [
+            0
+          ]
         },
-        "jarvisMessage": "🎯 Excellent! Our variables are ready: windowSum = 0 (tracks current window's sum), maxSum = 0 (remembers the best sum we've found), windowStart = 0 (marks where our window begins). Now comes the exciting part - building our first window! Think of it like placing the left edge of a picture frame. Click on the first element (value 2) to start forming our window of size 3.",
+        "jarvisMessage": "Excellent! Our variables are ready: windowSum = 0 (tracks current window's sum), maxSum = 0 (remembers the best sum we've found), windowStart = 0 (marks where our window begins). Now comes the exciting part - building our first window! Think of it like placing the left edge of a picture frame. Click on the first element (value 2) to start forming our window of size 3.",
         "codeSnippet": "// Add first element to window\nwindowSum += arr[0];  // windowSum = 0 + 2 = 2\nwindowEnd = 0;        // Track window end position",
         "codeExplanation": "The intuition is simple: we're starting to build our window by adding the first element. In code, we add arr[0] to our windowSum and track that our window now ends at position 0. This is like placing the first piece of a puzzle."
       },
@@ -85,21 +146,48 @@
         "expectedElementIndex": 1,
         "uiState": {
           "arrayElements": [
-            {"value": 2, "state": "in_window", "index": 0},
-            {"value": 1, "state": "in_window", "index": 1},
-            {"value": 5, "state": "not_yet_reached", "index": 2},
-            {"value": 1, "state": "not_yet_reached", "index": 3},
-            {"value": 3, "state": "not_yet_reached", "index": 4},
-            {"value": 2, "state": "not_yet_reached", "index": 5}
+            {
+              "value": 2,
+              "state": "in_window",
+              "index": 0
+            },
+            {
+              "value": 1,
+              "state": "in_window",
+              "index": 1
+            },
+            {
+              "value": 5,
+              "state": "not_yet_reached",
+              "index": 2
+            },
+            {
+              "value": 1,
+              "state": "not_yet_reached",
+              "index": 3
+            },
+            {
+              "value": 3,
+              "state": "not_yet_reached",
+              "index": 4
+            },
+            {
+              "value": 2,
+              "state": "not_yet_reached",
+              "index": 5
+            }
           ],
           "windowStart": 0,
           "windowEnd": 1,
           "windowSum": 3,
           "maxSum": 0,
           "k": 3,
-          "highlightedElements": [0,1]
+          "highlightedElements": [
+            0,
+            1
+          ]
         },
-        "jarvisMessage": "🌟 Beautiful! Our window now contains its first element (2), and windowSum = 2. Notice how the element turned green - that's our visual cue that it's inside the window! We're building our window step by step, like constructing a house brick by brick. We need 2 more elements to complete our window of size 3. Click on the second element (value 1) to expand our window further.",
+        "jarvisMessage": "Beautiful! Our window now contains its first element (2), and windowSum = 2. Notice how the element turned green - that's our visual cue that it's inside the window! We're building our window step by step, like constructing a house brick by brick. We need 2 more elements to complete our window of size 3. Click on the second element (value 1) to expand our window further.",
         "codeSnippet": "// Expand window to include second element\nwindowEnd++;          // Move end pointer: 0 → 1\nwindowSum += arr[1];  // Add new element: 2 + 1 = 3",
         "codeExplanation": "We're expanding our window by moving the end pointer forward and adding the new element to our sum. Think of it as extending a measuring tape - we keep one end fixed (windowStart = 0) and stretch the other end (windowEnd) to include more elements."
       },
@@ -110,21 +198,49 @@
         "expectedElementIndex": 2,
         "uiState": {
           "arrayElements": [
-            {"value": 2, "state": "in_window", "index": 0},
-            {"value": 1, "state": "in_window", "index": 1},
-            {"value": 5, "state": "in_window", "index": 2},
-            {"value": 1, "state": "not_yet_reached", "index": 3},
-            {"value": 3, "state": "not_yet_reached", "index": 4},
-            {"value": 2, "state": "not_yet_reached", "index": 5}
+            {
+              "value": 2,
+              "state": "in_window",
+              "index": 0
+            },
+            {
+              "value": 1,
+              "state": "in_window",
+              "index": 1
+            },
+            {
+              "value": 5,
+              "state": "in_window",
+              "index": 2
+            },
+            {
+              "value": 1,
+              "state": "not_yet_reached",
+              "index": 3
+            },
+            {
+              "value": 3,
+              "state": "not_yet_reached",
+              "index": 4
+            },
+            {
+              "value": 2,
+              "state": "not_yet_reached",
+              "index": 5
+            }
           ],
           "windowStart": 0,
           "windowEnd": 2,
           "windowSum": 8,
           "maxSum": 8,
           "k": 3,
-          "highlightedElements": [0, 1,2]
+          "highlightedElements": [
+            0,
+            1,
+            2
+          ]
         },
-        "jarvisMessage": "🔥 Fantastic progress! Our window is growing: [2, 1] with windowSum = 3. See how both elements are now green? That's our window expanding! We're like detectives gathering clues - each element we add gives us more information about this subarray's sum. Just one more element needed to complete our first window of size 3. Click on the third element (value 5) to finish building our first complete window!",
+        "jarvisMessage": "Fantastic progress! Our window is growing: [2, 1] with windowSum = 3. See how both elements are now green? That's our window expanding! We're like detectives gathering clues - each element we add gives us more information about this subarray's sum. Just one more element needed to complete our first window of size 3. Click on the third element (value 5) to finish building our first complete window!",
         "codeSnippet": "// Complete the first window\nwindowEnd++;          // Move end: 1 → 2\nwindowSum += arr[2];  // Add element: 3 + 5 = 8\nif (windowEnd >= k-1) {\n  maxSum = Math.max(maxSum, windowSum); // maxSum = 8\n}",
         "codeExplanation": "Now we complete our first window of size k=3. The intuition is: once we have k elements, we can start comparing sums. The code checks if windowEnd >= k-1 (meaning we have a full window), then updates maxSum if this window is better than any previous ones."
       },
@@ -135,21 +251,49 @@
         "expectedElementIndex": 3,
         "uiState": {
           "arrayElements": [
-            {"value": 2, "state": "out_of_window_past", "index": 0},
-            {"value": 1, "state": "in_window", "index": 1},
-            {"value": 5, "state": "in_window", "index": 2},
-            {"value": 1, "state": "in_window", "index": 3},
-            {"value": 3, "state": "not_yet_reached", "index": 4},
-            {"value": 2, "state": "not_yet_reached", "index": 5}
+            {
+              "value": 2,
+              "state": "out_of_window_past",
+              "index": 0
+            },
+            {
+              "value": 1,
+              "state": "in_window",
+              "index": 1
+            },
+            {
+              "value": 5,
+              "state": "in_window",
+              "index": 2
+            },
+            {
+              "value": 1,
+              "state": "in_window",
+              "index": 3
+            },
+            {
+              "value": 3,
+              "state": "not_yet_reached",
+              "index": 4
+            },
+            {
+              "value": 2,
+              "state": "not_yet_reached",
+              "index": 5
+            }
           ],
           "windowStart": 1,
           "windowEnd": 3,
           "windowSum": 7,
           "maxSum": 8,
           "k": 3,
-          "highlightedElements": [ 1, 2,3]
+          "highlightedElements": [
+            1,
+            2,
+            3
+          ]
         },
-        "jarvisMessage": "🎉 MILESTONE ACHIEVED! Our first complete window [2, 1, 5] has sum = 8, and we've recorded this as our maxSum = 8. This is our first 'candidate' for the maximum sum! Now comes the revolutionary part of sliding window - instead of starting over with a new window, we'll 'slide' our existing window one position to the right. Imagine sliding a picture frame across a painting. We'll remove the leftmost element (2) and add a new rightmost element (1). Click on element at index 3 (value 1) to experience the sliding magic!",
+        "jarvisMessage": "MILESTONE ACHIEVED! Our first complete window [2, 1, 5] has sum = 8, and we've recorded this as our maxSum = 8. This is our first 'candidate' for the maximum sum! Now comes the revolutionary part of sliding window - instead of starting over with a new window, we'll 'slide' our existing window one position to the right. Imagine sliding a picture frame across a painting. We'll remove the leftmost element (2) and add a new rightmost element (1). Click on element at index 3 (value 1) to experience the sliding magic!",
         "codeSnippet": "// Slide the window efficiently\nwindowSum -= arr[windowStart]; // Remove left: 8 - 2 = 6\nwindowStart++;                  // Move start: 0 → 1\nwindowEnd++;                    // Move end: 2 → 3\nwindowSum += arr[windowEnd];    // Add right: 6 + 1 = 7",
         "codeExplanation": "Here's the sliding window magic! Instead of recalculating the sum from scratch (slow), we efficiently update it: subtract the element leaving the window, then add the element entering the window. This transforms an O(n×k) problem into O(n)!"
       },
@@ -160,21 +304,49 @@
         "expectedElementIndex": 4,
         "uiState": {
           "arrayElements": [
-            {"value": 2, "state": "out_of_window_past", "index": 0},
-            {"value": 1, "state": "out_of_window_past", "index": 1},
-            {"value": 5, "state": "in_window", "index": 2},
-            {"value": 1, "state": "in_window", "index": 3},
-            {"value": 3, "state": "in_window", "index": 4},
-            {"value": 2, "state": "not_yet_reached", "index": 5}
+            {
+              "value": 2,
+              "state": "out_of_window_past",
+              "index": 0
+            },
+            {
+              "value": 1,
+              "state": "out_of_window_past",
+              "index": 1
+            },
+            {
+              "value": 5,
+              "state": "in_window",
+              "index": 2
+            },
+            {
+              "value": 1,
+              "state": "in_window",
+              "index": 3
+            },
+            {
+              "value": 3,
+              "state": "in_window",
+              "index": 4
+            },
+            {
+              "value": 2,
+              "state": "not_yet_reached",
+              "index": 5
+            }
           ],
-         "windowStart": 2,
+          "windowStart": 2,
           "windowEnd": 4,
           "windowSum": 9,
           "maxSum": 9,
           "k": 3,
-          "highlightedElements": [2, 3,4]
+          "highlightedElements": [
+            2,
+            3,
+            4
+          ]
         },
-        "jarvisMessage": "🚀 INCREDIBLE! You just witnessed the sliding window technique in action! Notice what happened: the leftmost element (2) turned red (meaning it's no longer in our window), and the new element (1) turned green (joining our window). Our window has efficiently slid from [2, 1, 5] to [1, 5, 1]. The sum changed from 8 to 7 (we subtracted 2 and added 1). This is the genius of sliding window - we didn't recalculate the entire sum, we just updated it! Since 7 < 8, our maxSum stays 8. Ready for another slide? Click element at index 4 (value 3).",
+        "jarvisMessage": "INCREDIBLE! You just witnessed the sliding window technique in action! Notice what happened: the leftmost element (2) turned red (meaning it's no longer in our window), and the new element (1) turned green (joining our window). Our window has efficiently slid from [2, 1, 5] to [1, 5, 1]. The sum changed from 8 to 7 (we subtracted 2 and added 1). This is the genius of sliding window - we didn't recalculate the entire sum, we just updated it! Since 7 < 8, our maxSum stays 8. Ready for another slide? Click element at index 4 (value 3).",
         "codeSnippet": "windowSum -= arr[windowStart]; // Remove left element (2)\nwindowStart++;                  // Move start pointer\nwindowSum += arr[windowEnd];   // Add new element (1)\n// Result: 8 - 2 + 1 = 7"
       },
       {
@@ -184,21 +356,49 @@
         "expectedElementIndex": 5,
         "uiState": {
           "arrayElements": [
-            {"value": 2, "state": "out_of_window_past", "index": 0},
-            {"value": 1, "state": "out_of_window_past", "index": 1},
-            {"value": 5, "state": "out_of_window_past", "index": 2},
-            {"value": 1, "state": "in_window", "index": 3},
-            {"value": 3, "state": "in_window", "index": 4},
-            {"value": 2, "state": "in_window", "index": 5}
+            {
+              "value": 2,
+              "state": "out_of_window_past",
+              "index": 0
+            },
+            {
+              "value": 1,
+              "state": "out_of_window_past",
+              "index": 1
+            },
+            {
+              "value": 5,
+              "state": "out_of_window_past",
+              "index": 2
+            },
+            {
+              "value": 1,
+              "state": "in_window",
+              "index": 3
+            },
+            {
+              "value": 3,
+              "state": "in_window",
+              "index": 4
+            },
+            {
+              "value": 2,
+              "state": "in_window",
+              "index": 5
+            }
           ],
           "windowStart": 3,
           "windowEnd": 5,
           "windowSum": 6,
           "maxSum": 9,
           "k": 3,
-          "highlightedElements": [3, 4,5]
+          "highlightedElements": [
+            3,
+            4,
+            5
+          ]
         },
-        "jarvisMessage": "🏆 BREAKTHROUGH MOMENT! Our window has slid again to [5, 1, 3] with sum = 9! This is BIGGER than our previous maxSum of 8, so we've found a better solution! This is the beauty of the sliding window - as we slide across the array, we're constantly comparing and keeping track of the best sum we've seen. Our maxSum is now updated to 9. We're getting closer to finding the optimal answer! One more slide to complete our journey - click element at index 5 (value 2).",
+        "jarvisMessage": "BREAKTHROUGH MOMENT! Our window has slid again to [5, 1, 3] with sum = 9! This is BIGGER than our previous maxSum of 8, so we've found a better solution! This is the beauty of the sliding window - as we slide across the array, we're constantly comparing and keeping track of the best sum we've seen. Our maxSum is now updated to 9. We're getting closer to finding the optimal answer! One more slide to complete our journey - click element at index 5 (value 2).",
         "codeSnippet": "// Slide and update maximum\nwindowSum -= arr[1];    // Remove: 7 - 1 = 6\nwindowStart++;          // Move start: 1 → 2\nwindowEnd++;            // Move end: 3 → 4\nwindowSum += arr[4];    // Add: 6 + 3 = 9\nmaxSum = Math.max(maxSum, windowSum); // maxSum = max(8, 9) = 9",
         "codeExplanation": "The intuition of 'always remember the best' translates to Math.max() in code. Every time we slide the window, we compare the new sum with our best-so-far (maxSum). If the new window is better, we update our record. This ensures we never lose track of the optimal solution!"
       },
@@ -208,23 +408,51 @@
         "expectedAction": "complete_algorithm",
         "uiState": {
           "arrayElements": [
-            {"value": 2, "state": "out_of_window_past", "index": 0},
-            {"value": 1, "state": "out_of_window_past", "index": 1},
-            {"value": 5, "state": "out_of_window_past", "index": 2},
-            {"value": 1, "state": "in_window", "index": 3},
-            {"value": 3, "state": "in_window", "index": 4},
-            {"value": 2, "state": "in_window", "index": 5}
+            {
+              "value": 2,
+              "state": "out_of_window_past",
+              "index": 0
+            },
+            {
+              "value": 1,
+              "state": "out_of_window_past",
+              "index": 1
+            },
+            {
+              "value": 5,
+              "state": "out_of_window_past",
+              "index": 2
+            },
+            {
+              "value": 1,
+              "state": "in_window",
+              "index": 3
+            },
+            {
+              "value": 3,
+              "state": "in_window",
+              "index": 4
+            },
+            {
+              "value": 2,
+              "state": "in_window",
+              "index": 5
+            }
           ],
           "windowStart": 3,
           "windowEnd": 5,
           "windowSum": 6,
           "maxSum": 9,
           "k": 3,
-          "highlightedElements": [3, 4, 5]
+          "highlightedElements": [
+            3,
+            4,
+            5
+          ]
         },
-        "jarvisMessage": "🎓 MISSION ACCOMPLISHED! Our final window [1, 3, 2] has sum = 6. Since 6 < 9, our maxSum remains 9. You've just mastered the sliding window technique!\n\n🚀 **Algorithm Complete - Ready to analyze complexity!**\n\n**Time Complexity: O(n)** - We visit each element exactly once\n**Space Complexity: O(1)** - Only using a few variables\n\nThink about what we achieved: instead of checking all possible subarrays (which would require O(n×k) operations), we efficiently slid our window across the array, updating the sum in constant time at each step. The maximum sum subarray of size 3 is [5, 1, 3] with sum = 9.\n\nClick 'Complete Algorithm' to see the full complexity analysis and celebrate your success! 🎉",
+        "jarvisMessage": "MISSION ACCOMPLISHED! Our final window [1, 3, 2] has sum = 6. Since 6 < 9, our maxSum remains 9. You've just mastered the sliding window technique!\n\n **Algorithm Complete - Ready to analyze complexity!**\n\n**Time Complexity: O(n)** - We visit each element exactly once\n**Space Complexity: O(1)** - Only using a few variables\n\nThink about what we achieved: instead of checking all possible subarrays (which would require O(n×k) operations), we efficiently slid our window across the array, updating the sum in constant time at each step. The maximum sum subarray of size 3 is [5, 1, 3] with sum = 9.\n\nClick 'Complete Algorithm' to see the full complexity analysis and celebrate your success! ",
         "codeSnippet": "// Algorithm complete - return the answer\nreturn maxSum;  // Returns 9\n\n// The winning subarray: [5, 1, 3]\n// Found at indices 2, 3, 4\n// Sum: 5 + 1 + 3 = 9",
-        "codeExplanation": "The beautiful conclusion! Our intuition of 'keep track of the best' becomes a simple return statement. The maxSum variable has been our faithful companion, remembering the optimal solution throughout our journey. The algorithm efficiently found the answer in O(n) time instead of O(n×k).\n\n**Time Complexity (TC): O(n)** - We visit each element exactly once in our single loop. No nested loops means linear time!\n\n**Space Complexity (SC): O(1)** - We only use a fixed number of variables (windowSum, maxSum, windowStart) regardless of input size. Constant space!\n\n🎯 **Why this matters**: Sliding window transforms a naive O(n×k) brute force approach into an elegant O(n) solution. For an array of 1000 elements with k=100, we go from 100,000 operations to just 1,000 operations - that's 100x faster!"
+        "codeExplanation": "The beautiful conclusion! Our intuition of 'keep track of the best' becomes a simple return statement. The maxSum variable has been our faithful companion, remembering the optimal solution throughout our journey. The algorithm efficiently found the answer in O(n) time instead of O(n×k).\n\n**Time Complexity (TC): O(n)** - We visit each element exactly once in our single loop. No nested loops means linear time!\n\n**Space Complexity (SC): O(1)** - We only use a fixed number of variables (windowSum, maxSum, windowStart) regardless of input size. Constant space!\n\n **Why this matters**: Sliding window transforms a naive O(n×k) brute force approach into an elegant O(n) solution. For an array of 1000 elements with k=100, we go from 100,000 operations to just 1,000 operations - that's 100x faster!"
       }
     ]
   },

@@ -101,7 +101,7 @@ export default function CodePanel({ codeInfo }: Props) {
     return (
       <View style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>💻 Code Implementation</Text>
+          <Text style={styles.headerTitle}>Code Implementation</Text>
         </View>
         <View style={styles.emptyState}>
           <Text style={styles.emptyText}>Code will appear as you progress</Text>
@@ -124,7 +124,7 @@ export default function CodePanel({ codeInfo }: Props) {
       }
     ]}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>💻 Code Implementation</Text>
+        <Text style={styles.headerTitle}>Code Implementation</Text>
       </View>
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         <View style={styles.codeContainer}>
@@ -132,7 +132,7 @@ export default function CodePanel({ codeInfo }: Props) {
         </View>
         {codeInfo.codeExplanation && (
           <View style={styles.explanationContainer}>
-            <Text style={styles.explanationTitle}>🔗 Intuition → Code</Text>
+            <Text style={styles.explanationTitle}>Intuition → Code</Text>
             {renderFormattedText(codeInfo.codeExplanation)}
           </View>
         )}
