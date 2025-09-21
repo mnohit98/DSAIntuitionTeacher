@@ -32,7 +32,8 @@
         { "problemId": "p9", "title": "Permutation in String" },
         { "problemId": "p10", "title": "Smallest Window Containing Substring" },
         { "problemId": "p11", "title": "Words Concatenation" },
-        { "problemId": "p12", "title": "Subarray with K Different Integers" }
+        { "problemId": "p12", "title": "Subarray with K Different Integers" },
+        { "problemId": "p1", "title": "Maximum Sum Subarray of Size K" }
       ]
     }
   ]

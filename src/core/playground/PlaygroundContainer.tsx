@@ -346,7 +346,7 @@ export default function CleanGenericPlayground({
 
       {/* Main Workspace - Full Width */}
       <View style={styles.workspace}>
-        {/* Left Panel - Step Guide Only */}
+        {/* Left Panel - Step Guide / Algorithm Steps */}
         <View style={[
           styles.stepGuidePanel,
           showPanelHighlight && styles.highlightedPanel
@@ -355,6 +355,7 @@ export default function CleanGenericPlayground({
             message={playgroundState.jarvisMessage}
             onAIAssistantPress={undefined}
             isAILoading={false}
+            isCompleted={playgroundState.isCompleted}
           />
         </View>
 
@@ -405,7 +406,7 @@ export default function CleanGenericPlayground({
                 <View style={styles.guidanceMessage}>
                   <Text style={styles.guidanceTitle}>💡 Learning Tip</Text>
                   <Text style={styles.guidanceText}>
-                    Follow the <Text style={styles.guidanceHighlight}>Step Guide</Text> (left) for intuition and the <Text style={styles.guidanceHighlight}>Code Implementation</Text> (right) to see how concepts translate to code!
+                    Follow the <Text style={styles.guidanceHighlight}>{playgroundState.isCompleted ? 'Algorithm Steps' : 'Step Guide'}</Text> (left) for intuition and the <Text style={styles.guidanceHighlight}>{playgroundState.isCompleted ? 'Complexity Analysis' : 'Code Implementation'}</Text> (right) to {playgroundState.isCompleted ? 'understand performance characteristics!' : 'see how concepts translate to code!'}
                   </Text>
                   <TouchableOpacity 
                     style={styles.guidanceCloseButton}
@@ -418,7 +419,7 @@ export default function CleanGenericPlayground({
             )}
 
             {/* Module-specific visualization content */}
-            <View style={styles.mainAlgorithmContent}>
+            <View style={playgroundState.isCompleted ? styles.mainAlgorithmContentCompleted : styles.mainAlgorithmContent}>
               {React.isValidElement(children) 
                 ? React.cloneElement(children, { onUserAction: handleUserAction } as any)
                 : children
@@ -447,15 +448,16 @@ export default function CleanGenericPlayground({
           </View>
         </View>
 
-        {/* Right Sidebar - Code Implementation */}
+        {/* Right Sidebar - Code Implementation / Complexity Analysis */}
         <View style={[
           styles.rightSidebar,
           showPanelHighlight && styles.highlightedPanel
         ]}>
-          {/* Code Implementation Panel */}
+          {/* Code Implementation / Complexity Analysis Panel */}
           <View style={styles.codePanel}>
             <CodePanel 
               codeInfo={playgroundState.codeInfo}
+              isCompleted={playgroundState.isCompleted}
             />
           </View>
           
@@ -541,7 +543,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   
-  // Step Guide Panel - Left Side
+  // Step Guide / Algorithm Steps Panel - Left Side
   stepGuidePanel: {
     width: 280,
     backgroundColor: '#111720',
@@ -581,6 +583,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     minHeight: 300,
+  },
+
+  mainAlgorithmContentCompleted: {
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    minHeight: 300,
+    overflow: 'auto',
+    flex: 1,
   },
 
   // Floating Help Button

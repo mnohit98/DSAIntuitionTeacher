@@ -11,11 +11,51 @@ interface Props {
   message: JarvisMessage | null;
   onAIAssistantPress?: () => void;
   isAILoading?: boolean;
+  isCompleted?: boolean;
 }
 
-export default function JarvisChatPanel({ message, onAIAssistantPress, isAILoading = false }: Props) {
+export default function JarvisChatPanel({ message, onAIAssistantPress, isAILoading = false, isCompleted = false }: Props) {
   const [isHighlighting, setIsHighlighting] = useState(false);
   const highlightAnim = useRef(new Animated.Value(0)).current;
+
+  // Dynamic title based on completion state
+  const getPanelTitle = () => {
+    return isCompleted ? "Algorithm Steps" : "Step Guide";
+  };
+
+  // Render algorithm steps with enhanced styling
+  const renderAlgorithmSteps = (text: string) => {
+    const lines = text.split('\n');
+    const elements: React.ReactNode[] = [];
+    
+    lines.forEach((line, index) => {
+      if (line.includes('**Step')) {
+        // Parse step line: **Step 1:** Description
+        const match = line.match(/\*\*Step (\d+):\*\* (.+)/);
+        if (match) {
+          const stepNumber = match[1];
+          const stepDescription = match[2];
+          elements.push(
+            <View key={index} style={styles.stepContainer}>
+              <View style={styles.stepNumberContainer}>
+                <Text style={styles.stepNumber}>{stepNumber}</Text>
+              </View>
+              <Text style={styles.stepDescription}>{stepDescription}</Text>
+            </View>
+          );
+        }
+      } else if (line.trim() && !line.includes('**Step')) {
+        // Handle any additional text
+        elements.push(
+          <Text key={index} style={styles.additionalText}>
+            {line}
+          </Text>
+        );
+      }
+    });
+    
+    return elements;
+  };
 
   // Container highlighting effect
   useEffect(() => {
@@ -73,7 +113,7 @@ export default function JarvisChatPanel({ message, onAIAssistantPress, isAILoadi
     return (
       <View style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>Step Guide</Text>
+          <Text style={styles.headerTitle}>{getPanelTitle()}</Text>
         </View>
         <View style={styles.emptyState}>
           <Text style={styles.emptyText}>Ready to guide you through each step</Text>
@@ -96,12 +136,20 @@ export default function JarvisChatPanel({ message, onAIAssistantPress, isAILoadi
       }
     ]}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Step Guide</Text>
+        <Text style={styles.headerTitle}>{getPanelTitle()}</Text>
       </View>
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        <Text style={styles.messageText}>
-          {message.message}
-        </Text>
+        {isCompleted && message.message.includes('**Step') ? (
+          // Render algorithm steps with special styling
+          <View style={styles.algorithmStepsContainer}>
+            {renderAlgorithmSteps(message.message)}
+          </View>
+        ) : (
+          // Render normal message
+          <Text style={styles.messageText}>
+            {message.message}
+          </Text>
+        )}
       </ScrollView>
 
       {/* AI Assistant Button - Only show if onAIAssistantPress is provided */}
@@ -203,5 +251,82 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     color: '#080A0D',
+  },
+
+  // Algorithm Steps Styling
+  algorithmStepsContainer: {
+    paddingVertical: 8,
+  },
+  algorithmStepsHeader: {
+    marginBottom: 16,
+    paddingBottom: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#1E2632',
+  },
+  algorithmStepsTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#29D3FF',
+    marginBottom: 4,
+  },
+  algorithmStepsSubtitle: {
+    fontSize: 12,
+    color: '#B4BCC8',
+    fontStyle: 'italic',
+  },
+  stepContainer: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginBottom: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 14,
+    backgroundColor: '#111720',
+    borderRadius: 12,
+    borderLeftWidth: 4,
+    borderLeftColor: '#29D3FF',
+    borderWidth: 1,
+    borderColor: '#1E2632',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  stepNumberContainer: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#29D3FF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 14,
+    marginTop: 2,
+    shadowColor: '#29D3FF',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.4,
+    shadowRadius: 6,
+    elevation: 4,
+    borderWidth: 2,
+    borderColor: '#0C1116',
+  },
+  stepNumber: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#080A0D',
+  },
+  stepDescription: {
+    flex: 1,
+    fontSize: 14,
+    lineHeight: 20,
+    color: '#E8ECF2',
+    fontWeight: '500',
+  },
+  additionalText: {
+    fontSize: 14,
+    lineHeight: 20,
+    color: '#B4BCC8',
+    textAlign: 'center',
+    marginVertical: 8,
+    fontStyle: 'italic',
   },
 });

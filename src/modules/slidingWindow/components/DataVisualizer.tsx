@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Animated, Easing, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 interface DataElement {
@@ -14,34 +14,8 @@ interface Props {
     windowEnd?: number;
     windowSum?: number;
     maxSum?: number;
-    minLength?: number;
-    maxLength?: number;
-    currentLength?: number;
-    targetSum?: number;
-    distinctCount?: number;
-    maxDistinct?: number;
-    windowSize?: number;
-    isValidWindow?: boolean;
-    charCount?: Record<string, number>;
-    uniqueChars?: number;
-    repeatingChars?: number;
-    distinctChars?: number;
-    zeroCount?: number;
-    charFrequency?: Record<string, number>;
-    maxRepeatLetterCount?: number;
-    onesCount?: number;
-    prefixSum?: number;
-    count?: number;
-    prefixCount?: Record<string, number>;
-    currentIndex?: number;
-    binaryArray?: number[];
-    targetString?: string;
-    pattern?: string;
-    patternFreq?: Record<string, number>;
-    windowFreq?: Record<string, number>;
-    matches?: number;
-    requiredMatches?: number;
   };
+  problemData?: any;
   onElementPress: (index: number) => void;
   expectedIndex?: number;
   showInitializeButton?: boolean;
@@ -52,6 +26,7 @@ interface Props {
 
 export default function DataVisualizer({ 
   uiState, 
+  problemData,
   onElementPress, 
   expectedIndex, 
   showInitializeButton = false, 
@@ -59,7 +34,6 @@ export default function DataVisualizer({
   showCompleteButton = false,
   onCompletePress
 }: Props) {
-  const [/*showInfoDropdown*/, /*setShowInfoDropdown*/] = useState(false);
 
   const blinkAnim = useRef(new Animated.Value(0)).current;
   const windowBoxAnim = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current;
@@ -254,36 +228,34 @@ export default function DataVisualizer({
   };
 
 
-  // Function to render algorithm variables display
+  // Function to render algorithm variables display - flexible and decoupled
   const renderVariablesDisplay = () => {
-    const { windowStart, windowEnd, windowSum, maxSum, windowSize } = uiState;
+    const { windowStart, windowEnd, windowSum, maxSum } = uiState;
     
-    // Calculate current window size if not provided
+    // Calculate current window size
     const currentWindowSize = windowStart !== undefined && windowEnd !== undefined 
       ? windowEnd - windowStart + 1 
-      : windowSize || 0;
+      : 0;
     
-    // Get target size k from the problem context (assuming k=3 for this problem)
-    const targetSizeK = 3;
+    // Get target size k from problem data (dynamic)
+    const targetSizeK = problemData?.playground?.initialState?.k || 3;
+    
+    // Define variables array for flexible rendering
+    const variables = [
+      { label: 'target size k:', value: targetSizeK },
+      { label: 'windowSize:', value: currentWindowSize },
+      { label: 'windowSum:', value: windowSum || 0 },
+      { label: 'maxSum:', value: maxSum || 0 }
+    ];
     
     return (
       <View style={styles.variablesDisplay}>
-        <View style={styles.variableItem}>
-          <Text style={styles.variableLabel}>target size k:</Text>
-          <Text style={styles.variableValue}>{targetSizeK}</Text>
-        </View>
-        <View style={styles.variableItem}>
-          <Text style={styles.variableLabel}>windowSize:</Text>
-          <Text style={styles.variableValue}>{currentWindowSize}</Text>
-        </View>
-        <View style={styles.variableItem}>
-          <Text style={styles.variableLabel}>windowSum:</Text>
-          <Text style={styles.variableValue}>{windowSum || 0}</Text>
-        </View>
-        <View style={styles.variableItem}>
-          <Text style={styles.variableLabel}>maxSum:</Text>
-          <Text style={styles.variableValue}>{maxSum || 0}</Text>
-        </View>
+        {variables.map((variable, index) => (
+          <View key={index} style={styles.variableItem}>
+            <Text style={styles.variableLabel}>{variable.label}</Text>
+            <Text style={styles.variableValue}>{variable.value}</Text>
+          </View>
+        ))}
       </View>
     );
   };
@@ -321,7 +293,9 @@ export default function DataVisualizer({
   };
 
   return (
-    <View style={styles.container}>
+    <>
+      <View style={styles.mainContainer}>
+        <View style={styles.container}>
       <View style={styles.dataContainer}>
         {/* Window Box - positioned behind elements */}
         {renderWindowBox()}
@@ -410,14 +384,23 @@ export default function DataVisualizer({
           </Animated.View>
         </View>
       )}
+        </View>
+      </View>
       
-      {/* Variables Display - positioned below the array */}
+      {/* Variables Display - completely decoupled */}
       {renderVariablesDisplay()}
-    </View>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
+  mainContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    width: '100%',
+  },
   container: {
     padding: 0,
     backgroundColor: 'transparent',
@@ -664,30 +647,38 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
 
-  // Variables Display Styles
   variablesDisplay: {
+    position: 'fixed',
+    bottom: 24, // Small margin from screen bottom
+    left: '50%', // Center horizontally
+    transform: [{ translateX: -400 }], // Offset by half the max width to center
     backgroundColor: '#111720',
     borderRadius: 12,
-    padding: 12,
-    marginTop: 120, // Enough distance so windowEnd pointer is visible
-    marginBottom: 16,
+    padding: 16,
     borderWidth: 1,
     borderColor: '#1E2632',
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'center',
-    gap: 8,
+    justifyContent: 'center', // Center the variables within the container
+    alignItems: 'flex-start', // Align to top for better wrapping
+    gap: 12, // Increased gap for better spacing
+    minHeight: 'auto', // Let it size naturally
+    width: 800, // Fixed width for centering
+    zIndex: 1000, // Ensure it stays on top
   },
   variableItem: {
     backgroundColor: '#1A1D23',
     borderRadius: 8,
-    paddingHorizontal: 10,
-    paddingVertical: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
     borderWidth: 1,
     borderColor: '#2D3748',
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    gap: 8,
+    marginBottom: 4, // Small margin for better vertical spacing when wrapped
+    flexShrink: 0, // Prevent shrinking
+    minWidth: 'auto', // Let it size naturally
   },
   variableLabel: {
     fontSize: 12,

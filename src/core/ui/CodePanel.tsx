@@ -10,6 +10,7 @@ interface CodeInfo {
 
 interface Props {
   codeInfo: CodeInfo | null;
+  isCompleted?: boolean;
 }
 
 // Function to render text with bold formatting for TC/SC
@@ -41,9 +42,105 @@ const renderFormattedText = (text: string) => {
   );
 };
 
-export default function CodePanel({ codeInfo }: Props) {
+export default function CodePanel({ codeInfo, isCompleted = false }: Props) {
   const [isHighlighting, setIsHighlighting] = useState(false);
   const highlightAnim = useRef(new Animated.Value(0)).current;
+
+  // Dynamic title based on completion state
+  const getPanelTitle = () => {
+    return isCompleted ? "Complexity Analysis" : "Code Implementation";
+  };
+
+  // Render complexity analysis with enhanced styling
+  const renderComplexityAnalysis = (text: string) => {
+    const lines = text.split('\n');
+    const elements: React.ReactNode[] = [];
+    let currentSection = '';
+    
+    lines.forEach((line, index) => {
+      const trimmedLine = line.trim();
+      
+      if (trimmedLine.includes('COMPLEXITY ANALYSIS')) {
+        // Skip the title - we don't need it
+        return;
+      } else if (trimmedLine && !trimmedLine.startsWith('**') && !currentSection && index > 0) {
+        // Overview section (content after title but before first metric)
+        elements.push(
+          <View key={index} style={styles.complexityOverview}>
+            <Text style={styles.complexityOverviewText}>{trimmedLine}</Text>
+          </View>
+        );
+      } else if (trimmedLine.startsWith('**Time Complexity')) {
+        // Time complexity section
+        currentSection = 'time';
+        const match = trimmedLine.match(/\*\*Time Complexity.*?:\s*(.+?)\*\*/);
+        const value = match ? match[1] : 'Not specified';
+        elements.push(
+          <View key={index} style={styles.complexitySection}>
+            <View style={styles.complexityMetricHeader}>
+              <Text style={styles.complexityMetricIcon}>⏱️</Text>
+              <Text style={styles.complexityMetricTitle}>Time Complexity</Text>
+              <View style={styles.complexityBadge}>
+                <Text style={styles.complexityBadgeText}>{value}</Text>
+              </View>
+            </View>
+          </View>
+        );
+      } else if (trimmedLine.startsWith('**Space Complexity')) {
+        // Space complexity section
+        currentSection = 'space';
+        const match = trimmedLine.match(/\*\*Space Complexity.*?:\s*(.+?)\*\*/);
+        const value = match ? match[1] : 'Not specified';
+        elements.push(
+          <View key={index} style={styles.complexitySection}>
+            <View style={styles.complexityMetricHeader}>
+              <Text style={styles.complexityMetricIcon}>💾</Text>
+              <Text style={styles.complexityMetricTitle}>Space Complexity</Text>
+              <View style={styles.complexityBadge}>
+                <Text style={styles.complexityBadgeText}>{value}</Text>
+              </View>
+            </View>
+          </View>
+        );
+      } else if (trimmedLine.includes('Algorithm Insight')) {
+        // Algorithm insight section - remove ** stars
+        currentSection = 'insight';
+        elements.push(
+          <Text key={index} style={styles.simpleHeading}>Algorithm Insight</Text>
+        );
+      } else if (trimmedLine.includes('Why This Matters')) {
+        // Why it matters section - remove ** stars and emoji
+        currentSection = 'matters';
+        elements.push(
+          <Text key={index} style={styles.simpleHeading}>Why This Matters</Text>
+        );
+      } else if (trimmedLine && !trimmedLine.startsWith('**') && currentSection) {
+        // Content for current section
+        const isExplanation = currentSection === 'time' || currentSection === 'space';
+        const isSimpleText = currentSection === 'insight' || currentSection === 'matters';
+        
+        if (isSimpleText) {
+          // Simple text block for insight and matters
+          elements.push(
+            <Text key={index} style={styles.simpleText}>
+              {trimmedLine}
+            </Text>
+          );
+        } else {
+          // Styled cards for explanations
+          elements.push(
+            <View key={index} style={styles.complexityExplanation}>
+              <Text style={styles.complexityExplanationText}>
+                {trimmedLine}
+              </Text>
+            </View>
+          );
+        }
+      }
+    });
+    
+    return elements;
+  };
 
   // Container highlighting effect
   useEffect(() => {
@@ -101,10 +198,12 @@ export default function CodePanel({ codeInfo }: Props) {
     return (
       <View style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>Code Implementation</Text>
+          <Text style={styles.headerTitle}>{getPanelTitle()}</Text>
         </View>
         <View style={styles.emptyState}>
-          <Text style={styles.emptyText}>Code will appear as you progress</Text>
+          <Text style={styles.emptyText}>
+            {isCompleted ? "Complexity analysis will appear here" : "Code will appear as you progress"}
+          </Text>
         </View>
       </View>
     );
@@ -124,17 +223,27 @@ export default function CodePanel({ codeInfo }: Props) {
       }
     ]}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Code Implementation</Text>
+        <Text style={styles.headerTitle}>{getPanelTitle()}</Text>
       </View>
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        <View style={styles.codeContainer}>
-          <Text style={styles.codeText}>{codeInfo.codeSnippet || 'No code available'}</Text>
-        </View>
-        {codeInfo.codeExplanation && (
-          <View style={styles.explanationContainer}>
-            <Text style={styles.explanationTitle}>Intuition → Code</Text>
-            {renderFormattedText(codeInfo.codeExplanation)}
+        {isCompleted && codeInfo.codeSnippet && codeInfo.codeSnippet.includes('COMPLEXITY ANALYSIS') ? (
+          // Render complexity analysis with special styling
+          <View style={styles.complexityContainer}>
+            {renderComplexityAnalysis(codeInfo.codeSnippet)}
           </View>
+        ) : (
+          // Render normal code content
+          <>
+            <View style={styles.codeContainer}>
+              <Text style={styles.codeText}>{codeInfo.codeSnippet || 'No code available'}</Text>
+            </View>
+            {codeInfo.codeExplanation && (
+              <View style={styles.explanationContainer}>
+                <Text style={styles.explanationTitle}>Intuition → Code</Text>
+                {renderFormattedText(codeInfo.codeExplanation)}
+              </View>
+            )}
+          </>
         )}
       </ScrollView>
     </Animated.View>
@@ -232,5 +341,89 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
     paddingVertical: 2,
     borderRadius: 4,
+  },
+
+  // Complexity Analysis Styling
+  complexityContainer: {
+    padding: 16,
+  },
+  complexityOverview: {
+    backgroundColor: '#0F1419',
+    borderRadius: 10,
+    padding: 16,
+    marginBottom: 20,
+    borderLeftWidth: 3,
+    borderLeftColor: '#29D3FF',
+    borderWidth: 1,
+    borderColor: '#1E2632',
+  },
+  complexityOverviewText: {
+    fontSize: 16,
+    lineHeight: 24,
+    color: '#B4BCC8',
+    fontStyle: 'italic',
+    textAlign: 'center',
+  },
+  complexitySection: {
+    marginBottom: 12,
+    backgroundColor: 'transparent',
+    padding: 0,
+  },
+  complexityMetricHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 6,
+  },
+  complexityMetricIcon: {
+    fontSize: 16,
+    marginRight: 8,
+  },
+  complexityMetricTitle: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#E8ECF2',
+    flex: 1,
+  },
+  complexityBadge: {
+    backgroundColor: '#10B981',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 12,
+    minWidth: 40,
+    alignItems: 'center',
+  },
+  complexityBadgeText: {
+    fontSize: 11,
+    fontWeight: 'bold',
+    color: '#0A0E13',
+  },
+  complexityExplanation: {
+    backgroundColor: 'transparent',
+    borderRadius: 0,
+    padding: 0,
+    marginTop: 4,
+    marginLeft: 24,
+    borderWidth: 0,
+  },
+  complexityExplanationText: {
+    fontSize: 13,
+    lineHeight: 18,
+    color: '#B4BCC8',
+    fontStyle: 'normal',
+  },
+
+  // Simple styling for insight sections
+  simpleHeading: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#29D3FF',
+    marginTop: 20,
+    marginBottom: 8,
+  },
+  simpleText: {
+    fontSize: 14,
+    lineHeight: 20,
+    color: '#E8ECF2',
+    marginBottom: 12,
   },
 });

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Platform } from 'react-native';
 import { ConfigService, PlaygroundContainer } from '../../../core';
 import { StandardEngine } from '../../../core/types/engine';
 import CompletionScreen from '../../../core/ui/CompletionScreen';
@@ -55,6 +54,11 @@ class SlidingWindowEngineAdapter implements StandardEngine {
   }
 
   getJarvisMessage() {
+    const state = this.engine.getCurrentState();
+    // If algorithm is completed, return the algorithm steps message
+    if (state.isCompleted && state.uiState.algorithmStepsMessage) {
+      return state.uiState.algorithmStepsMessage;
+    }
     const step = this.getCurrentStep();
     return step.jarvisMessage || 'Let\'s continue with the next step!';
   }
@@ -65,11 +69,21 @@ class SlidingWindowEngineAdapter implements StandardEngine {
   }
 
   getCodeSnippet() {
+    const state = this.engine.getCurrentState();
+    // If algorithm is completed, return complexity analysis
+    if (state.isCompleted && state.uiState.complexityAnalysis) {
+      return state.uiState.complexityAnalysis;
+    }
     const step = this.getCurrentStep();
     return step.codeSnippet || null;
   }
 
   getCodeExplanation() {
+    const state = this.engine.getCurrentState();
+    // If algorithm is completed, don't show step explanation
+    if (state.isCompleted) {
+      return null;
+    }
     const step = this.getCurrentStep();
     return step.codeExplanation || null;
   }
@@ -84,16 +98,16 @@ export default function SlidingWindowPlayground({ problemData }: Props) {
   // Get module configuration from JSON
   const configService = ConfigService.getInstance();
   const moduleConfig = configService.getModuleConfiguration('sliding-window');
-  
-  if (!moduleConfig) {
-    return <div>Module configuration not found</div>;
-  }
 
   // Create engine instance and wrap it with adapter
   const [originalEngine] = useState(() => EngineFactory.createEngine(problemData.submoduleId, problemData));
   const [engine, setEngine] = useState(() => new SlidingWindowEngineAdapter(originalEngine, problemData));
   const [currentState, setCurrentState] = useState(originalEngine.getCurrentState());
   const [forceUpdate, setForceUpdate] = useState(0);
+  
+  if (!moduleConfig) {
+    return <div>Module configuration not found</div>;
+  }
 
   // Handle user actions from the visualization component
   const handleUserAction = (action: string, data?: any) => {
@@ -159,11 +173,8 @@ export default function SlidingWindowPlayground({ problemData }: Props) {
   // Use current state for UI consistency with React rendering
   const step = originalEngine.getCurrentStep();
   
-  // Determine if we should show string visualizer
-  const shouldShowStringVisualizer = problemData.problemId === 'p9' || problemData.problemId === 'p11';
-  const elements = shouldShowStringVisualizer 
-    ? currentState.uiState.stringElements || []
-    : currentState.uiState.arrayElements || [];
+  // Use array elements for p1.json (fixed-size sliding window)
+  const elements = currentState.uiState.arrayElements || [];
 
   const expectedIndex = !step.hideIndexHint
     ? (Array.isArray(step.expectedElementIndex)
@@ -181,17 +192,7 @@ export default function SlidingWindowPlayground({ problemData }: Props) {
   const isCompleted = currentState.isCompleted;
   console.log('Playground render - isCompleted:', isCompleted, 'currentStep:', currentState.currentStep);
 
-  // Navigation handlers for completion
-  const handleTryAgain = () => {
-    originalEngine.reset();
-    const resetState = originalEngine.getCurrentState();
-    setCurrentState(resetState);
-    setForceUpdate(prev => prev + 1);
-    const newAdapter = new SlidingWindowEngineAdapter(originalEngine, problemData);
-    setEngine(newAdapter);
-  };
-
-  // Custom reset handler for the reset button - same as try again
+  // Custom reset handler for the reset button
   const handleCustomReset = () => {
     originalEngine.reset();
     const resetState = originalEngine.getCurrentState();
@@ -200,18 +201,6 @@ export default function SlidingWindowPlayground({ problemData }: Props) {
     const newAdapter = new SlidingWindowEngineAdapter(originalEngine, problemData);
     setEngine(newAdapter);
     console.log('SlidingWindowPlayground reset to initial state:', resetState);
-  };
-
-  const handleNextProblem = () => {
-    if (Platform.OS === 'web') {
-      window.location.href = `/module/${problemData.moduleId}`;
-    }
-  };
-
-  const handleNextModule = () => {
-    if (Platform.OS === 'web') {
-      window.location.href = '/home';
-    }
   };
 
   return (
@@ -228,15 +217,13 @@ export default function SlidingWindowPlayground({ problemData }: Props) {
           display: 'flex', 
           flexDirection: 'column', 
           alignItems: 'center', 
-          justifyContent: 'center',
-          height: '100%',
-          padding: '20px'
+          justifyContent: 'flex-start',
+          flex: 1,
+          padding: '20px',
+          overflow: 'auto'
         }}>
           <CompletionScreen
             problemData={problemData}
-            onTryAgain={handleTryAgain}
-            onNextProblem={handleNextProblem}
-            onNextModule={handleNextModule}
           />
         </div>
       ) : (
@@ -249,6 +236,7 @@ export default function SlidingWindowPlayground({ problemData }: Props) {
               windowStart: currentState.uiState.windowStart ?? undefined,
               windowEnd: currentState.uiState.windowEnd ?? undefined
             }}
+            problemData={problemData}
             onElementPress={(index: number) => handleUserAction('click_element', index)}
             expectedIndex={expectedIndex}
             showInitializeButton={showInitializeButton}

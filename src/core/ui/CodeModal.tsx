@@ -78,7 +78,7 @@ export default function CodeModal({ visible, onClose, problemData, code }: Props
 
 **Space Complexity (SC): ${optimal.spaceComplexity}** - We only use a fixed number of variables regardless of input size. Constant space!
 
-🎯 **Why this matters**: Sliding window transforms a naive O(n×k) brute force approach into an elegant O(n) solution. For an array of 1000 elements with k=100, we go from 100,000 operations to just 1,000 operations - that's 100x faster!
+**Why this matters**: Sliding window transforms a naive O(n×k) brute force approach into an elegant O(n) solution. For an array of 1000 elements with k=100, we go from 100,000 operations to just 1,000 operations - that's 100x faster!
 
 💡 **Key Insight**: The beauty of this algorithm lies in its efficiency - instead of recalculating sums from scratch for each window, we cleverly add one element and remove another, maintaining our sum in constant time per step.`;
   };

@@ -20,53 +20,8 @@ export interface UIState {
   windowSum: number;
   maxSum: number;
   highlightedElements: number[];
-  negativeQueue?: number[];
-  result?: number[];
-  currentWindow?: number[];
-  // Variable-size specific fields
-  minLength?: number;
-  maxLength?: number;
-  currentLength?: number;
-  targetSum?: number;
-  distinctCount?: number;
-  maxDistinct?: number;
-  windowSize?: number;
-  isValidWindow?: boolean;
-  bestWindow?: any;
-  // Character-based problems
-  charCount?: Record<string, number>;
-  uniqueChars?: number;
-  repeatingChars?: number;
-  distinctChars?: number;
-  // Binary array problems
-  zeroCount?: number;
-  // New problem types (p9-p13)
-  charFrequency?: Record<string, number>;
-  maxRepeatLetterCount?: number;
-  onesCount?: number;
-  prefixSum?: number;
-  count?: number;
-  prefixCount?: Record<string, number>;
-  currentIndex?: number;
-  // String problems
-  stringElements?: StringElement[];
-  // Binary transformation
-  binaryArray?: number[];
-  // Advanced engine specific fields
-  targetString?: string;
-  pattern?: string;
-  anagramCount?: number;
-  minWindow?: string;
-  product?: number;
-  targetProduct?: number;
-  validSubarrays?: number;
-  charMap?: Record<string, number>;
-  left?: number;
-  right?: number;
-  patternFreq?: Record<string, number>;
-  windowFreq?: Record<string, number>;
-  matches?: number;
-  requiredMatches?: number;
+  algorithmStepsMessage?: string;
+  complexityAnalysis?: string;
 }
 
 export interface ArrayElement {
@@ -75,11 +30,6 @@ export interface ArrayElement {
   index: number;
 }
 
-export interface StringElement {
-  value: string;
-  state: 'not_yet_reached' | 'in_window' | 'out_of_window_past' | 'processed' | 'transformed';
-  index: number;
-}
 
 export interface PlaygroundState {
   currentStep: number;
