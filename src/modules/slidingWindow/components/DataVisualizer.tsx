@@ -3,7 +3,7 @@ import { Animated, Easing, StyleSheet, Text, TouchableOpacity, View } from 'reac
 
 interface DataElement {
   value: string | number;
-  state: 'in_window' | 'out_of_window_past' | 'not_yet_reached' | 'processed' | 'transformed';
+  state: 'in_window' | 'out_of_window_past' | 'not_yet_reached';
 }
 
 interface Props {
@@ -372,10 +372,7 @@ export default function DataVisualizer({
           >
             <TouchableOpacity
               style={styles.completeButton}
-              onPress={() => {
-                console.log('Complete Algorithm button pressed!');
-                onCompletePress();
-              }}
+              onPress={onCompletePress}
               activeOpacity={0.8}
             >
               <Text style={styles.completeButtonText}>🎉 Complete Algorithm</Text>

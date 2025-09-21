@@ -232,9 +232,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
 
-
-
-
   // Terminal Styling
   terminalContainer: {
     backgroundColor: '#0A0E13',

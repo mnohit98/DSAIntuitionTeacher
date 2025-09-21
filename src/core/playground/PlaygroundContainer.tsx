@@ -200,8 +200,6 @@ export default function CleanGenericPlayground({
       // Clear any AI response and loading state
       setAIResponse(null);
       setIsAILoading(false);
-      
-      console.log('Playground reset to initial state:', resetState);
     }
   };
 
@@ -252,7 +250,7 @@ export default function CleanGenericPlayground({
           else if (doc.mozCancelFullScreen) await doc.mozCancelFullScreen();
         }
       } catch (e) {
-        console.log('Fullscreen API not available:', e);
+        // Fullscreen API not available on this platform
       }
     }
   };

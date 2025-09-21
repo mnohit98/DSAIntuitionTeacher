@@ -3,12 +3,9 @@ export interface PlaygroundStep {
   description: string;
   expectedAction: string;
   expectedElementIndex?: number | number[];
-  expectedRemoveIndex?: number;
-  expectedAddIndex?: number;
   uiState: UIState;
   jarvisMessage: string;
   codeHint: string;
-  codeBotMessage?: string;
   codeSnippet?: string;
   hideIndexHint?: boolean;
 }

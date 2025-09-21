@@ -103,7 +103,6 @@ export default function SlidingWindowPlayground({ problemData }: Props) {
   const [originalEngine] = useState(() => EngineFactory.createEngine(problemData.submoduleId, problemData));
   const [engine, setEngine] = useState(() => new SlidingWindowEngineAdapter(originalEngine, problemData));
   const [currentState, setCurrentState] = useState(originalEngine.getCurrentState());
-  const [forceUpdate, setForceUpdate] = useState(0);
   
   if (!moduleConfig) {
     return <div>Module configuration not found</div>;
@@ -138,34 +137,25 @@ export default function SlidingWindowPlayground({ problemData }: Props) {
         setCurrentState(updatedEngineState);
         
         // Force re-render to update UI immediately
-        setForceUpdate(prev => prev + 1);
         
         // Create new engine adapter to trigger PlaygroundContainer update
         const newAdapter = new SlidingWindowEngineAdapter(originalEngine, problemData);
         setEngine(newAdapter);
-      } else {
-        console.log('Action failed:', result.feedback);
       }
     } else {
       // Handle other actions (including complete_algorithm)
-      console.log('Processing other action:', action);
       const result = originalEngine.processUserAction(action, data);
-      console.log('Other action result:', result);
       
       if (result.success) {
         // Get the updated state from the engine after processing
         const updatedEngineState = originalEngine.getCurrentState();
-        console.log('Updated engine state after other action:', updatedEngineState);
         setCurrentState(updatedEngineState);
         
         // Force re-render to update UI immediately
-        setForceUpdate(prev => prev + 1);
         
         // Create new engine adapter to trigger PlaygroundContainer update
         const newAdapter = new SlidingWindowEngineAdapter(originalEngine, problemData);
         setEngine(newAdapter);
-      } else {
-        console.log('Action failed:', result.feedback);
       }
     }
   };
@@ -190,17 +180,14 @@ export default function SlidingWindowPlayground({ problemData }: Props) {
   
   // Check if problem is completed - use currentState for consistency
   const isCompleted = currentState.isCompleted;
-  console.log('Playground render - isCompleted:', isCompleted, 'currentStep:', currentState.currentStep);
 
   // Custom reset handler for the reset button
   const handleCustomReset = () => {
     originalEngine.reset();
     const resetState = originalEngine.getCurrentState();
     setCurrentState(resetState);
-    setForceUpdate(prev => prev + 1);
     const newAdapter = new SlidingWindowEngineAdapter(originalEngine, problemData);
     setEngine(newAdapter);
-    console.log('SlidingWindowPlayground reset to initial state:', resetState);
   };
 
   return (

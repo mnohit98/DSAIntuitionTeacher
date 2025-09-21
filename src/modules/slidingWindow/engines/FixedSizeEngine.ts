@@ -46,12 +46,9 @@ export class FixedSizeEngine extends BaseEngine {
       // Check if this is the last step BEFORE incrementing
       const isStepComplete = this.currentState.currentStep === this.currentState.totalSteps - 1;
       
-      console.log(`Step ${currentStep.stepId} completed. Current step index: ${this.currentState.currentStep}, Total steps: ${this.currentState.totalSteps}, Is last step: ${isStepComplete}`);
-      
       if (!isStepComplete) {
         this.currentState.currentStep++;
         this.currentState.uiState = nextState;
-        console.log(`Moved to step index ${this.currentState.currentStep} (stepId: ${this.problemData.playground.steps[this.currentState.currentStep].stepId})`);
       } else {
         // Handle completion
         if (currentStep.expectedAction === 'complete_algorithm') {
@@ -60,10 +57,8 @@ export class FixedSizeEngine extends BaseEngine {
           this.currentState.uiState.algorithmStepsMessage = this.getAlgorithmStepsMessage();
           // Set complexity analysis for code panel
           this.currentState.uiState.complexityAnalysis = this.getComplexityAnalysis();
-          console.log('Algorithm completed successfully!');
         } else {
           this.currentState.isCompleted = true;
-          console.log('Playground completed!');
         }
         // Don't update uiState for the last step - keep current state
       }
@@ -87,8 +82,6 @@ export class FixedSizeEngine extends BaseEngine {
   private validateAction(action: string, elementIndex?: number, step?: PlaygroundStep): boolean {
     if (!step) return false;
 
-    console.log(`Validating action: ${action}, elementIndex: ${elementIndex}, step: ${step.stepId}, expectedAction: ${step.expectedAction}, expectedElementIndex: ${step.expectedElementIndex}`);
-
     switch (step.expectedAction) {
       case 'click_initialize':
         return action === 'click_initialize';
@@ -106,12 +99,10 @@ export class FixedSizeEngine extends BaseEngine {
                  : elementIndex === step.expectedElementIndex);
       
       case 'slide_window':
-        const isValid = action === 'slide_window' && 
+        return action === 'slide_window' && 
                (Array.isArray(step.expectedElementIndex)
                  ? step.expectedElementIndex.includes(elementIndex as number)
                  : elementIndex === step.expectedElementIndex);
-        console.log(`Slide window validation: action=${action}, elementIndex=${elementIndex}, expectedElementIndex=${step.expectedElementIndex}, isValid=${isValid}`);
-        return isValid;
       
       case 'complete_algorithm':
         return action === 'complete_algorithm';
