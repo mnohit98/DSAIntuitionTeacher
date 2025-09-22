@@ -122,6 +122,8 @@ export default function SlidingWindowPlayground({ problemData }: Props) {
           expectedAction === 'complete_first_window' || 
           expectedAction === 'slide_window' ||
           expectedAction === 'expand_window' ||
+          expectedAction === 'shrink_window' ||
+          expectedAction === 'update_min_length' ||
           expectedAction === 'contract_window' ||
           expectedAction === 'process_element') {
         engineAction = expectedAction;

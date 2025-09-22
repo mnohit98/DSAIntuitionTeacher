@@ -1,0 +1,391 @@
+{
+  "problemId": "p8",
+  "title": "Longest Repeating Character Replacement",
+  "description": "Given a string s and an integer k, return the length of the longest substring containing the same letter you can get after performing at most k character replacements.",
+  "aim": "Master the variable-size window with frequency map and the max-frequency heuristic: keep track of the most frequent character in the window; the window is valid if windowLength - maxFreq ≤ k.",
+  "moduleId": "slidingWindow",
+  "submoduleId": "sw_variable",
+  "difficulty": "Medium",
+  "tags": [
+    "String",
+    "Sliding Window",
+    "Variable Size",
+    "Hash Map",
+    "Greedy Heuristic"
+  ],
+  "examples": [
+    {
+      "input": "s = \"AABABBA\", k = 1",
+      "output": "4",
+      "explanation": "Replace one 'A' in substring \"AABA\" or one 'B' in \"ABBB\" to get 4 repeating characters."
+    },
+    {
+      "input": "s = \"ABAB\", k = 2",
+      "output": "4",
+      "explanation": "Replace two characters to make all 4 same."
+    }
+  ],
+  "playground": {
+    "initialState": {
+      "array": ["A", "A", "B", "A", "B", "B", "A"],
+      "k": 1,
+      "maxLength": 0,
+      "currentLength": 0,
+      "windowStart": 0,
+      "windowEnd": 0
+    },
+    "steps": [
+      {
+        "stepId": 0,
+        "description": "Initialize: we'll grow a window, track per-char frequencies (freqMap), and remember maxFreq (the highest char count in the window). Goal: keep the window valid where replacements = windowSize - maxFreq ≤ k and maximize windowSize.",
+        "expectedAction": "click_initialize",
+        "uiState": {
+          "arrayElements": [
+            { "value": "A", "state": "not_yet_reached", "index": 0 },
+            { "value": "A", "state": "not_yet_reached", "index": 1 },
+            { "value": "B", "state": "not_yet_reached", "index": 2 },
+            { "value": "A", "state": "not_yet_reached", "index": 3 },
+            { "value": "B", "state": "not_yet_reached", "index": 4 },
+            { "value": "B", "state": "not_yet_reached", "index": 5 },
+            { "value": "A", "state": "not_yet_reached", "index": 6 }
+          ],
+          "windowStart": null,
+          "windowEnd": null,
+          "k": 1,
+          "maxFreq": 0,
+          "freqMapStr": "{}",
+          "maxSize": 0,
+          "highlightedElements": []
+        },
+        "jarvisMessage": "What you do next: Click Initialize to set up an empty window, an empty freqMap, and maxFreq = 0. We'll expand to the right, and if replacements = windowSize - maxFreq exceeds k, we'll shrink from the left.",
+        "codeSnippet": "let windowStart = 0;\nlet maxLength = 0;\nconst freq = new Map();\nlet maxFreq = 0;\nconst k = 1;",
+        "codeExplanation": "We keep a running frequency map of characters in the window. maxFreq helps us compute how many replacements are needed to make the whole window one character: replacements = windowSize - maxFreq."
+      },
+      {
+        "stepId": 1,
+        "description": "Expand: include index 0 ('A'). Update freqMap and maxFreq. Check validity: replacements = windowSize - maxFreq ≤ k.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 0,
+        "uiState": {
+          "arrayElements": [
+            { "value": "A", "state": "in_window", "index": 0 },
+            { "value": "A", "state": "not_yet_reached", "index": 1 },
+            { "value": "B", "state": "not_yet_reached", "index": 2 },
+            { "value": "A", "state": "not_yet_reached", "index": 3 },
+            { "value": "B", "state": "not_yet_reached", "index": 4 },
+            { "value": "B", "state": "not_yet_reached", "index": 5 },
+            { "value": "A", "state": "not_yet_reached", "index": 6 }
+          ],
+          "windowStart": 0,
+          "windowEnd": 0,
+          "k": 1,
+          "maxFreq": 1,
+          "freqMapStr": "A:1",
+          "maxSize": 1,
+          "highlightedElements": [0]
+        },
+        "jarvisMessage": "You added 'A'. Now freqMap = {A:1}, maxFreq = 1. windowSize = 1 ⇒ replacements = 1 - 1 = 0 ≤ k ⇒ window valid. Update best length to 1.",
+        "codeSnippet": "freq.set('A', (freq.get('A')||0)+1);\nmaxFreq = Math.max(maxFreq, freq.get('A'));\nmaxLength = Math.max(maxLength, 1);",
+        "codeExplanation": "We increment the count for 'A' and update maxFreq. With window size 1, no replacements are needed."
+      },
+      {
+        "stepId": 2,
+        "description": "Expand: include index 1 ('A'). Recompute freqMap/maxFreq. Validate window.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 1,
+        "uiState": {
+          "arrayElements": [
+            { "value": "A", "state": "in_window", "index": 0 },
+            { "value": "A", "state": "in_window", "index": 1 },
+            { "value": "B", "state": "not_yet_reached", "index": 2 },
+            { "value": "A", "state": "not_yet_reached", "index": 3 },
+            { "value": "B", "state": "not_yet_reached", "index": 4 },
+            { "value": "B", "state": "not_yet_reached", "index": 5 },
+            { "value": "A", "state": "not_yet_reached", "index": 6 }
+          ],
+          "windowStart": 0,
+          "windowEnd": 1,
+          "k": 1,
+          "maxFreq": 2,
+          "freqMapStr": "A:2",
+          "maxSize": 2,
+          "highlightedElements": [0,1]
+        },
+        "jarvisMessage": "You added 'A' again. freqMap = {A:2}, maxFreq = 2. windowSize = 2 ⇒ replacements = 2 - 2 = 0 ⇒ valid. best = 2.",
+        "codeSnippet": "freq.set('A', freq.get('A')+1);\nmaxFreq = Math.max(maxFreq, freq.get('A'));\nmaxLength = Math.max(maxLength, 2);",
+        "codeExplanation": "The window grew by one, and the dominant character count increased to 2, keeping replacements at 0."
+      },
+      {
+        "stepId": 3,
+        "description": "Expand: include index 2 ('B'). Update freqMap; maxFreq stays 2. Validate window.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 2,
+        "uiState": {
+          "arrayElements": [
+            { "value": "A", "state": "in_window", "index": 0 },
+            { "value": "A", "state": "in_window", "index": 1 },
+            { "value": "B", "state": "in_window", "index": 2 },
+            { "value": "A", "state": "not_yet_reached", "index": 3 },
+            { "value": "B", "state": "not_yet_reached", "index": 4 },
+            { "value": "B", "state": "not_yet_reached", "index": 5 },
+            { "value": "A", "state": "not_yet_reached", "index": 6 }
+          ],
+          "windowStart": 0,
+          "windowEnd": 2,
+          "k": 1,
+          "maxFreq": 2,
+          "freqMapStr": "A:2, B:1",
+          "maxSize": 3,
+          "highlightedElements": [0,1,2]
+        },
+        "jarvisMessage": "You added 'B'. freqMap = {A:2, B:1}, maxFreq = 2. windowSize = 3 ⇒ replacements = 3 - 2 = 1 ≤ k ⇒ valid. best = 3.",
+        "codeSnippet": "freq.set('B', (freq.get('B')||0)+1);\n// maxFreq stays 2\nmaxLength = Math.max(maxLength, 3);",
+        "codeExplanation": "We track the new character 'B'. maxFreq still reflects the dominant 'A' count (2)."
+      },
+      {
+        "stepId": 4,
+        "description": "Expand: include index 3 ('A'). maxFreq increases; validate and update best.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 3,
+        "uiState": {
+          "arrayElements": [
+            { "value": "A", "state": "in_window", "index": 0 },
+            { "value": "A", "state": "in_window", "index": 1 },
+            { "value": "B", "state": "in_window", "index": 2 },
+            { "value": "A", "state": "in_window", "index": 3 },
+            { "value": "B", "state": "not_yet_reached", "index": 4 },
+            { "value": "B", "state": "not_yet_reached", "index": 5 },
+            { "value": "A", "state": "not_yet_reached", "index": 6 }
+          ],
+          "windowStart": 0,
+          "windowEnd": 3,
+          "k": 1,
+          "maxFreq": 3,
+          "freqMapStr": "A:3, B:1",
+          "maxSize": 4,
+          "highlightedElements": [0,1,2,3]
+        },
+        "jarvisMessage": "You added 'A'. freqMap = {A:3, B:1}, maxFreq = 3. windowSize = 4 ⇒ replacements = 4 - 3 = 1 ≤ k ⇒ valid. best = 4.",
+        "codeSnippet": "freq.set('A', freq.get('A')+1);\nmaxFreq = Math.max(maxFreq, freq.get('A'));\nmaxLength = Math.max(maxLength, 4);",
+        "codeExplanation": "The dominant character 'A' now appears 3 times; we can still replace at most one other character to unify the window."
+      },
+      {
+        "stepId": 5,
+        "description": "Expand: include index 4 ('B'). Compute replacements and decide to shrink.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 4,
+        "uiState": {
+          "arrayElements": [
+            { "value": "A", "state": "in_window", "index": 0 },
+            { "value": "A", "state": "in_window", "index": 1 },
+            { "value": "B", "state": "in_window", "index": 2 },
+            { "value": "A", "state": "in_window", "index": 3 },
+            { "value": "B", "state": "in_window", "index": 4 },
+            { "value": "B", "state": "not_yet_reached", "index": 5 },
+            { "value": "A", "state": "not_yet_reached", "index": 6 }
+          ],
+          "windowStart": 0,
+          "windowEnd": 4,
+          "k": 1,
+          "maxFreq": 3,
+          "freqMapStr": "A:3, B:2",
+          "maxSize": 4,
+          "highlightedElements": [0,1,2,3,4]
+        },
+        "jarvisMessage": "After adding 'B', windowSize = 5 and maxFreq = 3, so replacements = 5 - 3 = 2 > k. We must shrink from the left until replacements ≤ k.",
+        "codeSnippet": "// While (windowSize - maxFreq) > k, shrink from the left\n// decrement freq of s[windowStart] and advance windowStart",
+        "codeExplanation": "The window becomes invalid when required replacements exceed k. We reduce window size from the left to restore validity."
+      },
+      {
+        "stepId": 6,
+        "description": "Shrink: remove left index 0 ('A'), update freqMap, advance windowStart. Check if window is valid now.",
+        "expectedAction": "shrink_window",
+        "expectedElementIndex": 0,
+        "uiState": {
+          "arrayElements": [
+            { "value": "A", "state": "out_of_window_past", "index": 0 },
+            { "value": "A", "state": "in_window", "index": 1 },
+            { "value": "B", "state": "in_window", "index": 2 },
+            { "value": "A", "state": "in_window", "index": 3 },
+            { "value": "B", "state": "in_window", "index": 4 },
+            { "value": "B", "state": "not_yet_reached", "index": 5 },
+            { "value": "A", "state": "not_yet_reached", "index": 6 }
+          ],
+          "windowStart": 1,
+          "windowEnd": 4,
+          "k": 1,
+          "maxFreq": 3,
+          "freqMapStr": "A:2, B:2",
+          "maxSize": 4,
+          "highlightedElements": [1,2,3,4]
+        },
+        "jarvisMessage": "You removed 'A' from the left. freqMap = {A:2, B:2}. We keep maxFreq as an upper bound (3) to stay O(n). Now windowSize = 4 ⇒ replacements = 4 - 3 = 1 ≤ k ⇒ valid.",
+        "codeSnippet": "const left = 'A';\nfreq.set(left, freq.get(left)-1);\nwindowStart++;\n// Keep maxFreq as an upper bound; validity check remains correct",
+        "codeExplanation": "Not decreasing maxFreq on shrink is a known trick: it may overestimate replacements briefly, but never breaks correctness and avoids extra work."
+      },
+      {
+        "stepId": 7,
+        "description": "Expand: include index 5 ('B'). Re-evaluate replacements; shrink if needed.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 5,
+        "uiState": {
+          "arrayElements": [
+            { "value": "A", "state": "out_of_window_past", "index": 0 },
+            { "value": "A", "state": "in_window", "index": 1 },
+            { "value": "B", "state": "in_window", "index": 2 },
+            { "value": "A", "state": "in_window", "index": 3 },
+            { "value": "B", "state": "in_window", "index": 4 },
+            { "value": "B", "state": "in_window", "index": 5 },
+            { "value": "A", "state": "not_yet_reached", "index": 6 }
+          ],
+          "windowStart": 1,
+          "windowEnd": 5,
+          "k": 1,
+          "maxFreq": 3,
+          "freqMapStr": "A:2, B:3",
+          "maxSize": 4,
+          "highlightedElements": [1,2,3,4,5]
+        },
+        "jarvisMessage": "You added 'B'. freqMap = {A:2, B:3}, windowSize = 5 ⇒ replacements = 5 - 3 = 2 > k ⇒ shrink from the left again.",
+        "codeSnippet": "freq.set('B', (freq.get('B')||0)+1);\n// While invalid, remove s[windowStart] and advance",
+        "codeExplanation": "Expanding increased the number of non-dominant chars beyond our budget; we must contract."
+      },
+      {
+        "stepId": 8,
+        "description": "Shrink: remove left index 1 ('A') and advance. Validate window.",
+        "expectedAction": "shrink_window",
+        "expectedElementIndex": 1,
+        "uiState": {
+          "arrayElements": [
+            { "value": "A", "state": "out_of_window_past", "index": 0 },
+            { "value": "A", "state": "out_of_window_past", "index": 1 },
+            { "value": "B", "state": "in_window", "index": 2 },
+            { "value": "A", "state": "in_window", "index": 3 },
+            { "value": "B", "state": "in_window", "index": 4 },
+            { "value": "B", "state": "in_window", "index": 5 },
+            { "value": "A", "state": "not_yet_reached", "index": 6 }
+          ],
+          "windowStart": 2,
+          "windowEnd": 5,
+          "k": 1,
+          "maxFreq": 3,
+          "freqMapStr": "A:1, B:3",
+          "maxSize": 4,
+          "highlightedElements": [2,3,4,5]
+        },
+        "jarvisMessage": "You removed 'A'. freqMap = {A:1, B:3}. windowSize = 4 ⇒ replacements = 4 - 3 = 1 ≤ k ⇒ valid. best still 4.",
+        "codeSnippet": "const left2 = 'A';\nfreq.set(left2, freq.get(left2)-1);\nwindowStart++;\nmaxLength = Math.max(maxLength, (/* windowEnd - windowStart + 1 */));",
+        "codeExplanation": "After shrinking, the window is valid again; we compare its size with the best answer."
+      },
+      {
+        "stepId": 9,
+        "description": "Expand: include index 6 ('A'). Compute replacements and decide on shrinking.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 6,
+        "uiState": {
+          "arrayElements": [
+            { "value": "A", "state": "out_of_window_past", "index": 0 },
+            { "value": "A", "state": "out_of_window_past", "index": 1 },
+            { "value": "B", "state": "in_window", "index": 2 },
+            { "value": "A", "state": "in_window", "index": 3 },
+            { "value": "B", "state": "in_window", "index": 4 },
+            { "value": "B", "state": "in_window", "index": 5 },
+            { "value": "A", "state": "in_window", "index": 6 }
+          ],
+          "windowStart": 2,
+          "windowEnd": 6,
+          "k": 1,
+          "maxFreq": 3,
+          "freqMapStr": "A:2, B:3",
+          "maxSize": 4,
+          "highlightedElements": [2,3,4,5,6]
+        },
+        "jarvisMessage": "You added 'A'. freqMap = {A:2, B:3}. windowSize = 5 ⇒ replacements = 5 - 3 = 2 > k ⇒ shrink once more.",
+        "codeSnippet": "freq.set('A', (freq.get('A')||0)+1);\n// Still invalid -> shrink",
+        "codeExplanation": "Even after adding 'A', the dominant count (maxFreq) remains 3; we must reduce the window."
+      },
+      {
+        "stepId": 10,
+        "description": "Shrink: remove left index 2 ('B') to restore validity. Compare with best.",
+        "expectedAction": "shrink_window",
+        "expectedElementIndex": 2,
+        "uiState": {
+          "arrayElements": [
+            { "value": "A", "state": "out_of_window_past", "index": 0 },
+            { "value": "A", "state": "out_of_window_past", "index": 1 },
+            { "value": "B", "state": "out_of_window_past", "index": 2 },
+            { "value": "A", "state": "in_window", "index": 3 },
+            { "value": "B", "state": "in_window", "index": 4 },
+            { "value": "B", "state": "in_window", "index": 5 },
+            { "value": "A", "state": "in_window", "index": 6 }
+          ],
+          "windowStart": 3,
+          "windowEnd": 6,
+          "k": 1,
+          "maxFreq": 3,
+          "freqMapStr": "A:2, B:2",
+          "maxSize": 4,
+          "highlightedElements": [3,4,5,6]
+        },
+        "jarvisMessage": "You removed 'B'. freqMap = {A:2, B:2}. windowSize = 4 ⇒ replacements = 4 - 3 = 1 ≤ k ⇒ valid. best remains 4 (e.g., 'AABA' or 'ABBB').",
+        "codeSnippet": "const left3 = 'B';\nfreq.set(left3, freq.get(left3)-1);\nwindowStart++;\nmaxLength = Math.max(maxLength, 4);",
+        "codeExplanation": "The final valid window length equals our best so far, so the answer stays 4."
+      },
+      {
+        "stepId": 11,
+        "description": "Complete the algorithm and return best length (4).",
+        "expectedAction": "complete_algorithm",
+        "uiState": {
+          "arrayElements": [
+            { "value": "A", "state": "out_of_window_past", "index": 0 },
+            { "value": "A", "state": "out_of_window_past", "index": 1 },
+            { "value": "B", "state": "out_of_window_past", "index": 2 },
+            { "value": "A", "state": "in_window", "index": 3 },
+            { "value": "B", "state": "in_window", "index": 4 },
+            { "value": "B", "state": "in_window", "index": 5 },
+            { "value": "A", "state": "in_window", "index": 6 }
+          ],
+          "windowStart": 3,
+          "windowEnd": 6,
+          "k": 1,
+          "maxFreq": 3,
+          "freqMapStr": "A:2, B:2",
+          "maxSize": 4,
+          "highlightedElements": [3,4,5,6]
+        },
+        "jarvisMessage": "Return maxLength = 4.",
+        "codeSnippet": "return maxLength; // 4",
+        "codeExplanation": "We explored all expansions/shrinks in a single pass, keeping the best valid window size."
+      }
+    ]
+  },
+  "solution": {
+    "optimal": {
+      "idea": "Use a variable-size sliding window with a frequency map and track maxFreq. A window is valid if its size minus maxFreq ≤ k. Expand right; if invalid, shrink from left. Keep max length.",
+      "timeComplexity": "O(n)",
+      "spaceComplexity": "O(1)",
+      "walkthrough": [
+        "Maintain counts of characters in the window and maxFreq of any char.",
+        "If windowSize - maxFreq ≤ k, update answer; otherwise move left pointer.",
+        "Do not aggressively decrease maxFreq on shrink; keeping an upper bound is safe for correctness and preserves O(n)."
+      ]
+    }
+  },
+  "complexityAnalysis": {
+    "title": "COMPLEXITY ANALYSIS",
+    "overview": "The max-frequency heuristic keeps the window validity check O(1) while ensuring linear traversal.",
+    "timeComplexity": {
+      "value": "O(n)",
+      "explanation": "Each index enters/leaves the window at most once; maxFreq is updated monotonically."
+    },
+    "spaceComplexity": {
+      "value": "O(1)",
+      "explanation": "At most a constant-sized frequency map for uppercase letters (≤26) or bounded alphabet." 
+    }
+  },
+  "code": {
+    "cpp": "#include <bits/stdc++.h>\nusing namespace std;\n\nclass Solution {\npublic:\n    int characterReplacement(string s, int k) {\n        vector<int> freq(26, 0);\n        int windowStart = 0, maxFreq = 0, best = 0;\n        for (int windowEnd = 0; windowEnd < (int)s.size(); ++windowEnd) {\n            int idx = s[windowEnd] - 'A';\n            maxFreq = max(maxFreq, ++freq[idx]);\n            while ((windowEnd - windowStart + 1) - maxFreq > k) {\n                freq[s[windowStart]-'A']--;\n                windowStart++;\n            }\n            best = max(best, windowEnd - windowStart + 1);\n        }\n        return best;\n    }\n};\n"
+  }
+}
+
+

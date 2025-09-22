@@ -1,0 +1,391 @@
+{
+  "problemId": "p5",
+  "title": "Longest Substring with At Most K Distinct Characters",
+  "description": "Given a string and a number 'k', find the length of the longest substring that contains at most 'k' distinct characters.",
+  "aim": "Learn how to use variable-size sliding window with hash map to track distinct characters and maintain a constraint (≤ k distinct characters) by shrinking when exceeded.",
+  "moduleId": "slidingWindow",
+  "submoduleId": "sw_variable",
+  "difficulty": "Medium",
+  "tags": [
+    "String",
+    "Sliding Window",
+    "Variable Size",
+    "Hash Map",
+    "Constraint Tracking"
+  ],
+  "examples": [
+    {
+      "input": "s = \"araaci\", k = 2",
+      "output": "4",
+      "explanation": "The longest substring with at most 2 distinct characters is \"araa\" with length 4."
+    },
+    {
+      "input": "s = \"araaci\", k = 1",
+      "output": "2",
+      "explanation": "The longest substring with at most 1 distinct character is \"aa\" with length 2."
+    },
+    {
+      "input": "s = \"cbbebi\", k = 3",
+      "output": "5",
+      "explanation": "The longest substring with at most 3 distinct characters is \"cbbeb\" with length 5."
+    }
+  ],
+  "playground": {
+    "initialState": {
+      "array": ["a", "r", "a", "a", "c", "i"],
+      "k": 2,
+      "maxLength": 0,
+      "distinctCount": 0,
+      "charMap": {},
+      "windowStart": 0,
+      "windowEnd": 0
+    },
+    "steps": [
+      {
+        "stepId": 0,
+        "description": "Welcome! Let's find the longest substring with at most K distinct characters using sliding window + hash map.",
+        "expectedAction": "click_initialize",
+        "uiState": {
+          "arrayElements": [
+            { "value": "a", "state": "not_yet_reached", "index": 0 },
+            { "value": "r", "state": "not_yet_reached", "index": 1 },
+            { "value": "a", "state": "not_yet_reached", "index": 2 },
+            { "value": "a", "state": "not_yet_reached", "index": 3 },
+            { "value": "c", "state": "not_yet_reached", "index": 4 },
+            { "value": "i", "state": "not_yet_reached", "index": 5 }
+          ],
+          "windowStart": null,
+          "windowEnd": null,
+          "maxLength": 0,
+          "distinctCount": 0,
+          "charMap": {},
+          "k": 2,
+          "highlightedElements": []
+        },
+        "jarvisMessage": "Welcome to Longest Substring with At Most K Distinct Characters! This problem combines sliding window with constraint tracking using hash maps. Our mission: find the longest substring containing at most k=2 distinct characters. The key insight is using a hash map to count distinct characters, expanding while ≤ k distinct, and shrinking when we exceed k. Click 'Initialize Variables' to start our constraint-based sliding window adventure!",
+        "codeSnippet": "// Step 0: Ready to initialize variables\nlet windowStart = 0;     // Left pointer\nlet maxLength = 0;       // Track longest valid substring\nlet charMap = new Map();  // Track character frequencies\nlet k = 2;               // Maximum distinct characters allowed",
+        "codeExplanation": "We need four key components: windowStart (left pointer), maxLength (to remember longest valid substring), charMap (hash map to track character frequencies), and k (constraint - maximum distinct characters allowed). The distinctCount is derived from charMap.size."
+      },
+      {
+        "stepId": 1,
+        "description": "Variables initialized! Now let's start expanding by adding the first character 'a'.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 0,
+        "uiState": {
+          "arrayElements": [
+            { "value": "a", "state": "in_window", "index": 0 },
+            { "value": "r", "state": "not_yet_reached", "index": 1 },
+            { "value": "a", "state": "not_yet_reached", "index": 2 },
+            { "value": "a", "state": "not_yet_reached", "index": 3 },
+            { "value": "c", "state": "not_yet_reached", "index": 4 },
+            { "value": "i", "state": "not_yet_reached", "index": 5 }
+          ],
+          "windowStart": 0,
+          "windowEnd": 0,
+          "maxLength": 1,
+          "distinctCount": 1,
+          "charMap": {"a": 1},
+          "k": 2,
+          "highlightedElements": [0]
+        },
+        "jarvisMessage": "Perfect! Variables initialized: windowStart = 0, maxLength = 0, charMap = {}, k = 2. Now we start expanding! We add 'a' to our window and charMap. Our distinctCount becomes 1 (since charMap has 1 key). Since 1 ≤ 2, we're within our constraint! Window ['a'] has length 1, so maxLength = 1. The hash map tracks: {'a': 1}. Click on 'r' to continue expanding!",
+        "codeSnippet": "// Expand: add char 'a'\ncharMap.set('a', (charMap.get('a') || 0) + 1);\n// charMap = {'a': 1}, distinctCount = 1\n// distinctCount (1) <= k (2) ✓ Valid!\nmaxLength = Math.max(maxLength, 1);\n// maxLength = max(0, 1) = 1",
+        "codeExplanation": "The expand phase with constraint tracking! We add 'a' to charMap with frequency 1. Our distinctCount = charMap.size = 1. Since 1 ≤ k (2), we're within the constraint. Window ['a'] has length 1, updating maxLength = 1. This is the foundation - expand while constraint satisfied."
+      },
+      {
+        "stepId": 2,
+        "description": "Window expanded! Added 'a', distinctCount = 1 ≤ k (2). Let's add 'r' to get our second distinct character.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 1,
+        "uiState": {
+          "arrayElements": [
+            { "value": "a", "state": "in_window", "index": 0 },
+            { "value": "r", "state": "in_window", "index": 1 },
+            { "value": "a", "state": "not_yet_reached", "index": 2 },
+            { "value": "a", "state": "not_yet_reached", "index": 3 },
+            { "value": "c", "state": "not_yet_reached", "index": 4 },
+            { "value": "i", "state": "not_yet_reached", "index": 5 }
+          ],
+          "windowStart": 0,
+          "windowEnd": 1,
+          "maxLength": 2,
+          "distinctCount": 2,
+          "charMap": {"a": 1, "r": 1},
+          "k": 2,
+          "highlightedElements": [0, 1]
+        },
+        "jarvisMessage": "Excellent! We added 'a' to our window: charMap = {'a': 1}, distinctCount = 1. Since 1 ≤ 2, we're within our constraint of at most k=2 distinct characters. Our window ['a'] has length 1, updating maxLength = 1. Now let's add 'r' - this will introduce our second distinct character, reaching exactly k=2 distinct characters. Click on 'r'!",
+        "codeSnippet": "// Expand: add char 'r'\ncharMap.set('r', (charMap.get('r') || 0) + 1);\n// charMap = {'a': 1, 'r': 1}, distinctCount = 2\n// distinctCount (2) <= k (2) ✓ Still valid!\nmaxLength = Math.max(maxLength, 2);\n// maxLength = max(1, 2) = 2",
+        "codeExplanation": "Perfect expansion! We add 'r' to charMap, making it {'a': 1, 'r': 1}. Our distinctCount = 2, which exactly equals our limit k=2. We're still within the constraint! Window ['a', 'r'] has length 2, improving maxLength from 1 to 2. We've reached our distinct character limit."
+      },
+      {
+        "stepId": 3,
+        "description": "Great! Window ['a', 'r'] has 2 distinct chars = k (2). Let's add another 'a' - same character, so no new distinct char.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 2,
+        "uiState": {
+          "arrayElements": [
+            { "value": "a", "state": "in_window", "index": 0 },
+            { "value": "r", "state": "in_window", "index": 1 },
+            { "value": "a", "state": "in_window", "index": 2 },
+            { "value": "a", "state": "not_yet_reached", "index": 3 },
+            { "value": "c", "state": "not_yet_reached", "index": 4 },
+            { "value": "i", "state": "not_yet_reached", "index": 5 }
+          ],
+          "windowStart": 0,
+          "windowEnd": 2,
+          "maxLength": 3,
+          "distinctCount": 2,
+          "charMap": {"a": 2, "r": 1},
+          "k": 2,
+          "highlightedElements": [0, 1, 2]
+        },
+        "jarvisMessage": "Fantastic! We added 'r' to our window: charMap = {'a': 1, 'r': 1}, distinctCount = 2. We've reached exactly our limit of k=2 distinct characters! Since 2 ≤ 2, we're still valid. Window ['a', 'r'] has length 2, updating maxLength = 2. Now let's add another 'a'. Since 'a' already exists in our window, it won't increase distinctCount - we'll just increment its frequency. Click on the second 'a'!",
+        "codeSnippet": "// Expand: add another char 'a'\ncharMap.set('a', charMap.get('a') + 1);\n// charMap = {'a': 2, 'r': 1}, distinctCount still = 2\n// distinctCount (2) <= k (2) ✓ Still valid!\nmaxLength = Math.max(maxLength, 3);\n// maxLength = max(2, 3) = 3",
+        "codeExplanation": "Smart expansion! Adding another 'a' only increases its frequency in charMap from 1 to 2, making it {'a': 2, 'r': 1}. The distinctCount remains 2 because we're not introducing a new character. Since 2 ≤ k (2), we're still valid! Window ['a', 'r', 'a'] has length 3, setting a new record!"
+      },
+      {
+        "stepId": 4,
+        "description": "Perfect! Window ['a', 'r', 'a'] has 2 distinct chars, length 3. Let's add another 'a' to grow further.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 3,
+        "uiState": {
+          "arrayElements": [
+            { "value": "a", "state": "in_window", "index": 0 },
+            { "value": "r", "state": "in_window", "index": 1 },
+            { "value": "a", "state": "in_window", "index": 2 },
+            { "value": "a", "state": "in_window", "index": 3 },
+            { "value": "c", "state": "not_yet_reached", "index": 4 },
+            { "value": "i", "state": "not_yet_reached", "index": 5 }
+          ],
+          "windowStart": 0,
+          "windowEnd": 3,
+          "maxLength": 4,
+          "distinctCount": 2,
+          "charMap": {"a": 3, "r": 1},
+          "k": 2,
+          "highlightedElements": [0, 1, 2, 3]
+        },
+        "jarvisMessage": "Excellent! We added another 'a' to our window. Since 'a' already existed, we just increased its frequency: charMap = {'a': 2, 'r': 1}. The distinctCount stays 2 (no new distinct character). Since 2 ≤ 2, we're still within our constraint! Window ['a', 'r', 'a'] has length 3, achieving a new maxLength = 3. Let's add one more 'a' to see how long we can grow. Click on the third 'a'!",
+        "codeSnippet": "// Expand: add third 'a'\ncharMap.set('a', charMap.get('a') + 1);\n// charMap = {'a': 3, 'r': 1}, distinctCount still = 2\n// distinctCount (2) <= k (2) ✓ Maximum valid window!\nmaxLength = Math.max(maxLength, 4);\n// maxLength = max(3, 4) = 4",
+        "codeExplanation": "Amazing! Adding the third 'a' increases its frequency to 3: charMap = {'a': 3, 'r': 1}. DistinctCount remains 2. Since 2 ≤ k (2), we're still valid! Window ['a', 'r', 'a', 'a'] has length 4, achieving our best result so far! This demonstrates how we can have multiple occurrences of the same character."
+      },
+      {
+        "stepId": 5,
+        "description": "Excellent! Window ['a', 'r', 'a', 'a'] has 2 distinct chars, length 4. Now add 'c' and observe violation (map size becomes 3).",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 4,
+        "uiState": {
+          "arrayElements": [
+            { "value": "a", "state": "in_window", "index": 0 },
+            { "value": "r", "state": "in_window", "index": 1 },
+            { "value": "a", "state": "in_window", "index": 2 },
+            { "value": "a", "state": "in_window", "index": 3 },
+            { "value": "c", "state": "in_window", "index": 4 },
+            { "value": "i", "state": "not_yet_reached", "index": 5 }
+          ],
+          "windowStart": 0,
+          "windowEnd": 4,
+          "maxLength": 4,
+          "distinctCount": 3,
+          "charMap": {"a": 3, "r": 1, "c": 1},
+          "k": 2,
+          "highlightedElements": [0, 1, 2, 3, 4]
+        },
+        "jarvisMessage": "After adding 'c', charMap has a,r,c → mapSize = 3 > k = 2. Constraint violated. We'll shrink from the left step by step until mapSize ≤ k.",
+        "codeSnippet": "// Expand: add 'c' (violates constraint)\ncharMap.set('c', (charMap.get('c') || 0) + 1);\n// Now size = 3 > k ⇒ start shrinking",
+        "codeExplanation": "Adding a new distinct character increases the map size beyond k. We must shrink from the left to restore validity."
+      },
+      {
+        "stepId": 6,
+        "description": "Shrink 1: remove leftmost 'a' (index 0). Count a: 3 → 2. map size still 3.",
+        "expectedAction": "shrink_window",
+        "expectedElementIndex": 0,
+        "uiState": {
+          "arrayElements": [
+            { "value": "a", "state": "out_of_window_past", "index": 0 },
+            { "value": "r", "state": "in_window", "index": 1 },
+            { "value": "a", "state": "in_window", "index": 2 },
+            { "value": "a", "state": "in_window", "index": 3 },
+            { "value": "c", "state": "in_window", "index": 4 },
+            { "value": "i", "state": "not_yet_reached", "index": 5 }
+          ],
+          "windowStart": 1,
+          "windowEnd": 4,
+          "maxLength": 4,
+          "distinctCount": 3,
+          "charMap": {"a": 2, "r": 1, "c": 1},
+          "k": 2,
+          "highlightedElements": [1, 2, 3, 4]
+        },
+        "jarvisMessage": "Removed 'a' at index 0. It still remains in the map with count 2, so mapSize stays 3. Keep shrinking.",
+        "codeSnippet": "// Shrink: remove 'a'\ncharMap.set('a', charMap.get('a') - 1);\nif (charMap.get('a') === 0) charMap.delete('a');\nwindowStart++;",
+        "codeExplanation": "We decrement frequency and only delete the key if it reaches zero."
+      },
+      {
+        "stepId": 7,
+        "description": "Shrink 2: remove 'r' (index 1). Count r: 1 → 0 ⇒ delete. map size becomes 2 ≤ k (restored).",
+        "expectedAction": "shrink_window",
+        "expectedElementIndex": 1,
+        "uiState": {
+          "arrayElements": [
+            { "value": "a", "state": "out_of_window_past", "index": 0 },
+            { "value": "r", "state": "out_of_window_past", "index": 1 },
+            { "value": "a", "state": "in_window", "index": 2 },
+            { "value": "a", "state": "in_window", "index": 3 },
+            { "value": "c", "state": "in_window", "index": 4 },
+            { "value": "i", "state": "not_yet_reached", "index": 5 }
+          ],
+          "windowStart": 2,
+          "windowEnd": 4,
+          "maxLength": 4,
+          "distinctCount": 2,
+          "charMap": {"a": 2, "c": 1},
+          "k": 2,
+          "highlightedElements": [2, 3, 4]
+        },
+        "jarvisMessage": "Removed 'r'. Its frequency hit 0 so we deleted the key. mapSize = 2, which satisfies k. Current window is ['a','a','c'].",
+        "codeSnippet": "// Shrink: remove 'r'\ncharMap.set('r', charMap.get('r') - 1);\nif (charMap.get('r') === 0) charMap.delete('r');\nwindowStart++;",
+        "codeExplanation": "Deleting a key reduces map size. Constraint is restored when map size ≤ k."
+      },
+      {
+        "stepId": 8,
+        "description": "Now add 'i' (index 5). Map size becomes 3 again ⇒ must shrink until size ≤ k.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 5,
+        "uiState": {
+          "arrayElements": [
+            { "value": "a", "state": "out_of_window_past", "index": 0 },
+            { "value": "r", "state": "out_of_window_past", "index": 1 },
+            { "value": "a", "state": "in_window", "index": 2 },
+            { "value": "a", "state": "in_window", "index": 3 },
+            { "value": "c", "state": "in_window", "index": 4 },
+            { "value": "i", "state": "in_window", "index": 5 }
+          ],
+          "windowStart": 2,
+          "windowEnd": 5,
+          "maxLength": 4,
+          "distinctCount": 3,
+          "charMap": {"a": 2, "c": 1, "i": 1},
+          "k": 2,
+          "highlightedElements": [2, 3, 4, 5]
+        },
+        "jarvisMessage": "Added 'i'. Now map has a,c,i → size 3 > 2. We'll shrink again from the left until size ≤ k.",
+        "codeSnippet": "// Expand: add 'i' (violates)\ncharMap.set('i', (charMap.get('i') || 0) + 1);\n// size 3 > k ⇒ shrink",
+        "codeExplanation": "Adding a new distinct character triggers another shrink phase."
+      },
+      {
+        "stepId": 9,
+        "description": "Shrink 1: remove leftmost 'a' (index 2). Count a: 2 → 1. map size still 3.",
+        "expectedAction": "shrink_window",
+        "expectedElementIndex": 2,
+        "uiState": {
+          "arrayElements": [
+            { "value": "a", "state": "out_of_window_past", "index": 0 },
+            { "value": "r", "state": "out_of_window_past", "index": 1 },
+            { "value": "a", "state": "out_of_window_past", "index": 2 },
+            { "value": "a", "state": "in_window", "index": 3 },
+            { "value": "c", "state": "in_window", "index": 4 },
+            { "value": "i", "state": "in_window", "index": 5 }
+          ],
+          "windowStart": 3,
+          "windowEnd": 5,
+          "maxLength": 4,
+          "distinctCount": 3,
+          "charMap": {"a": 1, "c": 1, "i": 1},
+          "k": 2,
+          "highlightedElements": [3, 4, 5]
+        },
+        "jarvisMessage": "Removed 'a' at index 2. 'a' remains with count 1, so map size still 3. Continue shrinking.",
+        "codeSnippet": "// Shrink: remove 'a'\ncharMap.set('a', charMap.get('a') - 1);\nif (charMap.get('a') === 0) charMap.delete('a');\nwindowStart++;",
+        "codeExplanation": "Map size does not change until a key is deleted."
+      },
+      {
+        "stepId": 10,
+        "description": "Shrink 2: remove next 'a' (index 3). Count a: 1 → 0 ⇒ delete. map size becomes 2 ≤ k. Final window ['c','i'].",
+        "expectedAction": "shrink_window",
+        "expectedElementIndex": 3,
+        "uiState": {
+          "arrayElements": [
+            { "value": "a", "state": "out_of_window_past", "index": 0 },
+            { "value": "r", "state": "out_of_window_past", "index": 1 },
+            { "value": "a", "state": "out_of_window_past", "index": 2 },
+            { "value": "a", "state": "out_of_window_past", "index": 3 },
+            { "value": "c", "state": "in_window", "index": 4 },
+            { "value": "i", "state": "in_window", "index": 5 }
+          ],
+          "windowStart": 4,
+          "windowEnd": 5,
+          "maxLength": 4,
+          "distinctCount": 2,
+          "charMap": {"c": 1, "i": 1},
+          "k": 2,
+          "highlightedElements": [4, 5]
+        },
+        "jarvisMessage": "Deleted 'a' after its count reached 0. mapSize = 2, so the constraint is restored. Window is now ['c','i'].",
+        "codeSnippet": "// Shrink: remove 'a' again\ncharMap.set('a', charMap.get('a') - 1);\nif (charMap.get('a') === 0) charMap.delete('a');\nwindowStart++;",
+        "codeExplanation": "Once a frequency hits zero, we remove the key and the map size drops, restoring the constraint."
+      },
+      {
+        "stepId": 11,
+        "description": "Algorithm completed! We found the longest substring with at most K distinct characters.",
+        "expectedAction": "complete_algorithm",
+        "uiState": {
+          "arrayElements": [
+            { "value": "a", "state": "out_of_window_past", "index": 0 },
+            { "value": "r", "state": "out_of_window_past", "index": 1 },
+            { "value": "a", "state": "out_of_window_past", "index": 2 },
+            { "value": "a", "state": "out_of_window_past", "index": 3 },
+            { "value": "c", "state": "in_window", "index": 4 },
+            { "value": "i", "state": "in_window", "index": 5 }
+          ],
+          "windowStart": 4,
+          "windowEnd": 5,
+          "maxLength": 4,
+          "distinctCount": 2,
+          "charMap": {"c": 1, "i": 1},
+          "k": 2,
+          "highlightedElements": [4, 5]
+        },
+        "jarvisMessage": "🎉 MISSION ACCOMPLISHED! You've mastered Constraint-Based Sliding Window!\n\n**Final Result: Maximum Length = 4**\n\n**What we achieved:**\n✅ Found longest valid substring: \"araa\" (length 4) with at most 2 distinct characters\n✅ Visualized shrink steps whenever map size exceeded k\n✅ Tracked map size explicitly to build shrinking intuition\n\n**Key Insights:**\n- **Constraint Tracking**: mapSize = charMap.size ≤ k\n- **Expand**: Add characters while constraint satisfied\n- **Shrink**: Remove from left until constraint restored\n- **Always track best**: Keep maxLength up to date\n\n**Time Complexity: O(n)**\n**Space Complexity: O(k)**\n\nClick 'Complete Algorithm' for full analysis!",
+        "codeSnippet": "// Algorithm complete - return the answer\nreturn maxLength;  // Returns 4",
+        "codeExplanation": "We explicitly showed each shrink step driven by map size > k, to build intuition about how the window contracts."
+      }
+    ]
+  },
+  "solution": {
+    "optimal": {
+      "idea": "Use variable-size sliding window with hash map to track character frequencies. Expand window while distinct characters ≤ k. When distinct characters > k, shrink from left until constraint restored. Track maximum valid window length.",
+      "timeComplexity": "O(n)",
+      "spaceComplexity": "O(k)",
+      "walkthrough": [
+        "Initialize windowStart = 0, maxLength = 0, and charMap hash map.",
+        "Use for loop with windowEnd as right pointer to expand window.",
+        "Add s[windowEnd] to charMap and update its frequency.",
+        "While charMap.size > k (too many distinct characters):",
+        "  Remove s[windowStart] from charMap (decrement frequency)",
+        "  If frequency becomes 0, remove the character key entirely",
+        "  Increment windowStart to shrink window from left",
+        "Update maxLength with current valid window size.",
+        "Continue until windowEnd reaches end of string.",
+        "Return maxLength as the longest valid substring length."
+      ]
+    }
+  },
+  "complexityAnalysis": {
+    "title": "COMPLEXITY ANALYSIS",
+    "overview": "Constraint-based sliding window with hash map is incredibly versatile! The hash map provides O(1) constraint checking while the two-pointer technique ensures we explore all possibilities efficiently by expanding when valid and shrinking when constraints are violated.",
+    "timeComplexity": {
+      "value": "O(n)",
+      "explanation": "Each character is processed at most twice - once by windowEnd when expanding and once by windowStart when shrinking. The while loop for shrinking doesn't create quadratic behavior because windowStart can only move forward n times total across all iterations."
+    },
+    "spaceComplexity": {
+      "value": "O(k)",
+      "explanation": "Hash map stores at most k distinct characters, where k is the constraint limit. In the worst case, we have exactly k different characters in our window, each taking O(1) space in the hash map."
+    },
+    "whyItMatters": "This pattern applies to many constraint-based problems! Whether it's distinct characters, sum limits, or frequency constraints, the expand-while-valid + shrink-when-violated strategy with hash map tracking is incredibly powerful. For a string of length 1000 with k=10, we achieve O(n) performance instead of O(n²) brute force - a massive improvement!"
+  },
+  "code": {
+    "cpp": "#include <iostream>\n#include <string>\n#include <unordered_map>\n#include <algorithm>\nusing namespace std;\n\nclass Solution {\npublic:\n    int lengthOfLongestSubstringKDistinct(string s, int k) {\n        if (k == 0) return 0;\n        \n        // INTUITION: Use sliding window + hash map for constraint tracking\n        int windowStart = 0;\n        int maxLength = 0;\n        unordered_map<char, int> charMap;  // Track character frequencies\n        \n        // INTUITION: Expand window with right pointer\n        for (int windowEnd = 0; windowEnd < s.length(); windowEnd++) {\n            // Add current character to hash map\n            charMap[s[windowEnd]]++;\n            \n            // INTUITION: Shrink window while constraint violated\n            while (charMap.size() > k) {\n                // Remove leftmost character\n                charMap[s[windowStart]]--;\n                if (charMap[s[windowStart]] == 0) {\n                    charMap.erase(s[windowStart]);  // Remove key if frequency = 0\n                }\n                windowStart++;\n            }\n            \n            // INTUITION: Update maximum length with current valid window\n            maxLength = max(maxLength, windowEnd - windowStart + 1);\n        }\n        \n        // INTUITION: Return longest valid substring length\n        return maxLength;\n    }\n};\n\nint main() {\n    Solution sol;\n    // Example: \"araaci\" with k=2\n    // Expected: 4 (substring \"araa\")\n    cout << sol.lengthOfLongestSubstringKDistinct(\"araaci\", 2) << endl;\n    cout << sol.lengthOfLongestSubstringKDistinct(\"araaci\", 1) << endl;\n    cout << sol.lengthOfLongestSubstringKDistinct(\"cbbebi\", 3) << endl;\n    return 0;\n}"
+  }
+}

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Animated, Easing, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Animated, Easing, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 interface DataElement {
   value: string | number;
@@ -14,6 +14,17 @@ interface Props {
     windowEnd?: number;
     windowSum?: number;
     maxSum?: number;
+    // P4: longest substring variables
+    maxLength?: number;
+    currentLength?: number;
+    charMap?: Record<string, number>;
+    result?: number[];
+    negativeQueue?: number[];
+    k?: number;
+    // Variable-size window properties
+    targetSum?: number;
+    minLength?: number;
+    currentSum?: number;
   };
   problemData?: any;
   onElementPress: (index: number) => void;
@@ -230,7 +241,7 @@ export default function DataVisualizer({
 
   // Function to render algorithm variables display - flexible and decoupled
   const renderVariablesDisplay = () => {
-    const { windowStart, windowEnd, windowSum, maxSum } = uiState;
+    const { windowStart, windowEnd, windowSum, maxSum, result, negativeQueue, k, targetSum, minLength, currentSum, maxLength, currentLength, charMap, distinctCount, fruitMap, basketTypes, maxFruits, zerosCount, maxFreq, freqMapStr, maxSize } = uiState as any;
     
     // Calculate current window size
     const currentWindowSize = windowStart !== undefined && windowEnd !== undefined 
@@ -238,22 +249,143 @@ export default function DataVisualizer({
       : 0;
     
     // Get target size k from problem data (dynamic)
-    const targetSizeK = problemData?.playground?.initialState?.k || 3;
+    const targetSizeK = k || problemData?.playground?.initialState?.k || 3;
+    
+    // Determine which variables to show based on problem type
+    // Detect p2 strictly by presence of negativeQueue to avoid false positives in p1
+    const isP2Problem = negativeQueue !== undefined;
+    const isVariableSizeProblem = targetSum !== undefined || minLength !== undefined;
+    const isP8ReplacementProblem = freqMapStr !== undefined || maxFreq !== undefined || maxSize !== undefined;
+    const isP4StringProblem = charMap !== undefined && maxLength !== undefined;
+    const isP6FruitProblem = fruitMap !== undefined || basketTypes !== undefined || maxFruits !== undefined;
+    const isP7OnesProblem = zerosCount !== undefined && maxLength !== undefined;
     
     // Define variables array for flexible rendering
-    const variables = [
-      { label: 'target size k:', value: targetSizeK },
-      { label: 'windowSize:', value: currentWindowSize },
-      { label: 'windowSum:', value: windowSum || 0 },
-      { label: 'maxSum:', value: maxSum || 0 }
-    ];
+    let variables;
     
+    if (isP7OnesProblem) {
+      // Max Consecutive Ones III (p7) - track zeros within window
+      variables = [
+        { label: 'k:', value: k || problemData?.playground?.initialState?.k },
+        { label: 'windowSize:', value: currentWindowSize },
+        { label: 'maxLength:', value: maxLength || 0 },
+        { label: 'zerosInWindow:', value: zerosCount || 0 },
+      ];
+    } else if (isP8ReplacementProblem) {
+      // Longest Repeating Character Replacement (p8)
+      const fmDisplay = freqMapStr ? `{ ${freqMapStr} }` : '{}';
+      variables = [
+        { label: 'k:', value: k || problemData?.playground?.initialState?.k },
+        { label: 'windowSize:', value: currentWindowSize },
+        { label: 'maxSize:', value: maxSize || 0 },
+        { label: 'freqMap:', value: fmDisplay },
+      ];
+    } else if (isP4StringProblem) {
+      // Variable-size string window with hash map (p4)
+      const mapEntries = charMap ? Object.entries(charMap) : [];
+      const mapDisplay = mapEntries.length > 0
+        ? `{ ${mapEntries.map(([ch, cnt]) => `${ch}: ${cnt}`).join(', ')} }`
+        : '{}';
+      const mapSize = typeof distinctCount === 'number' ? distinctCount : (charMap ? Object.keys(charMap).length : 0);
+      variables = [
+        { label: 'k:', value: k || problemData?.playground?.initialState?.k },
+        { label: 'windowSize:', value: currentWindowSize },
+        { label: 'maxLength:', value: maxLength || 0 },
+        { label: 'currentLength:', value: currentLength || currentWindowSize },
+        { label: 'mapSize:', value: mapSize },
+        { label: 'charMap:', value: mapDisplay },
+      ];
+    } else if (isP6FruitProblem) {
+      const entries = fruitMap ? Object.entries(fruitMap) : [];
+      const fmDisplay = entries.length > 0
+        ? `{ ${entries.map(([t, cnt]) => `${t}: ${cnt}`).join(', ')} }`
+        : '{}';
+      const size = fruitMap ? Object.keys(fruitMap).length : 0;
+      const twoK = basketTypes || 2;
+      variables = [
+        { label: 'basketTypes (k):', value: twoK },
+        { label: 'windowSize:', value: currentWindowSize },
+        { label: 'maxFruits:', value: maxFruits || 0 },
+        { label: 'mapSize:', value: size },
+        { label: 'fruitMap:', value: fmDisplay },
+      ];
+    } else if (isVariableSizeProblem) {
+      // Variable-size sliding window (p3+)
+      variables = [
+        { label: 'targetSum:', value: targetSum || 0 },
+        { label: 'windowSize:', value: currentWindowSize },
+        { label: 'currentSum:', value: currentSum || 0 },
+        { label: 'minLength:', value: minLength }
+      ];
+    } else if (isP2Problem) {
+      // Fixed-size with auxiliary structures (p2)
+      variables = [
+        { label: 'target size k:', value: targetSizeK },
+        { label: 'windowSize:', value: currentWindowSize },
+        { label: 'result:', value: result ? `[${result.join(', ')}]` : '[]' },
+        { label: 'negativeQueue:', value: negativeQueue ? `[${negativeQueue.join(', ')}]` : '[]' }
+      ];
+    } else {
+      // Fixed-size basic (p1)
+      variables = [
+        { label: 'target size k:', value: targetSizeK },
+        { label: 'windowSize:', value: currentWindowSize },
+        { label: 'windowSum:', value: windowSum || 0 },
+        { label: 'maxSum:', value: maxSum || 0 }
+      ];
+    }
+    
+    const INT_MAX = 2147483647;
+    const INT_MIN = -2147483648;
+
+    const formatValue = (rawValue: any) => {
+      if (rawValue === undefined || rawValue === null) return '—';
+      if (typeof rawValue === 'number') {
+        if (rawValue === Number.MAX_SAFE_INTEGER || rawValue === INT_MAX) return `INT_MAX (${INT_MAX})`;
+        if (rawValue === INT_MIN) return `INT_MIN (${INT_MIN})`;
+      }
+      return rawValue;
+    };
+
+    const variableDescriptions: Record<string, string> = {
+      targetSum: 'Threshold sum we aim to reach or exceed within the window.',
+      windowSize: 'Current number of elements inside the sliding window (windowEnd - windowStart + 1).',
+      currentSum: 'Sum of all elements currently inside the window.',
+      minLength: 'Smallest length of any valid window found so far that meets the condition.',
+      maxLength: 'Length of the longest valid window (no duplicates) seen so far.',
+      currentLength: 'Current window length for string problems (may equal windowSize).',
+      charMap: 'Hash map of character → frequency within the current window. Shrink while any frequency > 1.',
+      'target size k': 'Fixed window size k used in fixed-size sliding window problems.',
+      result: 'The current best result (e.g., elements or indices) tracked by the algorithm.',
+      negativeQueue: 'Queue tracking negative numbers within the current window (used in specific problems).',
+      windowSum: 'Sum of elements in the current fixed-size window.',
+      maxSum: 'Maximum window sum observed so far in fixed-size problems.',
+      k: 'Constraint parameter used by the current problem.',
+      maxSize: 'Best (maximum) valid window size found so far.',
+      freqMap: 'Character → count map within the current window (displayed as key:value pairs).'
+    };
+
+    const showTooltip = (labelText: string, value: any) => {
+      const key = labelText.replace(':', '').trim();
+      const base = variableDescriptions[key] || 'Algorithm variable.';
+      const extra = ((): string => {
+        if (value === Number.MAX_SAFE_INTEGER || value === INT_MAX) return 'Value is INT_MAX, a sentinel representing no valid minimum found yet.';
+        if (value === INT_MIN) return 'Value is INT_MIN, a sentinel representing the lowest possible integer.';
+        return '';
+      })();
+      const message = extra ? `${base}\n\n${extra}` : base;
+      Alert.alert(key, message);
+    };
+
     return (
       <View style={styles.variablesDisplay}>
         {variables.map((variable, index) => (
           <View key={index} style={styles.variableItem}>
             <Text style={styles.variableLabel}>{variable.label}</Text>
-            <Text style={styles.variableValue}>{variable.value}</Text>
+            <Text style={styles.variableValue}>{formatValue(variable.value)}</Text>
+            <TouchableOpacity onPress={() => showTooltip(variable.label, variable.value)} accessibilityLabel={`Info about ${variable.label}`}>
+              <Text style={styles.infoIcon}>ⓘ</Text>
+            </TouchableOpacity>
           </View>
         ))}
       </View>
@@ -384,8 +516,8 @@ export default function DataVisualizer({
         </View>
       </View>
       
-      {/* Variables Display - completely decoupled */}
-      {renderVariablesDisplay()}
+      {/* Variables Display - hide until initialization is performed */}
+      {!showInitializeButton && renderVariablesDisplay()}
     </>
   );
 }
@@ -686,5 +818,11 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#3B82F6',
     fontWeight: 'bold',
+  },
+  infoIcon: {
+    marginLeft: 6,
+    fontSize: 12,
+    color: '#94A3B8',
+    fontWeight: '700',
   },
 });

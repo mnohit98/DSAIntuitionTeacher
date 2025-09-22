@@ -1,0 +1,453 @@
+{
+  "problemId": "p3",
+  "title": "Smallest Subarray With a Greater Sum",
+  "description": "Given an array of positive integers and a positive number 'S,' find the length of the smallest contiguous subarray whose sum is greater than or equal to 'S'. Return 0 if no such subarray exists.",
+  "aim": "Learn the variable-size sliding window technique using expand/shrink strategy with two pointers to efficiently solve dynamic window problems.",
+  "moduleId": "slidingWindow",
+  "submoduleId": "sw_variable",
+  "difficulty": "Easy",
+  "tags": [
+    "Array",
+    "Sliding Window",
+    "Variable Size",
+    "Two Pointers"
+  ],
+  "examples": [
+    {
+      "input": "arr = [2, 1, 2, 3, 3, 1, 1, 1], S = 8",
+      "output": "3",
+      "explanation": "The smallest subarray with sum ≥ 8 is [3, 3, 1] with length 3."
+    },
+    {
+      "input": "arr = [3, 4, 1, 1, 6], S = 8",
+      "output": "3",
+      "explanation": "The smallest subarray with sum ≥ 8 is [3, 4, 1] with length 3."
+    },
+    {
+      "input": "arr = [2, 1, 2, 3, 3, 1, 1, 1], S = 7",
+      "output": "2",
+      "explanation": "The smallest subarray with sum ≥ 7 is [3, 3] with length 2."
+    }
+  ],
+  "playground": {
+    "initialState": {
+      "array": [2, 1, 2, 3, 3, 1, 1, 1],
+      "targetSum": 8,
+      "minLength": 2147483647,
+      "currentSum": 0,
+      "windowStart": 0,
+      "windowEnd": 0
+    },
+    "steps": [
+      {
+        "stepId": 0,
+        "description": "Welcome! Let's learn the variable-size sliding window technique to find the smallest subarray with sum ≥ target.",
+        "expectedAction": "click_initialize",
+        "uiState": {
+          "arrayElements": [
+            { "value": 2, "state": "not_yet_reached", "index": 0 },
+            { "value": 1, "state": "not_yet_reached", "index": 1 },
+            { "value": 2, "state": "not_yet_reached", "index": 2 },
+            { "value": 3, "state": "not_yet_reached", "index": 3 },
+            { "value": 3, "state": "not_yet_reached", "index": 4 },
+            { "value": 1, "state": "not_yet_reached", "index": 5 },
+            { "value": 1, "state": "not_yet_reached", "index": 6 },
+            { "value": 1, "state": "not_yet_reached", "index": 7 }
+          ],
+          "windowStart": null,
+          "windowEnd": null,
+          "targetSum": 8,
+          "minLength": 2147483647,
+          "currentSum": 0,
+          "highlightedElements": []
+        },
+        "jarvisMessage": "Welcome to the Variable-Size Sliding Window technique! Unlike fixed-size windows, here we dynamically expand and shrink our window based on conditions. Our mission: find the smallest subarray whose sum is ≥ 8. The key insight is using two pointers: expand the window (move right pointer) when sum is too small, shrink the window (move left pointer) when sum meets our condition. Click 'Initialize Variables' to start our two-pointer journey!",
+        "codeSnippet": "// Step 0: Ready to initialize variables\nlet windowStart = 0;     // Left pointer of window\nlet minLength = Infinity; // Track smallest valid window\nlet currentSum = 0;      // Track current window sum",
+        "codeExplanation": "We need three key variables: windowStart (left pointer), minLength (to remember the smallest valid subarray found), and currentSum (to track the sum of elements in our current window). The right pointer (windowEnd) will be handled by our loop iteration."
+      },
+      {
+        "stepId": 1,
+        "description": "Variables initialized! Now let's start expanding our window by adding the first element.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 0,
+        "uiState": {
+          "arrayElements": [
+            { "value": 2, "state": "in_window", "index": 0 },
+            { "value": 1, "state": "not_yet_reached", "index": 1 },
+            { "value": 2, "state": "not_yet_reached", "index": 2 },
+            { "value": 3, "state": "not_yet_reached", "index": 3 },
+            { "value": 3, "state": "not_yet_reached", "index": 4 },
+            { "value": 1, "state": "not_yet_reached", "index": 5 },
+            { "value": 1, "state": "not_yet_reached", "index": 6 },
+            { "value": 1, "state": "not_yet_reached", "index": 7 }
+          ],
+          "windowStart": 0,
+          "windowEnd": 0,
+          "targetSum": 8,
+          "minLength": 2147483647,
+          "currentSum": 2,
+          "highlightedElements": [0]
+        },
+        "jarvisMessage": "Perfect! Our variables are ready: windowStart = 0, minLength = Infinity, currentSum = 0. Now we begin the expand phase! We add the first element (2) to our window. Our currentSum becomes 2, which is < 8, so we need to keep expanding. The window now contains [2]. This is the beauty of variable-size sliding window - we grow until we meet our condition! Click on the second element (1) to continue expanding.",
+        "codeSnippet": "// Expand window: add arr[0] = 2\ncurrentSum += arr[0];  // currentSum = 0 + 2 = 2\n// currentSum (2) < targetSum (8), so keep expanding",
+        "codeExplanation": "The expand phase: we add elements to our window until the sum meets our condition. Since currentSum (2) < targetSum (8), we haven't found a valid subarray yet, so we continue expanding by moving the right pointer forward."
+      },
+      {
+        "stepId": 2,
+        "description": "Window expanded! currentSum = 2. Still less than target (8), so let's continue expanding.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 1,
+        "uiState": {
+          "arrayElements": [
+            { "value": 2, "state": "in_window", "index": 0 },
+            { "value": 1, "state": "in_window", "index": 1 },
+            { "value": 2, "state": "not_yet_reached", "index": 2 },
+            { "value": 3, "state": "not_yet_reached", "index": 3 },
+            { "value": 3, "state": "not_yet_reached", "index": 4 },
+            { "value": 1, "state": "not_yet_reached", "index": 5 },
+            { "value": 1, "state": "not_yet_reached", "index": 6 },
+            { "value": 1, "state": "not_yet_reached", "index": 7 }
+          ],
+          "windowStart": 0,
+          "windowEnd": 1,
+          "targetSum": 8,
+          "minLength": 2147483647,
+          "currentSum": 3,
+          "highlightedElements": [0, 1]
+        },
+        "jarvisMessage": "Great! We added element 2 to our window. Now our window contains [2] and currentSum = 2. Since 2 < 8, we haven't found a valid subarray yet. The strategy is simple: keep expanding (adding elements) until currentSum ≥ targetSum. Then we'll start the shrinking phase to find the smallest such window. Click on the second element (1) to continue our expansion!",
+        "codeSnippet": "// Continue expanding: add arr[1] = 1\ncurrentSum += arr[1];  // currentSum = 2 + 1 = 3\n// currentSum (3) < targetSum (8), so keep expanding",
+        "codeExplanation": "Still in expand phase! We add the next element (1) to our window, making currentSum = 3. Since 3 < 8, we haven't reached our target yet. The window [2, 1] has sum 3, which is insufficient, so we continue expanding."
+      },
+      {
+        "stepId": 3,
+        "description": "Window expanded again! currentSum = 3. Still need more elements to reach target sum of 8.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 2,
+        "uiState": {
+          "arrayElements": [
+            { "value": 2, "state": "in_window", "index": 0 },
+            { "value": 1, "state": "in_window", "index": 1 },
+            { "value": 2, "state": "in_window", "index": 2 },
+            { "value": 3, "state": "not_yet_reached", "index": 3 },
+            { "value": 3, "state": "not_yet_reached", "index": 4 },
+            { "value": 1, "state": "not_yet_reached", "index": 5 },
+            { "value": 1, "state": "not_yet_reached", "index": 6 },
+            { "value": 1, "state": "not_yet_reached", "index": 7 }
+          ],
+          "windowStart": 0,
+          "windowEnd": 2,
+          "targetSum": 8,
+          "minLength": 2147483647,
+          "currentSum": 5,
+          "highlightedElements": [0, 1, 2]
+        },
+        "jarvisMessage": "Excellent! Our window is growing: [2, 1] with currentSum = 3. Since 3 < 8, we continue expanding. This demonstrates the expand phase of the two-pointer technique - we keep adding elements until we meet our condition. Our window now spans indices 0-1 with sum 3. Let's add the third element (2) to get closer to our target sum of 8!",
+        "codeSnippet": "// Continue expanding: add arr[2] = 2\ncurrentSum += arr[2];  // currentSum = 3 + 2 = 5\n// currentSum (5) < targetSum (8), so keep expanding",
+        "codeExplanation": "The expansion continues! Adding element 2 gives us currentSum = 5. Our window [2, 1, 2] has sum 5, which is still less than our target of 8. The two-pointer technique is patient - we expand until we have a valid solution, then optimize it."
+      },
+      {
+        "stepId": 4,
+        "description": "Window expanded! currentSum = 5. Getting closer to target (8). Let's expand once more.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 3,
+        "uiState": {
+          "arrayElements": [
+            { "value": 2, "state": "in_window", "index": 0 },
+            { "value": 1, "state": "in_window", "index": 1 },
+            { "value": 2, "state": "in_window", "index": 2 },
+            { "value": 3, "state": "in_window", "index": 3 },
+            { "value": 3, "state": "not_yet_reached", "index": 4 },
+            { "value": 1, "state": "not_yet_reached", "index": 5 },
+            { "value": 1, "state": "not_yet_reached", "index": 6 },
+            { "value": 1, "state": "not_yet_reached", "index": 7 }
+          ],
+          "windowStart": 0,
+          "windowEnd": 3,
+          "targetSum": 8,
+          "minLength": 4,
+          "currentSum": 8,
+          "highlightedElements": [0, 1, 2, 3]
+        },
+        "jarvisMessage": "Perfect! Our window [2, 1, 2] now has currentSum = 5. We're getting closer to our target of 8! The expand phase continues as we systematically grow our window. Notice how the two-pointer technique ensures we don't miss any potential solutions - we methodically expand until we find our first valid subarray. Click on the fourth element (3) to continue expanding!",
+        "codeSnippet": "// Expand: add arr[3] = 3\ncurrentSum += arr[3];  // currentSum = 5 + 3 = 8\n// currentSum (8) >= targetSum (8) ✓ First valid window!\nminLength = Math.min(minLength, windowEnd - windowStart + 1);\n// minLength = min(Infinity, 4) = 4",
+        "codeExplanation": "BREAKTHROUGH! Adding element 3 gives us currentSum = 8, which equals our targetSum! We found our first valid subarray: [2, 1, 2, 3] with length 4. Now we update minLength = 4. But wait - can we find a smaller subarray? Time to start the shrink phase!"
+      },
+      {
+        "stepId": 5,
+        "description": "First valid window found! [2, 1, 2, 3] has sum = 8, length = 4. Now let's try to shrink and find a smaller window.",
+        "expectedAction": "shrink_window",
+        "expectedElementIndex": 0,
+        "uiState": {
+          "arrayElements": [
+            { "value": 2, "state": "out_of_window_past", "index": 0 },
+            { "value": 1, "state": "in_window", "index": 1 },
+            { "value": 2, "state": "in_window", "index": 2 },
+            { "value": 3, "state": "in_window", "index": 3 },
+            { "value": 3, "state": "not_yet_reached", "index": 4 },
+            { "value": 1, "state": "not_yet_reached", "index": 5 },
+            { "value": 1, "state": "not_yet_reached", "index": 6 },
+            { "value": 1, "state": "not_yet_reached", "index": 7 }
+          ],
+          "windowStart": 1,
+          "windowEnd": 3,
+          "targetSum": 8,
+          "minLength": 4,
+          "currentSum": 6,
+          "highlightedElements": [1, 2, 3]
+        },
+        "jarvisMessage": "🎉 MILESTONE ACHIEVED! We found our first valid subarray [2, 1, 2, 3] with sum = 8 and length = 4. We've updated minLength = 4. Now comes the optimization phase - the shrink strategy! Since we have a valid window, let's try to make it smaller by removing elements from the left. We remove the leftmost element (2) to see if we can find a shorter valid subarray. Click on the leftmost element (2) to shrink the window!",
+        "codeSnippet": "// Shrink phase: remove arr[windowStart]\ncurrentSum -= arr[windowStart];  // currentSum = 8 - 2 = 6\nwindowStart++;  // Move left pointer: 0 → 1\n// currentSum (6) < targetSum (8), so this window is invalid",
+        "codeExplanation": "The shrink phase begins! We remove the leftmost element (2) and move windowStart from 0 to 1. Our window becomes [1, 2, 3] with sum = 6. Since 6 < 8, this window is invalid, so we need to expand again to find the next valid window."
+      },
+      {
+        "stepId": 6,
+        "description": "Window shrunk! Current window [1, 2, 3] has sum = 6 < 8, so it's invalid. Let's expand again.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 4,
+        "uiState": {
+          "arrayElements": [
+            { "value": 2, "state": "out_of_window_past", "index": 0 },
+            { "value": 1, "state": "in_window", "index": 1 },
+            { "value": 2, "state": "in_window", "index": 2 },
+            { "value": 3, "state": "in_window", "index": 3 },
+            { "value": 3, "state": "in_window", "index": 4 },
+            { "value": 1, "state": "not_yet_reached", "index": 5 },
+            { "value": 1, "state": "not_yet_reached", "index": 6 },
+            { "value": 1, "state": "not_yet_reached", "index": 7 }
+          ],
+          "windowStart": 1,
+          "windowEnd": 4,
+          "targetSum": 8,
+          "minLength": 4,
+          "currentSum": 9,
+          "highlightedElements": [1, 2, 3, 4]
+        },
+        "jarvisMessage": "Great shrinking! We removed element 2 from the left, making our window [1, 2, 3] with sum = 6. Since 6 < 8, this window doesn't meet our condition, so we need to expand again. This is the beautiful dance of variable-size sliding window - expand when insufficient, shrink when possible! Let's expand by adding the next element (3) to get back to a valid state.",
+        "codeSnippet": "// Window [1, 2, 3] sum = 6 < 8, so expand again\ncurrentSum += arr[4];  // currentSum = 6 + 3 = 9\n// currentSum (9) >= targetSum (8) ✓ Valid window again!\n// Current window: [1, 2, 3, 3] length = 4\n// minLength stays 4 (no improvement)",
+        "codeExplanation": "Back to expanding! We add element 3, making currentSum = 9. Our window [1, 2, 3, 3] has length 4, same as our current minLength. The algorithm continues this expand-shrink dance to explore all possible valid windows and find the shortest one."
+      },
+      {
+        "stepId": 7,
+        "description": "Valid window again! [1, 2, 3, 3] has sum = 9, length = 4. Let's try shrinking to find a shorter window.",
+        "expectedAction": "shrink_window",
+        "expectedElementIndex": 1,
+        "uiState": {
+          "arrayElements": [
+            { "value": 2, "state": "out_of_window_past", "index": 0 },
+            { "value": 1, "state": "out_of_window_past", "index": 1 },
+            { "value": 2, "state": "in_window", "index": 2 },
+            { "value": 3, "state": "in_window", "index": 3 },
+            { "value": 3, "state": "in_window", "index": 4 },
+            { "value": 1, "state": "not_yet_reached", "index": 5 },
+            { "value": 1, "state": "not_yet_reached", "index": 6 },
+            { "value": 1, "state": "not_yet_reached", "index": 7 }
+          ],
+          "windowStart": 2,
+          "windowEnd": 4,
+          "targetSum": 8,
+          "minLength": 3,
+          "currentSum": 8,
+          "highlightedElements": [2, 3, 4]
+        },
+        "jarvisMessage": "Excellent! We have another valid window [1, 2, 3, 3] with sum = 9. Since currentSum ≥ targetSum, we can try to shrink again to find a potentially shorter valid window. The two-pointer technique is all about this balance - expand when needed, shrink when possible. Let's remove the leftmost element (1) to see if we can improve our minLength!",
+        "codeSnippet": "// Try to shrink: remove arr[1] = 1\ncurrentSum -= arr[1];  // currentSum = 9 - 1 = 8\nwindowStart++;  // Move left pointer: 1 → 2\n// currentSum (8) >= targetSum (8) ✓ Still valid!\n// Window [2, 3, 3] length = 3 < minLength (4)\nminLength = Math.min(minLength, 3);  // minLength = 3",
+        "codeExplanation": "IMPROVEMENT FOUND! After removing element 1, our window becomes [2, 3, 3] with sum = 8. Since 8 ≥ 8, it's still valid! The length is 3, which is better than our previous minLength of 4. We update minLength = 3. This demonstrates the power of the shrink phase!"
+      },
+      {
+        "stepId": 8,
+        "description": "Great improvement! Found shorter window [2, 3, 3] with length = 3. Let's continue and see if we can shrink further.",
+        "expectedAction": "shrink_window",
+        "expectedElementIndex": 2,
+        "uiState": {
+          "arrayElements": [
+            { "value": 2, "state": "out_of_window_past", "index": 0 },
+            { "value": 1, "state": "out_of_window_past", "index": 1 },
+            { "value": 2, "state": "out_of_window_past", "index": 2 },
+            { "value": 3, "state": "in_window", "index": 3 },
+            { "value": 3, "state": "in_window", "index": 4 },
+            { "value": 1, "state": "not_yet_reached", "index": 5 },
+            { "value": 1, "state": "not_yet_reached", "index": 6 },
+            { "value": 1, "state": "not_yet_reached", "index": 7 }
+          ],
+          "windowStart": 3,
+          "windowEnd": 4,
+          "targetSum": 8,
+          "minLength": 3,
+          "currentSum": 6,
+          "highlightedElements": [3, 4]
+        },
+        "jarvisMessage": "🎉 FANTASTIC! We discovered a better solution! Window [2, 3, 3] with length 3 is shorter than our previous best of 4. We've updated minLength = 3. The shrink phase is working! Now let's be greedy and see if we can shrink even more. Can we remove the element 2 and still maintain a valid window? Click on element 2 to continue shrinking!",
+        "codeSnippet": "// Continue shrinking: remove arr[2] = 2\ncurrentSum -= arr[2];  // currentSum = 8 - 2 = 6\nwindowStart++;  // Move left pointer: 2 → 3\n// currentSum (6) < targetSum (8), window invalid",
+        "codeExplanation": "We tried to shrink further by removing element 2, but now our window [3, 3] has sum = 6 < 8, making it invalid. This means we need to expand again. The algorithm naturally finds the balance between valid windows and optimal length."
+      },
+      {
+        "stepId": 9,
+        "description": "Window [3, 3] has sum = 6 < 8, so it's invalid. Let's expand to find the next valid window.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 5,
+        "uiState": {
+          "arrayElements": [
+            { "value": 2, "state": "out_of_window_past", "index": 0 },
+            { "value": 1, "state": "out_of_window_past", "index": 1 },
+            { "value": 2, "state": "out_of_window_past", "index": 2 },
+            { "value": 3, "state": "in_window", "index": 3 },
+            { "value": 3, "state": "in_window", "index": 4 },
+            { "value": 1, "state": "in_window", "index": 5 },
+            { "value": 1, "state": "not_yet_reached", "index": 6 },
+            { "value": 1, "state": "not_yet_reached", "index": 7 }
+          ],
+          "windowStart": 3,
+          "windowEnd": 5,
+          "targetSum": 8,
+          "minLength": 3,
+          "currentSum": 7,
+          "highlightedElements": [3, 4, 5]
+        },
+        "jarvisMessage": "Perfect shrinking attempt! We removed element 2, leaving window [3, 3] with sum = 6. Since 6 < 8, this window is invalid, so we must expand. This shows the self-correcting nature of the algorithm - it automatically maintains the invariant of finding valid windows. Let's expand by adding the next element (1) to get closer to a valid state again!",
+        "codeSnippet": "// Window [3, 3] invalid, so expand\ncurrentSum += arr[5];  // currentSum = 6 + 1 = 7\n// currentSum (7) < targetSum (8), still need more",
+        "codeExplanation": "We expand by adding element 1, making currentSum = 7. Our window [3, 3, 1] still has sum < 8, so it's not valid yet. We need to continue expanding to reach our target sum."
+      },
+      {
+        "stepId": 10,
+        "description": "Window [3, 3, 1] has sum = 7 < 8. Still not valid, let's expand once more.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 6,
+        "uiState": {
+          "arrayElements": [
+            { "value": 2, "state": "out_of_window_past", "index": 0 },
+            { "value": 1, "state": "out_of_window_past", "index": 1 },
+            { "value": 2, "state": "out_of_window_past", "index": 2 },
+            { "value": 3, "state": "in_window", "index": 3 },
+            { "value": 3, "state": "in_window", "index": 4 },
+            { "value": 1, "state": "in_window", "index": 5 },
+            { "value": 1, "state": "in_window", "index": 6 },
+            { "value": 1, "state": "not_yet_reached", "index": 7 }
+          ],
+          "windowStart": 3,
+          "windowEnd": 6,
+          "targetSum": 8,
+          "minLength": 3,
+          "currentSum": 8,
+          "highlightedElements": [3, 4, 5, 6]
+        },
+        "jarvisMessage": "Good expansion! Window [3, 3, 1] has sum = 7, which is still < 8. The algorithm patiently expands until we meet our condition again. This demonstrates the systematic nature of the two-pointer technique - it never gives up until it finds all possible solutions. Let's add the next element (1) to reach our target!",
+        "codeSnippet": "// Continue expanding: add arr[6] = 1\ncurrentSum += arr[6];  // currentSum = 7 + 1 = 8\n// currentSum (8) >= targetSum (8) ✓ Valid window!\n// Window [3, 3, 1, 1] length = 4\n// minLength = 3 (no improvement)",
+        "codeExplanation": "Success! Adding element 1 gives us currentSum = 8. Window [3, 3, 1, 1] with length 4 is valid but doesn't improve our minLength of 3. The algorithm continues to explore all possibilities to ensure we find the optimal solution."
+      },
+      {
+        "stepId": 11,
+        "description": "Valid window [3, 3, 1, 1] (sum = 8). According to the algorithm, we must shrink while valid — remove the leftmost element and check.",
+        "expectedAction": "shrink_window",
+        "expectedElementIndex": 3,
+        "uiState": {
+          "arrayElements": [
+            { "value": 2, "state": "out_of_window_past", "index": 0 },
+            { "value": 1, "state": "out_of_window_past", "index": 1 },
+            { "value": 2, "state": "out_of_window_past", "index": 2 },
+            { "value": 3, "state": "out_of_window_past", "index": 3 },
+            { "value": 3, "state": "in_window", "index": 4 },
+            { "value": 1, "state": "in_window", "index": 5 },
+            { "value": 1, "state": "in_window", "index": 6 },
+            { "value": 1, "state": "not_yet_reached", "index": 7 }
+          ],
+          "windowStart": 4,
+          "windowEnd": 6,
+          "targetSum": 8,
+          "minLength": 3,
+          "currentSum": 5,
+          "highlightedElements": [4, 5, 6]
+        },
+        "jarvisMessage": "Correct! Since currentSum ≥ targetSum, we attempt to shrink. Removing the leftmost element (3) makes the window [3, 1, 1] with sum = 5, which is < 8, so the while-loop stops immediately. Now we must expand to try the final element.",
+        "codeSnippet": "// Shrink-while-valid\ncurrentSum -= arr[windowStart];  // 8 - 3 = 5\nwindowStart++;                  // 3 → 4\n// currentSum (5) < targetSum (8) ⇒ stop shrinking",
+        "codeExplanation": "We faithfully follow the algorithm: while currentSum ≥ targetSum, shrink from the left. After one removal, currentSum drops below the target, so we stop shrinking. No minLength improvement (still 3)."
+      },
+      {
+        "stepId": 12,
+        "description": "After shrinking, the window is invalid (sum = 5). Let's expand to the last element to complete our exploration.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 7,
+        "uiState": {
+          "arrayElements": [
+            { "value": 2, "state": "out_of_window_past", "index": 0 },
+            { "value": 1, "state": "out_of_window_past", "index": 1 },
+            { "value": 2, "state": "out_of_window_past", "index": 2 },
+            { "value": 3, "state": "out_of_window_past", "index": 3 },
+            { "value": 3, "state": "in_window", "index": 4 },
+            { "value": 1, "state": "in_window", "index": 5 },
+            { "value": 1, "state": "in_window", "index": 6 },
+            { "value": 1, "state": "in_window", "index": 7 }
+          ],
+          "windowStart": 4,
+          "windowEnd": 7,
+          "targetSum": 8,
+          "minLength": 3,
+          "currentSum": 6,
+          "highlightedElements": [4, 5, 6, 7]
+        },
+        "jarvisMessage": "We add the last element (1). The window becomes [3, 1, 1, 1] with sum = 6, which is still < 8. We've reached the end, so there are no more expansions possible. Our best minLength remains 3.",
+        "codeSnippet": "// Expand to last element\ncurrentSum += arr[7];  // 5 + 1 = 6\n// currentSum (6) < targetSum (8) ⇒ still invalid\n// No improvement to minLength (remains 3)",
+        "codeExplanation": "After the mandated shrink, expanding to the final element does not produce a valid window. The algorithm terminates with minLength = 3."
+      },
+      {
+        "stepId": 13,
+        "description": "Algorithm completed! We've explored all possibilities and found the minimum length = 3.",
+        "expectedAction": "complete_algorithm",
+        "uiState": {
+          "arrayElements": [
+            { "value": 2, "state": "out_of_window_past", "index": 0 },
+            { "value": 1, "state": "out_of_window_past", "index": 1 },
+            { "value": 2, "state": "out_of_window_past", "index": 2 },
+            { "value": 3, "state": "out_of_window_past", "index": 3 },
+            { "value": 3, "state": "in_window", "index": 4 },
+            { "value": 1, "state": "in_window", "index": 5 },
+            { "value": 1, "state": "in_window", "index": 6 },
+            { "value": 1, "state": "in_window", "index": 7 }
+          ],
+          "windowStart": 4,
+          "windowEnd": 7,
+          "targetSum": 8,
+          "minLength": 3,
+          "currentSum": 6,
+          "highlightedElements": [4, 5, 6, 7]
+        },
+        "jarvisMessage": "🎉 MISSION ACCOMPLISHED! You've mastered the Variable-Size Sliding Window technique!\n\n**Final Result: Minimum Length = 3**\n\n**What we achieved:**\n✅ Found first valid window [2, 1, 2, 3] (length 4)\n✅ Optimized to [2, 3, 3] (length 3) ⭐ BEST!\n✅ Explored all other possibilities\n✅ Confirmed 3 is the minimum possible length\n\n**Time Complexity: O(n)** - Each element is visited at most twice (once by each pointer)\n**Space Complexity: O(1)** - Only using a few variables\n\n**The Two-Pointer Magic:**\n- **Expand**: When sum < target, grow the window\n- **Shrink**: When sum ≥ target, try to minimize the window\n- **Track**: Always remember the best solution found\n\nClick 'Complete Algorithm' to see the full complexity analysis!",
+        "codeSnippet": "// Algorithm complete - return the answer\nreturn minLength === Infinity ? 0 : minLength;  // Returns 3\n\n// The winning subarray: [2, 3, 3] at indices 2, 3, 4\n// Two-pointer technique explored all possibilities efficiently!",
+        "codeExplanation": "🚀 **ALGORITHM MASTERED!** The variable-size sliding window with two pointers is incredibly powerful!\n\n**Key Insights:**\n1. **Two-phase approach**: Expand when insufficient, shrink when possible\n2. **Optimal tracking**: Always remember the best solution\n3. **Systematic exploration**: Every valid subarray is considered\n\n**Time Complexity: O(n)** - Despite nested-looking loops, each element is processed at most twice (once by windowEnd, once by windowStart)\n\n**Space Complexity: O(1)** - Only using constant extra variables regardless of input size\n\n**Why this matters**: Without two pointers, we'd need O(n²) time to check all subarrays. The sliding window reduces this to O(n) - a massive improvement for large arrays!"
+      }
+    ]
+  },
+  "solution": {
+    "optimal": {
+      "idea": "Use variable-size sliding window with two pointers. Expand the window by moving the right pointer until sum ≥ target, then shrink from left to find the minimum length. Repeat until the entire array is processed.",
+      "timeComplexity": "O(n)",
+      "spaceComplexity": "O(1)",
+      "walkthrough": [
+        "Initialize windowStart = 0, minLength = Infinity, currentSum = 0.",
+        "Use a for loop with windowEnd as the right pointer to expand the window.",
+        "Add arr[windowEnd] to currentSum for each iteration.",
+        "While currentSum ≥ targetSum, try to shrink the window from the left.",
+        "Update minLength with the current window size if it's smaller.",
+        "Remove arr[windowStart] from currentSum and increment windowStart.",
+        "Continue until windowEnd reaches the end of the array.",
+        "Return minLength (or 0 if no valid subarray found)."
+      ]
+    }
+  },
+  "complexityAnalysis": {
+    "title": "COMPLEXITY ANALYSIS",
+    "overview": "The variable-size sliding window with two pointers is incredibly powerful! The two-phase approach of expanding when insufficient and shrinking when possible ensures we systematically explore all valid subarrays while maintaining optimal efficiency.",
+    "timeComplexity": {
+      "value": "O(n)",
+      "explanation": "Despite nested-looking loops, each element is processed at most twice - once by windowEnd (right pointer) and once by windowStart (left pointer). The inner while loop doesn't create quadratic behavior because windowStart can only move forward n times total."
+    },
+    "spaceComplexity": {
+      "value": "O(1)",
+      "explanation": "Only using constant extra variables (windowStart, minLength, currentSum) regardless of input size. No additional data structures needed."
+    },
+    "whyItMatters": "Without two pointers, we'd need O(n²) time to check all possible subarrays. The sliding window technique reduces this to O(n) - a massive improvement! For an array of 1000 elements, we go from 500,000 operations to just 2,000 operations maximum."
+  },
+  "code": {
+    "cpp": "#include <iostream>\n#include <vector>\n#include <algorithm>\n#include <climits>\nusing namespace std;\n\nclass Solution {\npublic:\n    int findMinSubArray(int targetSum, const vector<int>& arr) {\n        // INTUITION: Use two pointers for variable-size sliding window\n        int windowStart = 0;\n        int minLength = INT_MAX;  // Track minimum length found\n        int currentSum = 0;       // Track current window sum\n        \n        // INTUITION: Expand window with right pointer (windowEnd)\n        for (int windowEnd = 0; windowEnd < arr.size(); windowEnd++) {\n            // Add current element to window\n            currentSum += arr[windowEnd];\n            \n            // INTUITION: Shrink window while sum >= target\n            while (currentSum >= targetSum) {\n                // Update minimum length if current window is smaller\n                minLength = min(minLength, windowEnd - windowStart + 1);\n                \n                // INTUITION: Try to shrink by removing leftmost element\n                currentSum -= arr[windowStart];\n                windowStart++;  // Move left pointer forward\n            }\n        }\n        \n        // INTUITION: Return minimum length found (0 if none)\n        return minLength == INT_MAX ? 0 : minLength;\n    }\n};\n\nint main() {\n    Solution sol;\n    // Example: [2, 1, 2, 3, 3, 1, 1, 1] with targetSum = 8\n    // Expected: 3 (subarray [2, 3, 3] or [3, 3, 1] etc.)\n    cout << sol.findMinSubArray(8, {2, 1, 2, 3, 3, 1, 1, 1}) << endl;\n    cout << sol.findMinSubArray(8, {3, 4, 1, 1, 6}) << endl;\n    return 0;\n}"
+  }
+}

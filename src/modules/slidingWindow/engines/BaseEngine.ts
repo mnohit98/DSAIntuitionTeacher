@@ -14,8 +14,15 @@ export interface UIState {
   arrayElements: ArrayElement[];
   windowStart: number | null;
   windowEnd: number | null;
-  windowSum: number;
-  maxSum: number;
+  windowSum?: number;
+  maxSum?: number;
+  result?: number[];
+  negativeQueue?: number[];
+  k?: number;
+  // Variable-size window specific properties
+  targetSum?: number;
+  minLength?: number;
+  currentSum?: number;
   highlightedElements: number[];
   algorithmStepsMessage?: string;
   complexityAnalysis?: string;

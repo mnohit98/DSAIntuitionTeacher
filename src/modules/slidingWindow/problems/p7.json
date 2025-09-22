@@ -1,0 +1,531 @@
+{
+  "problemId": "p7",
+  "title": "Max Consecutive Ones III",
+  "description": "Given a binary array and a number 'k', find the length of the longest contiguous subarray that contains only 1s after flipping at most 'k' zeros to ones.",
+  "aim": "Learn how to use variable-size sliding window with constraint tracking to solve 'replace at most K elements' problems. This pattern applies to many optimization problems where we can modify a limited number of elements.",
+  "moduleId": "slidingWindow",
+  "submoduleId": "sw_variable",
+  "difficulty": "Medium",
+  "tags": [
+    "Array",
+    "Sliding Window",
+    "Variable Size",
+    "Binary Array",
+    "Constraint Optimization"
+  ],
+  "examples": [
+    {
+      "input": "nums = [1,1,1,0,0,0,1,1,1,1], k = 2",
+      "output": "6",
+      "explanation": "Flip the two zeros at indices 4 and 5 to make the window [4..9] all ones; its length is 6."
+    }
+  ],
+  "playground": {
+    "initialState": {
+      "array": [1, 1, 1, 0, 0, 0, 1, 1, 1, 1],
+      "k": 2,
+      "maxLength": 0,
+      "zerosCount": 0,
+      "windowStart": 0,
+      "windowEnd": 0
+    },
+    "steps": [
+      {
+        "stepId": 0,
+        "description": "Initialize window pointers, flips budget (k), and tracking variables.",
+        "expectedAction": "click_initialize",
+        "uiState": {
+          "arrayElements": [
+            { "value": 1, "state": "not_yet_reached", "index": 0 },
+            { "value": 1, "state": "not_yet_reached", "index": 1 },
+            { "value": 1, "state": "not_yet_reached", "index": 2 },
+            { "value": 0, "state": "not_yet_reached", "index": 3 },
+            { "value": 0, "state": "not_yet_reached", "index": 4 },
+            { "value": 0, "state": "not_yet_reached", "index": 5 },
+            { "value": 1, "state": "not_yet_reached", "index": 6 },
+            { "value": 1, "state": "not_yet_reached", "index": 7 },
+            { "value": 1, "state": "not_yet_reached", "index": 8 },
+            { "value": 1, "state": "not_yet_reached", "index": 9 }
+          ],
+          "windowStart": null,
+          "windowEnd": null,
+          "maxLength": 0,
+          "zerosCount": 0,
+          "k": 2,
+          "highlightedElements": []
+        },
+        "jarvisMessage": "Plan: grow a window with right pointer, count zeros inside. If zeros exceed k, move left pointer to restore validity. Click to initialize variables.",
+        "codeSnippet": "let windowStart = 0;\nlet maxLength = 0;\nlet zerosCount = 0;\nconst k = 2;",
+        "codeExplanation": "We’ll solve with a variable-size window: expand to include elements, shrink only when the number of zeros in the window exceeds k."
+      },
+      {
+        "stepId": 1,
+        "description": "Include index 0 (value 1). Zero count unchanged; window length becomes 1.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 0,
+        "uiState": {
+          "arrayElements": [
+            { "value": 1, "state": "in_window", "index": 0 },
+            { "value": 1, "state": "not_yet_reached", "index": 1 },
+            { "value": 1, "state": "not_yet_reached", "index": 2 },
+            { "value": 0, "state": "not_yet_reached", "index": 3 },
+            { "value": 0, "state": "not_yet_reached", "index": 4 },
+            { "value": 0, "state": "not_yet_reached", "index": 5 },
+            { "value": 1, "state": "not_yet_reached", "index": 6 },
+            { "value": 1, "state": "not_yet_reached", "index": 7 },
+            { "value": 1, "state": "not_yet_reached", "index": 8 },
+            { "value": 1, "state": "not_yet_reached", "index": 9 }
+          ],
+          "windowStart": 0,
+          "windowEnd": 0,
+          "maxLength": 1,
+          "zerosCount": 0,
+          "k": 2,
+          "highlightedElements": [0]
+        },
+        "jarvisMessage": "Add the first element. It is a 1, so zerosCount stays 0. Update maxLength to the current window length (1).",
+        "codeSnippet": "// include index 0\nif (nums[0] === 0) zerosCount++;\nmaxLength = Math.max(maxLength, 1);",
+        "codeExplanation": "Adding a 1 does not consume the flips budget. We keep the best length seen so far in maxLength."
+      },
+      {
+        "stepId": 2,
+        "description": "Include index 1 (value 1). Still within budget; length becomes 2.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 1,
+        "uiState": {
+          "arrayElements": [
+            { "value": 1, "state": "in_window", "index": 0 },
+            { "value": 1, "state": "in_window", "index": 1 },
+            { "value": 1, "state": "not_yet_reached", "index": 2 },
+            { "value": 0, "state": "not_yet_reached", "index": 3 },
+            { "value": 0, "state": "not_yet_reached", "index": 4 },
+            { "value": 0, "state": "not_yet_reached", "index": 5 },
+            { "value": 1, "state": "not_yet_reached", "index": 6 },
+            { "value": 1, "state": "not_yet_reached", "index": 7 },
+            { "value": 1, "state": "not_yet_reached", "index": 8 },
+            { "value": 1, "state": "not_yet_reached", "index": 9 }
+          ],
+          "windowStart": 0,
+          "windowEnd": 1,
+          "maxLength": 2,
+          "zerosCount": 0,
+          "k": 2,
+          "highlightedElements": [0,1]
+        },
+        "jarvisMessage": "Add another 1. zerosCount remains 0. Update maxLength to 2.",
+        "codeSnippet": "// include index 1\nif (nums[1] === 0) zerosCount++;\nmaxLength = Math.max(maxLength, 2);",
+        "codeExplanation": "We simply extend with a 1; no budget change, only length and maxLength update."
+      },
+      {
+        "stepId": 3,
+        "description": "Include index 2 (value 1). zerosCount still 0; length becomes 3.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 2,
+        "uiState": {
+          "arrayElements": [
+            { "value": 1, "state": "in_window", "index": 0 },
+            { "value": 1, "state": "in_window", "index": 1 },
+            { "value": 1, "state": "in_window", "index": 2 },
+            { "value": 0, "state": "not_yet_reached", "index": 3 },
+            { "value": 0, "state": "not_yet_reached", "index": 4 },
+            { "value": 0, "state": "not_yet_reached", "index": 5 },
+            { "value": 1, "state": "not_yet_reached", "index": 6 },
+            { "value": 1, "state": "not_yet_reached", "index": 7 },
+            { "value": 1, "state": "not_yet_reached", "index": 8 },
+            { "value": 1, "state": "not_yet_reached", "index": 9 }
+          ],
+          "windowStart": 0,
+          "windowEnd": 2,
+          "maxLength": 3,
+          "zerosCount": 0,
+          "k": 2,
+          "highlightedElements": [0,1,2]
+        },
+        "jarvisMessage": "Include the third 1. Budget unaffected; new best length is 3.",
+        "codeSnippet": "// include index 2\nif (nums[2] === 0) zerosCount++;\nmaxLength = Math.max(maxLength, 3);",
+        "codeExplanation": "Extending with 1s is free; we just check if we reached a longer valid window."
+      },
+      {
+        "stepId": 4,
+        "description": "Include index 3 (value 0). zerosCount becomes 1 (within k). Length becomes 4.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 3,
+        "uiState": {
+          "arrayElements": [
+            { "value": 1, "state": "in_window", "index": 0 },
+            { "value": 1, "state": "in_window", "index": 1 },
+            { "value": 1, "state": "in_window", "index": 2 },
+            { "value": 0, "state": "in_window", "index": 3 },
+            { "value": 0, "state": "not_yet_reached", "index": 4 },
+            { "value": 0, "state": "not_yet_reached", "index": 5 },
+            { "value": 1, "state": "not_yet_reached", "index": 6 },
+            { "value": 1, "state": "not_yet_reached", "index": 7 },
+            { "value": 1, "state": "not_yet_reached", "index": 8 },
+            { "value": 1, "state": "not_yet_reached", "index": 9 }
+          ],
+          "windowStart": 0,
+          "windowEnd": 3,
+          "maxLength": 4,
+          "zerosCount": 1,
+          "k": 2,
+          "highlightedElements": [0,1,2,3]
+        },
+        "jarvisMessage": "We include a 0; conceptually we can flip it. zerosCount = 1 ≤ k, so the window is valid. Update maxLength to 4.",
+        "codeSnippet": "// include index 3 (0)\nif (nums[3] === 0) zerosCount++;\nmaxLength = Math.max(maxLength, 4);",
+        "codeExplanation": "Constraint tracking: as long as zerosCount ≤ k, we just expand and update best length."
+      },
+      {
+        "stepId": 5,
+        "description": "Include index 4 (value 0). zerosCount becomes 2 (at budget). Length becomes 5.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 4,
+        "uiState": {
+          "arrayElements": [
+            { "value": 1, "state": "in_window", "index": 0 },
+            { "value": 1, "state": "in_window", "index": 1 },
+            { "value": 1, "state": "in_window", "index": 2 },
+            { "value": 0, "state": "in_window", "index": 3 },
+            { "value": 0, "state": "in_window", "index": 4 },
+            { "value": 0, "state": "not_yet_reached", "index": 5 },
+            { "value": 1, "state": "not_yet_reached", "index": 6 },
+            { "value": 1, "state": "not_yet_reached", "index": 7 },
+            { "value": 1, "state": "not_yet_reached", "index": 8 },
+            { "value": 1, "state": "not_yet_reached", "index": 9 }
+          ],
+          "windowStart": 0,
+          "windowEnd": 4,
+          "maxLength": 5,
+          "zerosCount": 2,
+          "k": 2,
+          "highlightedElements": [0,1,2,3,4]
+        },
+        "jarvisMessage": "Add another 0; zerosCount = 2 equals k. Still valid, now length 5 and maxLength becomes 5.",
+        "codeSnippet": "// include index 4 (0)\nif (nums[4] === 0) zerosCount++;\nmaxLength = Math.max(maxLength, 5);",
+        "codeExplanation": "We are at the budget limit. Further zeros will force shrinking before staying valid."
+      },
+      {
+        "stepId": 6,
+        "description": "Include index 5 (value 0) temporarily → zerosCount becomes 3 > k. We must shrink from the left until valid.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 5,
+        "uiState": {
+          "arrayElements": [
+            { "value": 1, "state": "in_window", "index": 0 },
+            { "value": 1, "state": "in_window", "index": 1 },
+            { "value": 1, "state": "in_window", "index": 2 },
+            { "value": 0, "state": "in_window", "index": 3 },
+            { "value": 0, "state": "in_window", "index": 4 },
+            { "value": 0, "state": "in_window", "index": 5 },
+            { "value": 1, "state": "not_yet_reached", "index": 6 },
+            { "value": 1, "state": "not_yet_reached", "index": 7 },
+            { "value": 1, "state": "not_yet_reached", "index": 8 },
+            { "value": 1, "state": "not_yet_reached", "index": 9 }
+          ],
+          "windowStart": 0,
+          "windowEnd": 5,
+          "maxLength": 5,
+          "zerosCount": 3,
+          "k": 2,
+          "highlightedElements": [0,1,2,3,4,5]
+        },
+        "jarvisMessage": "Adding a third 0 breaks the constraint (3 > 2). Now we repeatedly move windowStart right, decrementing zerosCount only when a zero leaves, until zerosCount ≤ 2.",
+        "codeSnippet": "// include index 5 (0)\nif (nums[5] === 0) zerosCount++; // now 3\n// while (zerosCount > k) { remove from left }",
+        "codeExplanation": "This is the classic ‘at most k violations’ loop: expand first, then shrink until the window becomes valid again."
+      },
+      {
+        "stepId": 7,
+        "description": "Shrink: move windowStart from 0 → 1, removing a 1. zerosCount stays 3.",
+        "expectedAction": "shrink_window",
+        "expectedElementIndex": 0,
+        "uiState": {
+          "arrayElements": [
+            { "value": 1, "state": "out_of_window_past", "index": 0 },
+            { "value": 1, "state": "in_window", "index": 1 },
+            { "value": 1, "state": "in_window", "index": 2 },
+            { "value": 0, "state": "in_window", "index": 3 },
+            { "value": 0, "state": "in_window", "index": 4 },
+            { "value": 0, "state": "in_window", "index": 5 },
+            { "value": 1, "state": "not_yet_reached", "index": 6 },
+            { "value": 1, "state": "not_yet_reached", "index": 7 },
+            { "value": 1, "state": "not_yet_reached", "index": 8 },
+            { "value": 1, "state": "not_yet_reached", "index": 9 }
+          ],
+          "windowStart": 1,
+          "windowEnd": 5,
+          "maxLength": 5,
+          "zerosCount": 3,
+          "k": 2,
+          "highlightedElements": [1,2,3,4,5]
+        },
+        "jarvisMessage": "Removed a 1 from the left; budget not affected. Continue shrinking.",
+        "codeSnippet": "// remove left (1)\nif (nums[windowStart] === 0) zerosCount--;\nwindowStart++;",
+        "codeExplanation": "Only removing a zero decreases zerosCount; removing a 1 leaves it unchanged."
+      },
+      {
+        "stepId": 8,
+        "description": "Shrink: move windowStart from 1 → 2, removing a 1. zerosCount still 3.",
+        "expectedAction": "shrink_window",
+        "expectedElementIndex": 1,
+        "uiState": {
+          "arrayElements": [
+            { "value": 1, "state": "out_of_window_past", "index": 0 },
+            { "value": 1, "state": "out_of_window_past", "index": 1 },
+            { "value": 1, "state": "in_window", "index": 2 },
+            { "value": 0, "state": "in_window", "index": 3 },
+            { "value": 0, "state": "in_window", "index": 4 },
+            { "value": 0, "state": "in_window", "index": 5 },
+            { "value": 1, "state": "not_yet_reached", "index": 6 },
+            { "value": 1, "state": "not_yet_reached", "index": 7 },
+            { "value": 1, "state": "not_yet_reached", "index": 8 },
+            { "value": 1, "state": "not_yet_reached", "index": 9 }
+          ],
+          "windowStart": 2,
+          "windowEnd": 5,
+          "maxLength": 5,
+          "zerosCount": 3,
+          "k": 2,
+          "highlightedElements": [2,3,4,5]
+        },
+        "jarvisMessage": "Removed another 1; zerosCount unchanged. Keep shrinking until a zero leaves.",
+        "codeSnippet": "// remove left (1) again\nif (nums[windowStart] === 0) zerosCount--;\nwindowStart++;",
+        "codeExplanation": "We are waiting to eject a zero to restore validity."
+      },
+      {
+        "stepId": 9,
+        "description": "Shrink: move windowStart from 2 → 3, removing a 1. zerosCount remains 3.",
+        "expectedAction": "shrink_window",
+        "expectedElementIndex": 2,
+        "uiState": {
+          "arrayElements": [
+            { "value": 1, "state": "out_of_window_past", "index": 0 },
+            { "value": 1, "state": "out_of_window_past", "index": 1 },
+            { "value": 1, "state": "out_of_window_past", "index": 2 },
+            { "value": 0, "state": "in_window", "index": 3 },
+            { "value": 0, "state": "in_window", "index": 4 },
+            { "value": 0, "state": "in_window", "index": 5 },
+            { "value": 1, "state": "not_yet_reached", "index": 6 },
+            { "value": 1, "state": "not_yet_reached", "index": 7 },
+            { "value": 1, "state": "not_yet_reached", "index": 8 },
+            { "value": 1, "state": "not_yet_reached", "index": 9 }
+          ],
+          "windowStart": 3,
+          "windowEnd": 5,
+          "maxLength": 5,
+          "zerosCount": 3,
+          "k": 2,
+          "highlightedElements": [3,4,5]
+        },
+        "jarvisMessage": "Still removing 1s. The next left element is a 0; removing it will reduce zerosCount.",
+        "codeSnippet": "// next to remove is a 0 ⇒ zerosCount will decrement",
+        "codeExplanation": "We are at the final shrink before the window becomes valid again."
+      },
+      {
+        "stepId": 10,
+        "description": "Shrink: remove index 3 (a 0). zerosCount 3 → 2. Window valid again.",
+        "expectedAction": "shrink_window",
+        "expectedElementIndex": 3,
+        "uiState": {
+          "arrayElements": [
+            { "value": 1, "state": "out_of_window_past", "index": 0 },
+            { "value": 1, "state": "out_of_window_past", "index": 1 },
+            { "value": 1, "state": "out_of_window_past", "index": 2 },
+            { "value": 0, "state": "out_of_window_past", "index": 3 },
+            { "value": 0, "state": "in_window", "index": 4 },
+            { "value": 0, "state": "in_window", "index": 5 },
+            { "value": 1, "state": "not_yet_reached", "index": 6 },
+            { "value": 1, "state": "not_yet_reached", "index": 7 },
+            { "value": 1, "state": "not_yet_reached", "index": 8 },
+            { "value": 1, "state": "not_yet_reached", "index": 9 }
+          ],
+          "windowStart": 4,
+          "windowEnd": 5,
+          "maxLength": 5,
+          "zerosCount": 2,
+          "k": 2,
+          "highlightedElements": [4,5]
+        },
+        "jarvisMessage": "A zero left the window; zerosCount is now 2 (≤ k). Stop shrinking and resume expansion.",
+        "codeSnippet": "// remove left (0)\nzerosCount--;\nwindowStart++;",
+        "codeExplanation": "The invariant (zerosCount ≤ k) is restored; we can grow the window again."
+      },
+      {
+        "stepId": 11,
+        "description": "Expand: include index 6 (value 1). Window length increases; maxLength may improve.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 6,
+        "uiState": {
+          "arrayElements": [
+            { "value": 1, "state": "out_of_window_past", "index": 0 },
+            { "value": 1, "state": "out_of_window_past", "index": 1 },
+            { "value": 1, "state": "out_of_window_past", "index": 2 },
+            { "value": 0, "state": "out_of_window_past", "index": 3 },
+            { "value": 0, "state": "in_window", "index": 4 },
+            { "value": 0, "state": "in_window", "index": 5 },
+            { "value": 1, "state": "in_window", "index": 6 },
+            { "value": 1, "state": "not_yet_reached", "index": 7 },
+            { "value": 1, "state": "not_yet_reached", "index": 8 },
+            { "value": 1, "state": "not_yet_reached", "index": 9 }
+          ],
+          "windowStart": 4,
+          "windowEnd": 6,
+          "maxLength": 5,
+          "zerosCount": 2,
+          "k": 2,
+          "highlightedElements": [4,5,6]
+        },
+        "jarvisMessage": "Include the next 1 on the right. zerosCount stays 2; update maxLength with the new window length.",
+        "codeSnippet": "// include index 6 (1)\n// zerosCount unchanged\nmaxLength = Math.max(maxLength, /* currentLength */);",
+        "codeExplanation": "After restoring validity, we continue expanding to seek a longer valid window."
+      },
+      {
+        "stepId": 12,
+        "description": "Expand: include index 7 (value 1). Still valid; check and update maxLength.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 7,
+        "uiState": {
+          "arrayElements": [
+            { "value": 1, "state": "out_of_window_past", "index": 0 },
+            { "value": 1, "state": "out_of_window_past", "index": 1 },
+            { "value": 1, "state": "out_of_window_past", "index": 2 },
+            { "value": 0, "state": "out_of_window_past", "index": 3 },
+            { "value": 0, "state": "in_window", "index": 4 },
+            { "value": 0, "state": "in_window", "index": 5 },
+            { "value": 1, "state": "in_window", "index": 6 },
+            { "value": 1, "state": "in_window", "index": 7 },
+            { "value": 1, "state": "not_yet_reached", "index": 8 },
+            { "value": 1, "state": "not_yet_reached", "index": 9 }
+          ],
+          "windowStart": 4,
+          "windowEnd": 7,
+          "maxLength": 5,
+          "zerosCount": 2,
+          "k": 2,
+          "highlightedElements": [4,5,6,7]
+        },
+        "jarvisMessage": "Add a 1. zerosCount unaffected; recompute maxLength using current window size.",
+        "codeSnippet": "// include index 7 (1)\nmaxLength = Math.max(maxLength, /* currentLength */);",
+        "codeExplanation": "As we keep extending with 1s, the best answer can only increase or stay the same."
+      },
+      {
+        "stepId": 13,
+        "description": "Expand: include index 8 (value 1). Update maxLength if the window got longer.",
+        "expectedAction": "expand_window",
+                  "expectedElementIndex": 8,
+        "uiState": {
+          "arrayElements": [
+            { "value": 1, "state": "out_of_window_past", "index": 0 },
+            { "value": 1, "state": "out_of_window_past", "index": 1 },
+            { "value": 1, "state": "out_of_window_past", "index": 2 },
+            { "value": 0, "state": "out_of_window_past", "index": 3 },
+            { "value": 0, "state": "in_window", "index": 4 },
+            { "value": 0, "state": "in_window", "index": 5 },
+            { "value": 1, "state": "in_window", "index": 6 },
+            { "value": 1, "state": "in_window", "index": 7 },
+            { "value": 1, "state": "in_window", "index": 8 },
+            { "value": 1, "state": "not_yet_reached", "index": 9 }
+          ],
+          "windowStart": 4,
+          "windowEnd": 8,
+          "maxLength": 5,
+          "zerosCount": 2,
+          "k": 2,
+          "highlightedElements": [4,5,6,7,8]
+        },
+        "jarvisMessage": "Add the next 1; zerosCount stays at 2. Recalculate maxLength.",
+        "codeSnippet": "// include index 8 (1)\nmaxLength = Math.max(maxLength, /* currentLength */);",
+        "codeExplanation": "The window remains valid, so growing to the right can only help."
+      },
+      {
+        "stepId": 14,
+        "description": "Expand: include index 9 (value 1). We reach the optimal window; maxLength should be 6.",
+        "expectedAction": "expand_window",
+                  "expectedElementIndex": 9,
+        "uiState": {
+          "arrayElements": [
+            { "value": 1, "state": "out_of_window_past", "index": 0 },
+            { "value": 1, "state": "out_of_window_past", "index": 1 },
+            { "value": 1, "state": "out_of_window_past", "index": 2 },
+            { "value": 0, "state": "out_of_window_past", "index": 3 },
+            { "value": 0, "state": "in_window", "index": 4 },
+            { "value": 0, "state": "in_window", "index": 5 },
+            { "value": 1, "state": "in_window", "index": 6 },
+            { "value": 1, "state": "in_window", "index": 7 },
+            { "value": 1, "state": "in_window", "index": 8 },
+            { "value": 1, "state": "in_window", "index": 9 }
+          ],
+          "windowStart": 4,
+          "windowEnd": 9,
+          "maxLength": 6,
+          "zerosCount": 2,
+          "k": 2,
+          "highlightedElements": [4,5,6,7,8,9]
+        },
+        "jarvisMessage": "Include the last 1. With two zeros inside and k=2, the maximal valid stretch here has length 6.",
+        "codeSnippet": "// include index 9 (1)\nmaxLength = Math.max(maxLength, /* currentLength expected 6 */);",
+        "codeExplanation": "This completes the best valid window for this input: six 1s after flipping at most two zeros."
+      },
+      {
+        "stepId": 15,
+        "description": "Finish: return the longest valid window length (6).",
+        "expectedAction": "complete_algorithm",
+        "uiState": {
+          "arrayElements": [
+            { "value": 1, "state": "out_of_window_past", "index": 0 },
+            { "value": 1, "state": "out_of_window_past", "index": 1 },
+            { "value": 1, "state": "out_of_window_past", "index": 2 },
+            { "value": 0, "state": "out_of_window_past", "index": 3 },
+            { "value": 0, "state": "in_window", "index": 4 },
+            { "value": 0, "state": "in_window", "index": 5 },
+            { "value": 1, "state": "in_window", "index": 6 },
+            { "value": 1, "state": "in_window", "index": 7 },
+            { "value": 1, "state": "in_window", "index": 8 },
+            { "value": 1, "state": "in_window", "index": 9 }
+          ],
+          "windowStart": 4,
+          "windowEnd": 9,
+          "maxLength": 6,
+          "zerosCount": 2,
+          "k": 2,
+          "highlightedElements": [4,5,6,7,8,9]
+        },
+        "jarvisMessage": "Done. Return maxLength. For this input, the answer is 6.",
+        "codeSnippet": "return maxLength; // 6",
+        "codeExplanation": "Algorithm: expand right, count zeros; if zeros exceed k, advance left until valid; track the best length."
+      }
+    ]
+  },
+  "solution": {
+    "optimal": {
+      "idea": "Use variable-size sliding window with constraint tracking. Count zeros in current window, expand while zerosCount ≤ k, shrink when zerosCount > k. Track maximum valid window length. This is the 'at most K violations' pattern.",
+      "timeComplexity": "O(n)",
+      "spaceComplexity": "O(1)",
+      "walkthrough": [
+        "Initialize windowStart = 0, maxLength = 0, and zerosCount = 0.",
+        "Use for loop with windowEnd to expand the window.",
+        "If nums[windowEnd] == 0, increment zerosCount (using a flip).",
+        "While zerosCount > k (exceeded flipping budget):",
+        "  If nums[windowStart] == 0, decrement zerosCount",
+        "  Increment windowStart to shrink window from left",
+        "Update maxLength with current valid window size.",
+        "Continue until windowEnd reaches end of array.",
+        "Return maxLength as the longest achievable sequence."
+      ]
+    }
+  },
+  "complexityAnalysis": {
+    "title": "COMPLEXITY ANALYSIS",
+    "overview": "You've learned the powerful 'at most K violations' pattern! This constraint-tracking sliding window approach balances costly operations (flips) with free ones (natural elements) to achieve optimal results efficiently.",
+    "timeComplexity": {
+      "value": "O(n)",
+      "explanation": "Each element is processed at most twice - once by windowEnd when expanding and once by windowStart when shrinking. The while loop for shrinking doesn't create quadratic behavior because windowStart can only move forward n times total across all iterations."
+    },
+    "spaceComplexity": {
+      "value": "O(1)",
+      "explanation": "Only using constant extra variables for counting (zerosCount, windowStart, maxLength) regardless of input size. No additional data structures needed, making it very memory efficient."
+    },
+    "whyItMatters": "This pattern applies to many optimization problems! Whether it's flipping bits, replacing characters, or any 'improve array with limited changes' problem, the constraint-tracking sliding window approach is incredibly powerful. For an array of length 1000, we achieve O(n) performance instead of O(n²) brute force - examining each element at most twice instead of potentially examining each subarray."
+  },
+  "code": {
+    "cpp": "#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nclass Solution {\npublic:\n    int longestOnes(vector<int>& nums, int k) {\n        // INTUITION: Use sliding window with constraint tracking\n        int windowStart = 0;\n        int maxLength = 0;\n        int zerosCount = 0;  // Track zeros in current window (flips used)\n        \n        // INTUITION: Expand window with right pointer\n        for (int windowEnd = 0; windowEnd < nums.size(); windowEnd++) {\n            // Count zeros (flips needed) in current window\n            if (nums[windowEnd] == 0) {\n                zerosCount++;\n            }\n            \n            // INTUITION: Shrink window while flipping budget exceeded\n            while (zerosCount > k) {\n                // Remove elements from left until budget restored\n                if (nums[windowStart] == 0) {\n                    zerosCount--;  // Free up a flip\n                }\n                windowStart++;\n            }\n            \n            // INTUITION: Update maximum length with current valid window\n            maxLength = max(maxLength, windowEnd - windowStart + 1);\n        }\n        \n        // INTUITION: Return longest sequence achievable\n        return maxLength;\n    }\n};\n\nint main() {\n    Solution sol;\n    // Example: [1,1,1,0,0,0,1,1,1,1,0] with k=2\n    // Expected: 6 (flip zeros to get longer sequence)\n    vector<int> nums1 = {1,1,1,0,0,0,1,1,1,1,0};\n    cout << sol.longestOnes(nums1, 2) << endl;\n    \n    vector<int> nums2 = {0,0,1,1,0,0,1,1,1,0,1,1,0,0,0,1,1,1,1};\n    cout << sol.longestOnes(nums2, 3) << endl;\n    \n    return 0;\n}"
+  }
+}

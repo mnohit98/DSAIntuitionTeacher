@@ -7,6 +7,13 @@ import topologicalSortModule from '../modules/topologicalSort/module.json';
 
 // Import essential sliding window problems (curated for pattern learning)
 import p1Data from '../modules/slidingWindow/problems/p1.json'; // Maximum Sum Subarray of Size K
+import p2Data from '../modules/slidingWindow/problems/p2.json'; // First Negative Number in Every Window of Size K
+import p3Data from '../modules/slidingWindow/problems/p3.json'; // Smallest Subarray With a Greater Sum
+import p4Data from '../modules/slidingWindow/problems/p4.json'; // Longest Substring Without Repeating Characters
+import p5Data from '../modules/slidingWindow/problems/p5.json'; // Longest Substring with At Most K Distinct Characters
+import p6Data from '../modules/slidingWindow/problems/p6.json'; // Fruit Into Baskets
+import p7Data from '../modules/slidingWindow/problems/p7.json'; // Max Consecutive Ones III
+import p8Data from '../modules/slidingWindow/problems/p8.json'; // Longest Repeating Character Replacement
 
 // Import essential topological sort problems (curated for pattern learning)
 import ts1Data from '../modules/topologicalSort/problems/ts1.json'; // Topological Sort using DFS
@@ -78,6 +85,13 @@ const URL_TO_INTERNAL_KEY: Record<string, string> = {
 const PROBLEM_DATA_MAP: Record<string, any> = {
   // Essential Sliding Window problems (curated for pattern mastery)
   p1: p1Data,   // Fixed Window: Maximum Sum Subarray of Size K
+  p2: p2Data,   // Fixed Window: First Negative Number in Every Window of Size K
+  p3: p3Data,   // Variable Window: Smallest Subarray With a Greater Sum
+  p4: p4Data,   // Variable Window: Longest Substring Without Repeating Characters
+  p5: p5Data,   // Variable Window: Longest Substring with At Most K Distinct Characters
+  p6: p6Data,   // Variable Window: Fruit Into Baskets
+  p7: p7Data,   // Variable Window: Max Consecutive Ones III
+  p8: p8Data,   // Variable Window: Longest Repeating Character Replacement
   
   // Essential Topological Sort problems (curated for pattern mastery)
   ts1: ts1Data, // DFS-based: Topological Sort using DFS

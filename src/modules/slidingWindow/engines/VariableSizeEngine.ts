@@ -1,6 +1,6 @@
 import { BaseEngine, EngineResult, PlaygroundState, PlaygroundStep, UIState } from './BaseEngine';
 
-export class FixedSizeEngine extends BaseEngine {
+export class VariableSizeEngine extends BaseEngine {
   protected initializeState(): PlaygroundState {
     const initialState = this.problemData.playground.initialState;
     return {
@@ -14,11 +14,9 @@ export class FixedSizeEngine extends BaseEngine {
         })),
         windowStart: null,
         windowEnd: null,
-        windowSum: initialState.windowSum,
-        maxSum: initialState.maxSum,
-        result: initialState.result || [],
-        negativeQueue: initialState.negativeQueue || [],
-        k: initialState.k,
+        targetSum: initialState.targetSum,
+        minLength: initialState.minLength || Number.MAX_SAFE_INTEGER,
+        currentSum: initialState.currentSum || 0,
         highlightedElements: [],
       },
       isCompleted: false,
@@ -89,23 +87,20 @@ export class FixedSizeEngine extends BaseEngine {
       case 'click_initialize':
         return action === 'click_initialize';
       
-      case 'add_element_to_window':
-        return action === 'add_element_to_window' && 
+      case 'expand_window':
+        return action === 'expand_window' && 
                (Array.isArray(step.expectedElementIndex)
                  ? step.expectedElementIndex.includes(elementIndex as number)
                  : elementIndex === step.expectedElementIndex);
       
-      case 'complete_first_window':
-        return action === 'complete_first_window' && 
+      case 'shrink_window':
+        return action === 'shrink_window' && 
                (Array.isArray(step.expectedElementIndex)
                  ? step.expectedElementIndex.includes(elementIndex as number)
                  : elementIndex === step.expectedElementIndex);
       
-      case 'slide_window':
-        return action === 'slide_window' && 
-               (Array.isArray(step.expectedElementIndex)
-                 ? step.expectedElementIndex.includes(elementIndex as number)
-                 : elementIndex === step.expectedElementIndex);
+      case 'update_min_length':
+        return action === 'update_min_length';
       
       case 'complete_algorithm':
         return action === 'complete_algorithm';
@@ -205,26 +200,26 @@ ${codeExplanation}`;
   private getTimeComplexityExplanation(tc: string): string {
     switch (tc) {
       case "O(n)":
-        return "We traverse the array exactly once, visiting each element only once during our sliding window traversal.";
+        return "We traverse the array with two pointers, each element is visited at most twice (once by each pointer).";
       case "O(n²)":
         return "We have nested loops or operations that scale quadratically with input size.";
       case "O(log n)":
         return "We use divide-and-conquer or binary search techniques that halve the problem size.";
       default:
-        return "Linear time complexity - efficient single-pass algorithm.";
+        return "Linear time complexity - efficient two-pointer technique.";
     }
   }
 
   private getSpaceComplexityExplanation(sc: string): string {
     switch (sc) {
       case "O(1)":
-        return "We only use a constant amount of extra variables (windowSum, maxSum, pointers) regardless of input size.";
+        return "We only use a constant amount of extra variables (pointers, sum, minLength) regardless of input size.";
       case "O(n)":
         return "We use additional space that grows linearly with the input size.";
       case "O(log n)":
         return "We use space proportional to the logarithm of the input size, often due to recursion stack.";
       default:
-        return "Constant space complexity - memory efficient approach.";
+        return "Constant space complexity - memory efficient two-pointer approach.";
     }
   }
 }

@@ -1,0 +1,340 @@
+{
+  "problemId": "p2",
+  "title": "First Negative Number in Every Window of Size K",
+  "description": "Given an array and a positive number 'k,' find the first negative number in every contiguous subarray of size 'k'. If a window doesn't contain any negative number, return 0 for that window.",
+  "aim": "Learn how to use sliding window technique with auxiliary data structures like deque to efficiently track specific elements across windows.",
+  "moduleId": "slidingWindow",
+  "submoduleId": "sw_fixed",
+  "difficulty": "Easy",
+  "tags": [
+    "Array",
+    "Sliding Window",
+    "Fixed Size",
+    "Deque"
+  ],
+  "examples": [
+    {
+      "input": "arr = [12, -1, -7, 8, -15, 30, 16, 28], k = 3",
+      "output": "[-1, -1, -7, -15, -15, 0]",
+      "explanation": "Window [12, -1, -7]: first negative is -1\nWindow [-1, -7, 8]: first negative is -1\nWindow [-7, 8, -15]: first negative is -7\nWindow [8, -15, 30]: first negative is -15\nWindow [-15, 30, 16]: first negative is -15\nWindow [30, 16, 28]: no negative, return 0"
+    },
+    {
+      "input": "arr = [2, 3, -1, -3, 5, 3, 6, 7], k = 3",
+      "output": "[-1, -1, -1, -3, 0, 0]",
+      "explanation": "Window [2, 3, -1]: first negative is -1\nWindow [3, -1, -3]: first negative is -1\nWindow [-1, -3, 5]: first negative is -1\nWindow [-3, 5, 3]: first negative is -3\nWindow [5, 3, 6]: no negative, return 0\nWindow [3, 6, 7]: no negative, return 0"
+    }
+  ],
+  "playground": {
+    "initialState": {
+      "array": [12, -1, -7, 8, -15, 30, 16, 28],
+      "k": 3,
+      "result": [],
+      "negativeQueue": [],
+      "windowStart": 0,
+      "windowEnd": 0
+    },
+    "steps": [
+      {
+        "stepId": 0,
+        "description": "Welcome! Let's learn how to find the first negative number in every sliding window using a deque.",
+        "expectedAction": "click_initialize",
+        "uiState": {
+          "arrayElements": [
+            { "value": 12, "state": "not_yet_reached", "index": 0 },
+            { "value": -1, "state": "not_yet_reached", "index": 1 },
+            { "value": -7, "state": "not_yet_reached", "index": 2 },
+            { "value": 8, "state": "not_yet_reached", "index": 3 },
+            { "value": -15, "state": "not_yet_reached", "index": 4 },
+            { "value": 30, "state": "not_yet_reached", "index": 5 },
+            { "value": 16, "state": "not_yet_reached", "index": 6 },
+            { "value": 28, "state": "not_yet_reached", "index": 7 }
+          ],
+          "windowStart": null,
+          "windowEnd": null,
+          "result": [],
+          "negativeQueue": [],
+          "k": 3,
+          "highlightedElements": []
+        },
+        "jarvisMessage": "Welcome to finding the first negative number in every sliding window! This problem teaches us how to use auxiliary data structures (like a deque) with sliding window. Our mission: for each window of size 3, find the first negative number. If no negative exists, we'll record 0. The key insight is using a deque to efficiently track negative number indices as our window slides. Click 'Initialize Variables' to start our journey!",
+        "codeSnippet": "// Step 0: Ready to initialize variables\nlet result = [];         // Will store first negative for each window\nlet negativeQueue = [];  // Deque to track negative indices\nlet windowStart = 0;     // Will mark window beginning",
+        "codeExplanation": "We need three key components: result array to store our answers, a deque (negativeQueue) to efficiently track indices of negative numbers in our current window, and windowStart to mark where our sliding window begins."
+      },
+      {
+        "stepId": 1,
+        "description": "Variables initialized! Now let's start building our first window by examining the first element.",
+        "expectedAction": "add_element_to_window",
+        "expectedElementIndex": 0,
+        "uiState": {
+          "arrayElements": [
+            { "value": 12, "state": "in_window", "index": 0 },
+            { "value": -1, "state": "not_yet_reached", "index": 1 },
+            { "value": -7, "state": "not_yet_reached", "index": 2 },
+            { "value": 8, "state": "not_yet_reached", "index": 3 },
+            { "value": -15, "state": "not_yet_reached", "index": 4 },
+            { "value": 30, "state": "not_yet_reached", "index": 5 },
+            { "value": 16, "state": "not_yet_reached", "index": 6 },
+            { "value": 28, "state": "not_yet_reached", "index": 7 }
+          ],
+          "windowStart": 0,
+          "windowEnd": 0,
+          "result": [],
+          "negativeQueue": [],
+          "k": 3,
+          "highlightedElements": [0]
+        },
+        "jarvisMessage": "Perfect! Our variables are initialized: result = [], negativeQueue = [], windowStart = 0. Now we start building our window! The first element is 12 (positive), so we don't add it to our negativeQueue - we only track negative numbers. Our window now contains [12]. We need 2 more elements to complete our first window of size 3. Click on the second element (-1) to continue building our window.",
+        "codeSnippet": "// Add first element to window\nif (arr[0] < 0) {\n  negativeQueue.push(0);  // Add index if negative\n}\n// arr[0] = 12 (positive), so queue stays empty",
+        "codeExplanation": "The key insight: we only add indices of negative numbers to our deque. Since 12 is positive, our negativeQueue remains empty. This selective tracking is what makes our algorithm efficient - we only care about negative numbers for this problem."
+      },
+      {
+        "stepId": 2,
+        "description": "First element processed! Now let's add the second element (-1) to our window.",
+        "expectedAction": "add_element_to_window",
+        "expectedElementIndex": 1,
+        "uiState": {
+          "arrayElements": [
+            { "value": 12, "state": "in_window", "index": 0 },
+            { "value": -1, "state": "in_window", "index": 1 },
+            { "value": -7, "state": "not_yet_reached", "index": 2 },
+            { "value": 8, "state": "not_yet_reached", "index": 3 },
+            { "value": -15, "state": "not_yet_reached", "index": 4 },
+            { "value": 30, "state": "not_yet_reached", "index": 5 },
+            { "value": 16, "state": "not_yet_reached", "index": 6 },
+            { "value": 28, "state": "not_yet_reached", "index": 7 }
+          ],
+          "windowStart": 0,
+          "windowEnd": 1,
+          "result": [],
+          "negativeQueue": [1],
+          "k": 3,
+          "highlightedElements": [0, 1]
+        },
+        "jarvisMessage": "Excellent! We found our first negative number! The element -1 at index 1 is negative, so we add its index (1) to our negativeQueue. Now our window contains [12, -1] and our negativeQueue = [1]. This deque will help us quickly find the first negative number in any window. One more element needed to complete our first window. Click on the third element (-7) to finish building our first complete window!",
+        "codeSnippet": "// Add second element to window\nif (arr[1] < 0) {\n  negativeQueue.push(1);  // -1 is negative, add index 1\n}\n// negativeQueue = [1], window = [12, -1]",
+        "codeExplanation": "Here's the magic! Since -1 is negative, we add its index (1) to our negativeQueue. The deque now contains [1], meaning index 1 has a negative number. This will help us quickly identify the first negative in our current window."
+      },
+      {
+        "stepId": 3,
+        "description": "Second element added! negativeQueue = [1]. Now let's complete our first window by adding the third element.",
+        "expectedAction": "complete_first_window",
+        "expectedElementIndex": 2,
+        "uiState": {
+          "arrayElements": [
+            { "value": 12, "state": "in_window", "index": 0 },
+            { "value": -1, "state": "in_window", "index": 1 },
+            { "value": -7, "state": "in_window", "index": 2 },
+            { "value": 8, "state": "not_yet_reached", "index": 3 },
+            { "value": -15, "state": "not_yet_reached", "index": 4 },
+            { "value": 30, "state": "not_yet_reached", "index": 5 },
+            { "value": 16, "state": "not_yet_reached", "index": 6 },
+            { "value": 28, "state": "not_yet_reached", "index": 7 }
+          ],
+          "windowStart": 0,
+          "windowEnd": 2,
+          "result": [-1],
+          "negativeQueue": [1, 2],
+          "k": 3,
+          "highlightedElements": [0, 1, 2]
+        },
+        "jarvisMessage": "Fantastic! Our window is growing: [12, -1] and negativeQueue = [1]. We're building our deque of negative indices as we expand the window. The beauty of this approach is that the deque keeps negative indices in order, so the front of the deque always gives us the first negative number in the current window! Click on the third element (-7) to complete our first window and see how we extract the answer!",
+        "codeSnippet": "// Complete the first window\nif (arr[2] < 0) {\n  negativeQueue.push(2);  // -7 is negative, add index 2\n}\n// Now we have a complete window of size k=3\nif (negativeQueue.length > 0) {\n  result.push(arr[negativeQueue[0]]);  // First negative: arr[1] = -1\n} else {\n  result.push(0);  // No negative in window\n}",
+        "codeExplanation": "The moment of truth! We add -7's index (2) to our negativeQueue = [1, 2]. Now we have our first complete window [12, -1, -7]. The first negative number is at the front of our deque: negativeQueue[0] = 1, so arr[1] = -1. We add -1 to our result array!"
+      },
+      {
+        "stepId": 4,
+        "description": "First window completed! Window [12, -1, -7] has first negative = -1. Now let's slide the window.",
+        "expectedAction": "slide_window",
+        "expectedElementIndex": 3,
+        "uiState": {
+          "arrayElements": [
+            { "value": 12, "state": "out_of_window_past", "index": 0 },
+            { "value": -1, "state": "in_window", "index": 1 },
+            { "value": -7, "state": "in_window", "index": 2 },
+            { "value": 8, "state": "in_window", "index": 3 },
+            { "value": -15, "state": "not_yet_reached", "index": 4 },
+            { "value": 30, "state": "not_yet_reached", "index": 5 },
+            { "value": 16, "state": "not_yet_reached", "index": 6 },
+            { "value": 28, "state": "not_yet_reached", "index": 7 }
+          ],
+          "windowStart": 1,
+          "windowEnd": 3,
+          "result": [-1, -1],
+          "negativeQueue": [1, 2],
+          "k": 3,
+          "highlightedElements": [1, 2, 3]
+        },
+        "jarvisMessage": "MILESTONE ACHIEVED! Our first window [12, -1, -7] gave us the first negative number -1, which we've stored in result = [-1]. Now comes the sliding magic! As we slide the window from [12, -1, -7] to [-1, -7, 8], we need to: 1) Remove index 0 from consideration (but it wasn't in our deque anyway), 2) Add the new element 8 (positive, so no change to deque), 3) Check if any indices in our deque are now outside the window. Click on element 8 to slide the window!",
+        "codeSnippet": "// Slide the window\nwindowStart++;  // Move from 0 to 1\n// Remove indices outside window from front of deque\nwhile (negativeQueue.length > 0 && negativeQueue[0] < windowStart) {\n  negativeQueue.shift();  // Remove outdated indices\n}\n// Add new element if negative\nif (arr[3] < 0) {\n  negativeQueue.push(3);\n}\n// arr[3] = 8 (positive), so negativeQueue stays [1, 2]",
+        "codeExplanation": "The sliding window magic with deque! As we slide, we: 1) Move windowStart forward, 2) Remove any indices from the front of deque that are now outside our window, 3) Add the new element's index if it's negative. Since 8 is positive, our negativeQueue remains [1, 2]."
+      },
+      {
+        "stepId": 5,
+        "description": "Window slid! Window [-1, -7, 8] has first negative = -1. Let's slide again.",
+        "expectedAction": "slide_window",
+        "expectedElementIndex": 4,
+        "uiState": {
+          "arrayElements": [
+            { "value": 12, "state": "out_of_window_past", "index": 0 },
+            { "value": -1, "state": "out_of_window_past", "index": 1 },
+            { "value": -7, "state": "in_window", "index": 2 },
+            { "value": 8, "state": "in_window", "index": 3 },
+            { "value": -15, "state": "in_window", "index": 4 },
+            { "value": 30, "state": "not_yet_reached", "index": 5 },
+            { "value": 16, "state": "not_yet_reached", "index": 6 },
+            { "value": 28, "state": "not_yet_reached", "index": 7 }
+          ],
+          "windowStart": 2,
+          "windowEnd": 4,
+          "result": [-1, -1, -7],
+          "negativeQueue": [2, 4],
+          "k": 3,
+          "highlightedElements": [2, 3, 4]
+        },
+        "jarvisMessage": "BRILLIANT! Our window slid to [-1, -7, 8] and the first negative is still -1 (from negativeQueue[0] = 1, arr[1] = -1). Our result is now [-1, -1]. The deque efficiently maintained the negative indices [1, 2]. Now let's slide again to window [-7, 8, -15]. This time we'll see the deque maintenance in action - index 1 will be removed as it goes outside the window, and index 4 will be added since -15 is negative. Click on element -15!",
+        "codeSnippet": "// Slide window again\nwindowStart++;  // Move from 1 to 2\n// Remove outdated indices: index 1 is now outside window\nwhile (negativeQueue[0] < windowStart) {\n  negativeQueue.shift();  // Remove index 1\n}\n// negativeQueue becomes [2]\n// Add new element -15 (negative)\nnegativeQueue.push(4);  // negativeQueue = [2, 4]",
+        "codeExplanation": "Watch the deque maintenance! As windowStart moves to 2, index 1 is now outside our window, so we remove it from the front of the deque. Then we add index 4 since -15 is negative. The deque evolves from [1, 2] to [2, 4]."
+      },
+      {
+        "stepId": 6,
+        "description": "Window slid! Window [-7, 8, -15] has first negative = -7. Let's continue sliding.",
+        "expectedAction": "slide_window",
+        "expectedElementIndex": 5,
+        "uiState": {
+          "arrayElements": [
+            { "value": 12, "state": "out_of_window_past", "index": 0 },
+            { "value": -1, "state": "out_of_window_past", "index": 1 },
+            { "value": -7, "state": "out_of_window_past", "index": 2 },
+            { "value": 8, "state": "in_window", "index": 3 },
+            { "value": -15, "state": "in_window", "index": 4 },
+            { "value": 30, "state": "in_window", "index": 5 },
+            { "value": 16, "state": "not_yet_reached", "index": 6 },
+            { "value": 28, "state": "not_yet_reached", "index": 7 }
+          ],
+          "windowStart": 3,
+          "windowEnd": 5,
+          "result": [-1, -1, -7, -15],
+          "negativeQueue": [4],
+          "k": 3,
+          "highlightedElements": [3, 4, 5]
+        },
+        "jarvisMessage": "EXCELLENT! The window [-7, 8, -15] had first negative = -7 (from negativeQueue[0] = 2, arr[2] = -7). Our result grows to [-1, -1, -7]. Notice how the deque automatically gave us the first negative! Now sliding to [8, -15, 30]: index 2 will be removed from deque (outside window), leaving us with negativeQueue = [4]. Since 30 is positive, no new index is added. Click on element 30 to continue!",
+        "codeSnippet": "// Slide to window [8, -15, 30]\nwindowStart++;  // Move from 2 to 3\n// Remove index 2 (outside window)\nwhile (negativeQueue[0] < windowStart) {\n  negativeQueue.shift();  // Remove index 2\n}\n// negativeQueue becomes [4]\n// 30 is positive, so no addition\n// First negative: arr[4] = -15",
+        "codeExplanation": "Perfect deque maintenance! As we slide, index 2 becomes outdated and is removed. The deque becomes [4], and since negativeQueue[0] = 4, our first negative is arr[4] = -15. The element 30 is positive, so it doesn't join our deque."
+      },
+      {
+        "stepId": 7,
+        "description": "Window slid! Window [8, -15, 30] has first negative = -15. Let's slide once more.",
+        "expectedAction": "slide_window",
+        "expectedElementIndex": 6,
+        "uiState": {
+          "arrayElements": [
+            { "value": 12, "state": "out_of_window_past", "index": 0 },
+            { "value": -1, "state": "out_of_window_past", "index": 1 },
+            { "value": -7, "state": "out_of_window_past", "index": 2 },
+            { "value": 8, "state": "out_of_window_past", "index": 3 },
+            { "value": -15, "state": "in_window", "index": 4 },
+            { "value": 30, "state": "in_window", "index": 5 },
+            { "value": 16, "state": "in_window", "index": 6 },
+            { "value": 28, "state": "not_yet_reached", "index": 7 }
+          ],
+          "windowStart": 4,
+          "windowEnd": 6,
+          "result": [-1, -1, -7, -15, -15],
+          "negativeQueue": [4],
+          "k": 3,
+          "highlightedElements": [4, 5, 6]
+        },
+        "jarvisMessage": "FANTASTIC! Window [8, -15, 30] gave us first negative = -15, so result = [-1, -1, -7, -15]. The deque [4] efficiently provided the answer! Now sliding to [-15, 30, 16]: no indices are removed (4 is still valid), and 16 is positive so nothing is added. The deque remains [4], giving us first negative = -15 again. Click on element 16 to continue the slide!",
+        "codeSnippet": "// Slide to window [-15, 30, 16]\nwindowStart++;  // Move from 3 to 4\n// Check if any indices need removal\n// negativeQueue[0] = 4, windowStart = 4, so 4 >= 4 ✓\n// No removal needed, negativeQueue stays [4]\n// 16 is positive, no addition\n// First negative: arr[4] = -15",
+        "codeExplanation": "Beautiful! No deque maintenance needed this time because index 4 is still within our window (4 >= windowStart = 4). Since 16 is positive, the deque remains [4], and our first negative is still arr[4] = -15."
+      },
+      {
+        "stepId": 8,
+        "description": "Window slid! Window [-15, 30, 16] has first negative = -15. Final slide coming up!",
+        "expectedAction": "slide_window",
+        "expectedElementIndex": 7,
+        "uiState": {
+          "arrayElements": [
+            { "value": 12, "state": "out_of_window_past", "index": 0 },
+            { "value": -1, "state": "out_of_window_past", "index": 1 },
+            { "value": -7, "state": "out_of_window_past", "index": 2 },
+            { "value": 8, "state": "out_of_window_past", "index": 3 },
+            { "value": -15, "state": "out_of_window_past", "index": 4 },
+            { "value": 30, "state": "in_window", "index": 5 },
+            { "value": 16, "state": "in_window", "index": 6 },
+            { "value": 28, "state": "in_window", "index": 7 }
+          ],
+          "windowStart": 5,
+          "windowEnd": 7,
+          "result": [-1, -1, -7, -15, -15, 0],
+          "negativeQueue": [],
+          "k": 3,
+          "highlightedElements": [5, 6, 7]
+        },
+        "jarvisMessage": "PERFECT! Window [-15, 30, 16] had first negative = -15, extending our result to [-1, -1, -7, -15, -15]. Now for the final slide to [30, 16, 28]: index 4 becomes outdated and is removed from the deque. Since all elements (30, 16, 28) are positive, no new indices are added. The deque becomes empty [], meaning no negative numbers in this window, so we add 0 to our result! Click on element 28 for the final slide!",
+        "codeSnippet": "// Final slide to window [30, 16, 28]\nwindowStart++;  // Move from 4 to 5\n// Remove outdated index 4\nwhile (negativeQueue[0] < windowStart) {\n  negativeQueue.shift();  // Remove index 4\n}\n// negativeQueue becomes []\n// 28 is positive, no addition\n// Empty deque means no negatives, so result.push(0)",
+        "codeExplanation": "The final slide demonstrates the 'no negatives' case! Index 4 is removed as it's outside the window, and since 28 is positive, the deque becomes empty []. An empty deque signals no negative numbers in the current window, so we add 0 to our result."
+      },
+      {
+        "stepId": 9,
+        "description": "Algorithm completed! Final window [30, 16, 28] has no negatives, so we added 0.",
+        "expectedAction": "complete_algorithm",
+        "uiState": {
+          "arrayElements": [
+            { "value": 12, "state": "out_of_window_past", "index": 0 },
+            { "value": -1, "state": "out_of_window_past", "index": 1 },
+            { "value": -7, "state": "out_of_window_past", "index": 2 },
+            { "value": 8, "state": "out_of_window_past", "index": 3 },
+            { "value": -15, "state": "out_of_window_past", "index": 4 },
+            { "value": 30, "state": "in_window", "index": 5 },
+            { "value": 16, "state": "in_window", "index": 6 },
+            { "value": 28, "state": "in_window", "index": 7 }
+          ],
+          "windowStart": 5,
+          "windowEnd": 7,
+          "result": [-1, -1, -7, -15, -15, 0],
+          "negativeQueue": [],
+          "k": 3,
+          "highlightedElements": [5, 6, 7]
+        },
+        "jarvisMessage": "🎉 MISSION ACCOMPLISHED! You've mastered the sliding window with deque technique!\n\n**Final Result: [-1, -1, -7, -15, -15, 0]**\n\n**What we achieved:**\n✅ Window [12, -1, -7] → First negative: -1\n✅ Window [-1, -7, 8] → First negative: -1  \n✅ Window [-7, 8, -15] → First negative: -7\n✅ Window [8, -15, 30] → First negative: -15\n✅ Window [-15, 30, 16] → First negative: -15\n✅ Window [30, 16, 28] → No negatives: 0\n\n**Time Complexity: O(n)** - Each element enters and exits the deque at most once\n**Space Complexity: O(k)** - Deque stores at most k elements\n\nClick 'Complete Algorithm' to see the full complexity analysis and celebrate your success!",
+        "codeSnippet": "// Algorithm complete - return the result\nreturn result;  // [-1, -1, -7, -15, -15, 0]\n\n// The deque technique gave us O(n) efficiency!\n// Each element is processed at most twice:\n// 1. Added to deque (if negative)\n// 2. Removed from deque (when outside window)",
+        "codeExplanation": "🚀 **ALGORITHM MASTERED!** The sliding window + deque combination is incredibly powerful!\n\n**Key Insights:**\n1. **Deque maintains order**: First negative is always at the front\n2. **Efficient maintenance**: Remove outdated indices, add new negatives\n3. **Empty deque = no negatives**: Perfect signal for returning 0\n\n**Time Complexity: O(n)** - Each element enters and exits deque at most once, making it linear time despite the nested-looking while loop!\n\n**Space Complexity: O(k)** - In worst case, all k elements in current window are negative, so deque size ≤ k.\n\n**Why this matters**: Without deque, we'd need O(k) time per window to find first negative, making it O(n×k) overall. The deque reduces this to O(n) - a massive improvement for large k!"
+      }
+    ]
+  },
+  "solution": {
+    "optimal": {
+      "idea": "Use a sliding window with a deque to efficiently track indices of negative numbers in the current window. The deque maintains negative indices in order, so the front always gives the first negative number.",
+      "timeComplexity": "O(n)",
+      "spaceComplexity": "O(k)",
+      "walkthrough": [
+        "Initialize result array and a deque to store indices of negative numbers.",
+        "Build the first window of size k, adding indices of negative numbers to the deque.",
+        "For the first window, if deque is not empty, add arr[deque.front()] to result, otherwise add 0.",
+        "Slide the window: remove indices outside the current window from the front of deque.",
+        "Add the new element's index to deque if it's negative.",
+        "Add the first negative (or 0 if deque is empty) to result.",
+        "Repeat sliding until all windows are processed.",
+        "Return the result array."
+      ]
+    }
+  },
+  "complexityAnalysis": {
+    "title": "COMPLEXITY ANALYSIS",
+    "overview": "The sliding window + deque combination is incredibly powerful! The deque maintains order so the first negative is always at the front, with efficient maintenance by removing outdated indices and adding new negatives.",
+    "timeComplexity": {
+      "value": "O(n)",
+      "explanation": "Each element enters and exits the deque at most once, making it linear time despite the nested-looking while loop! We visit each element exactly once during the sliding window traversal."
+    },
+    "spaceComplexity": {
+      "value": "O(k)",
+      "explanation": "In worst case, all k elements in the current window are negative, so deque size ≤ k. The deque stores at most k indices at any given time."
+    },
+    "whyItMatters": "Without deque, we'd need O(k) time per window to find the first negative, making it O(n×k) overall. The deque reduces this to O(n) - a massive improvement for large k! For an array of 1000 elements with k=100, we go from 100,000 operations to just 1,000 operations."
+  },
+  "code": {
+    "cpp": "#include <iostream>\n#include <vector>\n#include <deque>\nusing namespace std;\n\nclass Solution {\npublic:\n    vector<int> findFirstNegativeInWindow(const vector<int>& arr, int k) {\n        // INTUITION: Use deque to track indices of negative numbers\n        vector<int> result;\n        deque<int> negativeQueue;  // Stores indices of negative numbers\n        int windowStart = 0;\n        \n        // INTUITION: Process each element with sliding window\n        for (int windowEnd = 0; windowEnd < arr.size(); windowEnd++) {\n            // Add current element's index if it's negative\n            if (arr[windowEnd] < 0) {\n                negativeQueue.push_back(windowEnd);\n            }\n            \n            // INTUITION: Once we have a window of size k, start processing\n            if (windowEnd >= k - 1) {\n                // Remove indices that are outside current window\n                while (!negativeQueue.empty() && negativeQueue.front() < windowStart) {\n                    negativeQueue.pop_front();\n                }\n                \n                // INTUITION: First negative is at front of deque, or 0 if empty\n                if (!negativeQueue.empty()) {\n                    result.push_back(arr[negativeQueue.front()]);\n                } else {\n                    result.push_back(0);  // No negative in current window\n                }\n                \n                // INTUITION: Slide the window forward\n                windowStart++;\n            }\n        }\n        \n        // INTUITION: Return array of first negatives for each window\n        return result;\n    }\n};\n\nint main() {\n    Solution sol;\n    // Example: [12, -1, -7, 8, -15, 30, 16, 28] with k=3\n    // Expected: [-1, -1, -7, -15, -15, 0]\n    vector<int> result = sol.findFirstNegativeInWindow({12, -1, -7, 8, -15, 30, 16, 28}, 3);\n    for (int num : result) {\n        cout << num << \" \";\n    }\n    cout << endl;\n    return 0;\n}"
+  }
+}

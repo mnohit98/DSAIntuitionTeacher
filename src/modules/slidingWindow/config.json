@@ -67,19 +67,21 @@
         "type": "number"
       },
       {
-        "name": "windowSum",
-        "path": "$.uiState.windowSum",
-        "description": "Current window sum",
-        "type": "number"
+        "name": "result",
+        "path": "$.uiState.result",
+        "description": "Result array for p2 problem",
+        "type": "array",
+        "formatter": "arrayJoin"
       },
       {
-        "name": "maxSum",
-        "path": "$.uiState.maxSum",
-        "description": "Maximum sum found",
-        "type": "number"
+        "name": "negativeQueue",
+        "path": "$.uiState.negativeQueue",
+        "description": "Queue of negative number indices",
+        "type": "array",
+        "formatter": "arrayJoin"
       },
       {
-        "name": "currentWindowSize",
+        "name": "windowSize",
         "path": "$.uiState.highlightedElements",
         "description": "Current window size",
         "type": "number",
@@ -95,6 +97,42 @@
         "name": "windowEnd",
         "path": "$.uiState.windowEnd",
         "description": "Window end index",
+        "type": "number"
+      },
+      {
+        "name": "maxFreq",
+        "path": "$.uiState.maxFreq",
+        "description": "Max frequency of any character in window",
+        "type": "number"
+      },
+      {
+        "name": "freqMap",
+        "path": "$.uiState.freqMapStr",
+        "description": "Character frequencies in current window",
+        "type": "string"
+      },
+      {
+        "name": "maxSize",
+        "path": "$.uiState.maxSize",
+        "description": "Best (maximum) window size found so far",
+        "type": "number"
+      },
+      {
+        "name": "targetSum",
+        "path": "$.uiState.targetSum",
+        "description": "Target sum for variable-size problems",
+        "type": "number"
+      },
+      {
+        "name": "minLength",
+        "path": "$.uiState.minLength",
+        "description": "Minimum length found so far",
+        "type": "number"
+      },
+      {
+        "name": "currentSum",
+        "path": "$.uiState.currentSum",
+        "description": "Current window sum",
         "type": "number"
       }
     ]

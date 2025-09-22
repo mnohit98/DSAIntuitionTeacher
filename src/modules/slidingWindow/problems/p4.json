@@ -1,0 +1,536 @@
+{
+  "problemId": "p4",
+  "title": "Longest Substring Without Repeating Characters",
+  "description": "Given a string, find the length of the longest substring without repeating characters.",
+  "aim": "Learn how to use variable-size sliding window with hash map to efficiently track unique characters and handle duplicates by shrinking the window.",
+  "moduleId": "slidingWindow",
+  "submoduleId": "sw_variable",
+  "difficulty": "Medium",
+  "tags": [
+    "String",
+    "Sliding Window",
+    "Variable Size",
+    "Hash Map",
+    "Two Pointers"
+  ],
+  "examples": [
+    {
+      "input": "s = \"abcabcbb\"",
+      "output": "3",
+      "explanation": "The longest substring without repeating characters is \"abc\" with length 3."
+    },
+    {
+      "input": "s = \"bbbbb\"",
+      "output": "1",
+      "explanation": "The longest substring without repeating characters is \"b\" with length 1."
+    },
+    {
+      "input": "s = \"pwwkew\"",
+      "output": "3",
+      "explanation": "The longest substring without repeating characters is \"wke\" with length 3."
+    }
+  ],
+  "playground": {
+    "initialState": {
+      "array": ["a", "b", "c", "a", "b", "c", "b", "b"],
+      "maxLength": 0,
+      "currentLength": 0,
+      "charMap": {},
+      "windowStart": 0,
+      "windowEnd": 0
+    },
+    "steps": [
+      {
+        "stepId": 0,
+        "description": "Welcome! Let's find the longest substring without repeating characters using variable-size sliding window with hash map.",
+        "expectedAction": "click_initialize",
+        "uiState": {
+          "arrayElements": [
+            { "value": "a", "state": "not_yet_reached", "index": 0 },
+            { "value": "b", "state": "not_yet_reached", "index": 1 },
+            { "value": "c", "state": "not_yet_reached", "index": 2 },
+            { "value": "a", "state": "not_yet_reached", "index": 3 },
+            { "value": "b", "state": "not_yet_reached", "index": 4 },
+            { "value": "c", "state": "not_yet_reached", "index": 5 },
+            { "value": "b", "state": "not_yet_reached", "index": 6 },
+            { "value": "b", "state": "not_yet_reached", "index": 7 }
+          ],
+          "windowStart": null,
+          "windowEnd": null,
+          "maxLength": 0,
+          "currentLength": 0,
+          "charMap": {},
+          "highlightedElements": []
+        },
+        "jarvisMessage": "Welcome to the Longest Substring Without Repeating Characters! This problem combines variable-size sliding window with hash map tracking. Our mission: find the longest substring where all characters are unique. The key insight is using a hash map to detect duplicates instantly, then shrinking the window from the left until the duplicate is removed. Click 'Initialize Variables' to start our hash map + sliding window adventure!",
+        "codeSnippet": "// Step 0: Ready to initialize variables\nlet windowStart = 0;     // Left pointer\nlet maxLength = 0;       // Track longest valid substring\nlet charMap = new Map();  // Track character frequencies",
+        "codeExplanation": "We need three key components: windowStart (left pointer), maxLength (to remember the longest valid substring), and charMap (hash map to track character frequencies in our current window). The right pointer (windowEnd) will be handled by our loop iteration."
+      },
+      {
+        "stepId": 1,
+        "description": "Variables initialized! Now let's start expanding our window by adding the first character.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 0,
+        "uiState": {
+          "arrayElements": [
+            { "value": "a", "state": "in_window", "index": 0 },
+            { "value": "b", "state": "not_yet_reached", "index": 1 },
+            { "value": "c", "state": "not_yet_reached", "index": 2 },
+            { "value": "a", "state": "not_yet_reached", "index": 3 },
+            { "value": "b", "state": "not_yet_reached", "index": 4 },
+            { "value": "c", "state": "not_yet_reached", "index": 5 },
+            { "value": "b", "state": "not_yet_reached", "index": 6 },
+            { "value": "b", "state": "not_yet_reached", "index": 7 }
+          ],
+          "windowStart": 0,
+          "windowEnd": 0,
+          "maxLength": 1,
+          "currentLength": 1,
+          "charMap": {"a": 1},
+          "highlightedElements": [0]
+        },
+        "jarvisMessage": "Perfect! Our variables are ready: windowStart = 0, maxLength = 0, charMap = {}. Now we start the expand phase! We add character 'a' to our window and hash map. Since 'a' is new (not in charMap), we can safely add it. Our window now contains ['a'] with length 1, so we update maxLength = 1. The hash map tracks: {'a': 1}. Click on the second character ('b') to continue expanding!",
+        "codeSnippet": "// Expand: add char 'a'\ncharMap.set('a', (charMap.get('a') || 0) + 1);\n// charMap = {'a': 1}\n// No duplicates, so window is valid\nmaxLength = Math.max(maxLength, windowEnd - windowStart + 1);\n// maxLength = max(0, 1) = 1",
+        "codeExplanation": "The expand phase with hash map tracking! We add 'a' to our charMap with frequency 1. Since there are no duplicates (all frequencies ≤ 1), our window is valid. We update maxLength to 1. This is the foundation of the algorithm - expand while valid, track duplicates with hash map."
+      },
+      {
+        "stepId": 2,
+        "description": "Window expanded! Added 'a', maxLength = 1. No duplicates yet, so let's continue expanding.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 1,
+        "uiState": {
+          "arrayElements": [
+            { "value": "a", "state": "in_window", "index": 0 },
+            { "value": "b", "state": "in_window", "index": 1 },
+            { "value": "c", "state": "not_yet_reached", "index": 2 },
+            { "value": "a", "state": "not_yet_reached", "index": 3 },
+            { "value": "b", "state": "not_yet_reached", "index": 4 },
+            { "value": "c", "state": "not_yet_reached", "index": 5 },
+            { "value": "b", "state": "not_yet_reached", "index": 6 },
+            { "value": "b", "state": "not_yet_reached", "index": 7 }
+          ],
+          "windowStart": 0,
+          "windowEnd": 1,
+          "maxLength": 2,
+          "currentLength": 2,
+          "charMap": {"a": 1, "b": 1},
+          "highlightedElements": [0, 1]
+        },
+        "jarvisMessage": "Excellent! We added character 'a' to our window and hash map: {'a': 1}. Since there are no duplicates (frequency = 1), our window ['a'] is valid with length 1, updating maxLength = 1. Now let's expand by adding 'b'. Since 'b' is also new, it will create a valid window ['a', 'b']. Click on character 'b' to continue our expansion!",
+        "codeSnippet": "// Expand: add char 'b'\ncharMap.set('b', (charMap.get('b') || 0) + 1);\n// charMap = {'a': 1, 'b': 1}\n// Still no duplicates (all frequencies = 1)\nmaxLength = Math.max(maxLength, 2);\n// maxLength = max(1, 2) = 2",
+        "codeExplanation": "Perfect expansion! We add 'b' to charMap, making it {'a': 1, 'b': 1}. Since all frequencies are 1, there are no duplicates. Our window ['a', 'b'] has length 2, which improves our maxLength from 1 to 2. The hash map efficiently tracks character uniqueness."
+      },
+      {
+        "stepId": 3,
+        "description": "Great! Window ['a', 'b'] has length 2, maxLength = 2. No duplicates yet, let's add 'c'.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 2,
+        "uiState": {
+          "arrayElements": [
+            { "value": "a", "state": "in_window", "index": 0 },
+            { "value": "b", "state": "in_window", "index": 1 },
+            { "value": "c", "state": "in_window", "index": 2 },
+            { "value": "a", "state": "not_yet_reached", "index": 3 },
+            { "value": "b", "state": "not_yet_reached", "index": 4 },
+            { "value": "c", "state": "not_yet_reached", "index": 5 },
+            { "value": "b", "state": "not_yet_reached", "index": 6 },
+            { "value": "b", "state": "not_yet_reached", "index": 7 }
+          ],
+          "windowStart": 0,
+          "windowEnd": 2,
+          "maxLength": 3,
+          "currentLength": 3,
+          "charMap": {"a": 1, "b": 1, "c": 1},
+          "highlightedElements": [0, 1, 2]
+        },
+        "jarvisMessage": "Fantastic! Our window grew to ['a', 'b'] with charMap = {'a': 1, 'b': 1}. All characters are unique (frequency = 1), so we have a valid window of length 2, updating maxLength = 2. The hash map makes duplicate detection instant! Let's continue expanding by adding 'c'. Since 'c' is also new, we'll get an even longer valid substring. Click on character 'c'!",
+        "codeSnippet": "// Expand: add char 'c'\ncharMap.set('c', (charMap.get('c') || 0) + 1);\n// charMap = {'a': 1, 'b': 1, 'c': 1}\n// Perfect! All frequencies = 1 (no duplicates)\nmaxLength = Math.max(maxLength, 3);\n// maxLength = max(2, 3) = 3",
+        "codeExplanation": "Excellent! Adding 'c' gives us charMap = {'a': 1, 'b': 1, 'c': 1}. All frequencies are 1, meaning no duplicates. Our window ['a', 'b', 'c'] has length 3, setting a new record! maxLength = 3. This is the ideal case - all characters are unique."
+      },
+      {
+        "stepId": 4,
+        "description": "Perfect! Window ['a', 'b', 'c'] has length 3, maxLength = 3. Now we encounter a duplicate on expand.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 3,
+        "uiState": {
+          "arrayElements": [
+            { "value": "a", "state": "in_window", "index": 0 },
+            { "value": "b", "state": "in_window", "index": 1 },
+            { "value": "c", "state": "in_window", "index": 2 },
+            { "value": "a", "state": "in_window", "index": 3 },
+            { "value": "b", "state": "not_yet_reached", "index": 4 },
+            { "value": "c", "state": "not_yet_reached", "index": 5 },
+            { "value": "b", "state": "not_yet_reached", "index": 6 },
+            { "value": "b", "state": "not_yet_reached", "index": 7 }
+          ],
+          "windowStart": 0,
+          "windowEnd": 3,
+          "maxLength": 3,
+          "currentLength": 4,
+          "charMap": {"a": 2, "b": 1, "c": 1},
+          "highlightedElements": [0, 1, 2, 3]
+        },
+        "jarvisMessage": "Duplicate detected! After adding the second 'a', charMap becomes {'a': 2, 'b': 1, 'c': 1}. According to the algorithm, we must shrink from the left until all counts are ≤ 1.",
+        "codeSnippet": "// Expand: add char 'a' (duplicate)\ncharMap.set('a', (charMap.get('a') || 0) + 1); // now 'a': 2\n// Duplicate present ⇒ prepare to shrink",
+        "codeExplanation": "We explicitly show the duplicate state after expansion: char 'a' count increased to 2. Next, we'll shrink from the left until 'a' returns to frequency 1."
+      },
+      {
+        "stepId": 5,
+        "description": "Shrink to resolve duplicate 'a': remove leftmost 'a' and move windowStart forward.",
+        "expectedAction": "shrink_window",
+        "expectedElementIndex": 0,
+        "uiState": {
+          "arrayElements": [
+            { "value": "a", "state": "out_of_window_past", "index": 0 },
+            { "value": "b", "state": "in_window", "index": 1 },
+            { "value": "c", "state": "in_window", "index": 2 },
+            { "value": "a", "state": "in_window", "index": 3 },
+            { "value": "b", "state": "not_yet_reached", "index": 4 },
+            { "value": "c", "state": "not_yet_reached", "index": 5 },
+            { "value": "b", "state": "not_yet_reached", "index": 6 },
+            { "value": "b", "state": "not_yet_reached", "index": 7 }
+          ],
+          "windowStart": 1,
+          "windowEnd": 3,
+          "maxLength": 3,
+          "currentLength": 3,
+          "charMap": {"b": 1, "c": 1, "a": 1},
+          "highlightedElements": [1, 2, 3]
+        },
+        "jarvisMessage": "Shrink complete! We removed the leftmost 'a', so all counts are ≤ 1 again. Window is ['b','c','a'] and remains length 3; maxLength stays 3.",
+        "codeSnippet": "// Shrink: remove leftmost char\ncharMap.set('a', charMap.get('a') - 1); // 'a': 1\nwindowStart++; // 0 → 1\n// All counts ≤ 1 ⇒ window valid",
+        "codeExplanation": "This step demonstrates the shrink-while-duplicate loop as a concrete action. After decrementing the leftmost 'a', the duplicate is resolved."
+      },
+      {
+        "stepId": 6,
+        "description": "Expand and show duplicate 'b': after adding index 4, charMap['b'] becomes 2 (duplicate detected).",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 4,
+        "uiState": {
+          "arrayElements": [
+            { "value": "a", "state": "out_of_window_past", "index": 0 },
+            { "value": "b", "state": "in_window", "index": 1 },
+            { "value": "c", "state": "in_window", "index": 2 },
+            { "value": "a", "state": "in_window", "index": 3 },
+            { "value": "b", "state": "in_window", "index": 4 },
+            { "value": "c", "state": "not_yet_reached", "index": 5 },
+            { "value": "b", "state": "not_yet_reached", "index": 6 },
+            { "value": "b", "state": "not_yet_reached", "index": 7 }
+          ],
+          "windowStart": 1,
+          "windowEnd": 4,
+          "maxLength": 3,
+          "currentLength": 4,
+          "charMap": {"b": 2, "c": 1, "a": 1},
+          "highlightedElements": [1, 2, 3, 4]
+        },
+        "jarvisMessage": "Duplicate detected again! We expanded to include index 4 ('b'), so charMap becomes {'b': 2, 'c': 1, 'a': 1}. We will now shrink from the left, one step at a time, until 'b' returns to frequency 1.",
+        "codeSnippet": "// Expand: add char 'b' (duplicate)\ncharMap.set('b', (charMap.get('b') || 0) + 1); // 'b': 2\n// Duplicate present ⇒ next steps will shrink from left",
+        "codeExplanation": "We explicitly pause after the expansion to visualize the duplicate state (charMap['b'] = 2). Next, we'll perform a shrink operation to resolve it."
+      },
+      {
+        "stepId": 7,
+        "description": "Shrink to resolve duplicate 'b': remove leftmost 'b' at index 1 and move windowStart forward.",
+        "expectedAction": "shrink_window",
+        "expectedElementIndex": 1,
+        "uiState": {
+          "arrayElements": [
+            { "value": "a", "state": "out_of_window_past", "index": 0 },
+            { "value": "b", "state": "out_of_window_past", "index": 1 },
+            { "value": "c", "state": "in_window", "index": 2 },
+            { "value": "a", "state": "in_window", "index": 3 },
+            { "value": "b", "state": "in_window", "index": 4 },
+            { "value": "c", "state": "not_yet_reached", "index": 5 },
+            { "value": "b", "state": "not_yet_reached", "index": 6 },
+            { "value": "b", "state": "not_yet_reached", "index": 7 }
+          ],
+          "windowStart": 2,
+          "windowEnd": 4,
+          "maxLength": 3,
+          "currentLength": 3,
+          "charMap": {"c": 1, "a": 1, "b": 1},
+          "highlightedElements": [2, 3, 4]
+        },
+        "jarvisMessage": "Shrink complete for 'b'! We removed the leftmost 'b' at index 1, reducing its count back to 1. Window is now ['c','a','b'] and valid again.",
+        "codeSnippet": "// Shrink: remove leftmost 'b'\ncharMap.set('b', charMap.get('b') - 1); // 'b': 1\nwindowStart++; // 1 → 2\n// Window valid again (no duplicates)",
+        "codeExplanation": "This explicit shrink step resolves the duplicate by decrementing the count of 'b' and advancing the left pointer."
+      },
+      {
+        "stepId": 8,
+        "description": "Expand and show duplicate 'c': after adding index 5, charMap['c'] becomes 2 (duplicate detected).",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 5,
+        "uiState": {
+          "arrayElements": [
+            { "value": "a", "state": "out_of_window_past", "index": 0 },
+            { "value": "b", "state": "out_of_window_past", "index": 1 },
+            { "value": "c", "state": "in_window", "index": 2 },
+            { "value": "a", "state": "in_window", "index": 3 },
+            { "value": "b", "state": "in_window", "index": 4 },
+            { "value": "c", "state": "in_window", "index": 5 },
+            { "value": "b", "state": "not_yet_reached", "index": 6 },
+            { "value": "b", "state": "not_yet_reached", "index": 7 }
+          ],
+          "windowStart": 2,
+          "windowEnd": 5,
+          "maxLength": 3,
+          "currentLength": 4,
+          "charMap": {"a": 1, "b": 1, "c": 2},
+          "highlightedElements": [2, 3, 4, 5]
+        },
+        "jarvisMessage": "Duplicate detected for 'c'! After expanding to include index 5 ('c'), charMap becomes {'a': 1, 'b': 1, 'c': 2}. We'll now shrink from the left until 'c' returns to frequency 1.",
+        "codeSnippet": "// Expand: add char 'c' (duplicate)\ncharMap.set('c', (charMap.get('c') || 0) + 1); // 'c': 2\n// Duplicate present ⇒ next steps will shrink from left",
+        "codeExplanation": "We pause after expansion to visualize the duplicate state for 'c'. Next, we'll perform a shrink to resolve it."
+      },
+      {
+        "stepId": 9,
+        "description": "Shrink to resolve duplicate 'c': remove leftmost 'c' at index 2 and move windowStart forward.",
+        "expectedAction": "shrink_window",
+        "expectedElementIndex": 2,
+        "uiState": {
+          "arrayElements": [
+            { "value": "a", "state": "out_of_window_past", "index": 0 },
+            { "value": "b", "state": "out_of_window_past", "index": 1 },
+            { "value": "c", "state": "out_of_window_past", "index": 2 },
+            { "value": "a", "state": "in_window", "index": 3 },
+            { "value": "b", "state": "in_window", "index": 4 },
+            { "value": "c", "state": "in_window", "index": 5 },
+            { "value": "b", "state": "not_yet_reached", "index": 6 },
+            { "value": "b", "state": "not_yet_reached", "index": 7 }
+          ],
+          "windowStart": 3,
+          "windowEnd": 5,
+          "maxLength": 3,
+          "currentLength": 3,
+          "charMap": {"a": 1, "b": 1, "c": 1},
+          "highlightedElements": [3, 4, 5]
+        },
+        "jarvisMessage": "Shrink complete for 'c'! We removed the leftmost 'c' at index 2, bringing its count back to 1. Window is now ['a','b','c'] and valid again.",
+        "codeSnippet": "// Shrink: remove leftmost 'c'\ncharMap.set('c', charMap.get('c') - 1); // 'c': 1\nwindowStart++; // 2 → 3\n// Window valid again (no duplicates)",
+        "codeExplanation": "This shrink step resolves the duplicate 'c' and restores a valid window."
+      },
+      {
+        "stepId": 10,
+        "description": "Expand and show duplicate 'b': after adding index 6, charMap['b'] becomes 2 (duplicate detected).",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 6,
+        "uiState": {
+          "arrayElements": [
+            { "value": "a", "state": "out_of_window_past", "index": 0 },
+            { "value": "b", "state": "out_of_window_past", "index": 1 },
+            { "value": "c", "state": "out_of_window_past", "index": 2 },
+            { "value": "a", "state": "in_window", "index": 3 },
+            { "value": "b", "state": "in_window", "index": 4 },
+            { "value": "c", "state": "in_window", "index": 5 },
+            { "value": "b", "state": "in_window", "index": 6 },
+            { "value": "b", "state": "not_yet_reached", "index": 7 }
+          ],
+          "windowStart": 3,
+          "windowEnd": 6,
+          "maxLength": 3,
+          "currentLength": 4,
+          "charMap": {"a": 1, "b": 2, "c": 1},
+          "highlightedElements": [3, 4, 5, 6]
+        },
+        "jarvisMessage": "Duplicate detected for 'b'! After expanding to include index 6 ('b'), charMap becomes {'a': 1, 'b': 2, 'c': 1}. We'll now shrink from the left: first remove 'a' at index 3, then remove 'b' at index 4 to bring counts back to 1.",
+        "codeSnippet": "// Expand: add char 'b' (duplicate)\ncharMap.set('b', (charMap.get('b') || 0) + 1); // 'b': 2\n// Next: shrink from left to resolve duplicates",
+        "codeExplanation": "We pause on the duplicate state to visualize charMap before performing the necessary shrink steps."
+      },
+      {
+        "stepId": 11,
+        "description": "Shrink step 1: remove leftmost 'a' at index 3. 'b' is still duplicated (count 2).",
+        "expectedAction": "shrink_window",
+        "expectedElementIndex": 3,
+        "uiState": {
+          "arrayElements": [
+            { "value": "a", "state": "out_of_window_past", "index": 0 },
+            { "value": "b", "state": "out_of_window_past", "index": 1 },
+            { "value": "c", "state": "out_of_window_past", "index": 2 },
+            { "value": "a", "state": "out_of_window_past", "index": 3 },
+            { "value": "b", "state": "in_window", "index": 4 },
+            { "value": "c", "state": "in_window", "index": 5 },
+            { "value": "b", "state": "in_window", "index": 6 },
+            { "value": "b", "state": "not_yet_reached", "index": 7 }
+          ],
+          "windowStart": 4,
+          "windowEnd": 6,
+          "maxLength": 3,
+          "currentLength": 3,
+          "charMap": {"b": 2, "c": 1},
+          "highlightedElements": [4, 5, 6]
+        },
+        "jarvisMessage": "Shrink step 1 complete: removed 'a' at index 3. 'b' is still duplicated (count 2), so one more shrink is needed to remove the leftmost 'b' at index 4.",
+        "codeSnippet": "// Shrink 1: remove leftmost 'a'\ncharMap.set('a', (charMap.get('a') || 1) - 1); // 'a': 0\nwindowStart++; // 3 → 4\n// Still have duplicate 'b' (count 2)",
+        "codeExplanation": "Removing 'a' advances the window but does not change 'b' frequency, so we must shrink again."
+      },
+      {
+        "stepId": 12,
+        "description": "Shrink to resolve duplicate 'b': remove leftmost 'b' and move windowStart forward.",
+        "expectedAction": "shrink_window",
+        "expectedElementIndex": 4,
+        "uiState": {
+          "arrayElements": [
+            { "value": "a", "state": "out_of_window_past", "index": 0 },
+            { "value": "b", "state": "out_of_window_past", "index": 1 },
+            { "value": "c", "state": "out_of_window_past", "index": 2 },
+            { "value": "a", "state": "out_of_window_past", "index": 3 },
+            { "value": "b", "state": "out_of_window_past", "index": 4 },
+            { "value": "c", "state": "in_window", "index": 5 },
+            { "value": "b", "state": "in_window", "index": 6 },
+            { "value": "b", "state": "not_yet_reached", "index": 7 }
+          ],
+          "windowStart": 5,
+          "windowEnd": 6,
+          "maxLength": 3,
+          "currentLength": 2,
+          "charMap": {"c": 1, "b": 1},
+          "highlightedElements": [5, 6]
+        },
+        "jarvisMessage": "Duplicate 'b' resolved by shrinking: we removed the leftmost 'b' (at index 4). Window is now ['c','b'] with counts back to 1 each.",
+        "codeSnippet": "// Shrink: remove leftmost 'b'\ncharMap.set('b', charMap.get('b') - 1); // 'b': 1\nwindowStart++; // 4 → 5\n// Window valid again (no duplicates)",
+        "codeExplanation": "We show the shrink step explicitly: decrement the count of 'b' and advance windowStart. Now all frequencies are ≤ 1 so the window is valid."
+      },
+      {
+        "stepId": 13,
+        "description": "Duplicate 'b' resolved! Window ['c', 'b'] is valid. Let's add the final character.",
+        "expectedAction": "expand_window",
+        "expectedElementIndex": 7,
+        "uiState": {
+          "arrayElements": [
+            { "value": "a", "state": "out_of_window_past", "index": 0 },
+            { "value": "b", "state": "out_of_window_past", "index": 1 },
+            { "value": "c", "state": "out_of_window_past", "index": 2 },
+            { "value": "a", "state": "out_of_window_past", "index": 3 },
+            { "value": "b", "state": "out_of_window_past", "index": 4 },
+            { "value": "c", "state": "in_window", "index": 5 },
+            { "value": "b", "state": "in_window", "index": 6 },
+            { "value": "b", "state": "in_window", "index": 7 }
+          ],
+          "windowStart": 5,
+          "windowEnd": 7,
+          "maxLength": 3,
+          "currentLength": 3,
+          "charMap": {"c": 1, "b": 2},
+          "highlightedElements": [5, 6, 7]
+        },
+        "jarvisMessage": "Perfect! The duplicate 'b' was resolved by shrinking the window. We removed the first 'b' (at index 4), leaving us with window ['c', 'b'] where all characters are unique. Now let's add the final character - another 'b'. This will create ['c', 'b', 'b'] with duplicate 'b's. The algorithm will shrink to resolve this final duplicate. Click on the last 'b'!",
+        "codeSnippet": "// Expand: add final char 'b'\ncharMap.set('b', charMap.get('b') + 1);\n// charMap = {'c': 1, 'b': 3}\n// Multiple 'b's! Shrink until only one 'b' remains\n// Will remove 'b' at index 6, leaving ['c', 'b']",
+        "codeExplanation": "Adding the final 'b' creates charMap = {'c': 1, 'b': 3}. We have multiple 'b's in our window ['c', 'b', 'b']. The algorithm will shrink until only one 'b' remains, giving us the final valid window ['c', 'b'] with length 2."
+      },
+      {
+        "stepId": 14,
+        "description": "Shrink step 1 for final duplicate: remove 'c' (leftmost) since we're fixing duplicate 'b'.",
+        "expectedAction": "shrink_window",
+        "expectedElementIndex": 5,
+        "uiState": {
+          "arrayElements": [
+            { "value": "a", "state": "out_of_window_past", "index": 0 },
+            { "value": "b", "state": "out_of_window_past", "index": 1 },
+            { "value": "c", "state": "out_of_window_past", "index": 2 },
+            { "value": "a", "state": "out_of_window_past", "index": 3 },
+            { "value": "b", "state": "out_of_window_past", "index": 4 },
+            { "value": "c", "state": "out_of_window_past", "index": 5 },
+            { "value": "b", "state": "in_window", "index": 6 },
+            { "value": "b", "state": "in_window", "index": 7 }
+          ],
+          "windowStart": 6,
+          "windowEnd": 7,
+          "maxLength": 3,
+          "currentLength": 2,
+          "charMap": {"b": 2},
+          "highlightedElements": [6, 7]
+        },
+        "jarvisMessage": "We shrink while charMap['b'] > 1. First removal is 'c' at index 5: it doesn't change 'b' count but moves the window start forward.",
+        "codeSnippet": "// Shrink: remove leftmost 'c'\ncharMap.set('c', (charMap.get('c') || 1) - 1); // 'c': 0\nwindowStart++; // 5 → 6\n// Still duplicate 'b' (count 2) ⇒ continue shrinking",
+        "codeExplanation": "The while loop removes from the left until the duplicate of the rightmost character is resolved. Removing 'c' advances the start but we still have two 'b's."
+      },
+      {
+        "stepId": 15,
+        "description": "Shrink step 2 for final duplicate: remove leftmost 'b' to bring its count back to 1.",
+        "expectedAction": "shrink_window",
+        "expectedElementIndex": 6,
+        "uiState": {
+          "arrayElements": [
+            { "value": "a", "state": "out_of_window_past", "index": 0 },
+            { "value": "b", "state": "out_of_window_past", "index": 1 },
+            { "value": "c", "state": "out_of_window_past", "index": 2 },
+            { "value": "a", "state": "out_of_window_past", "index": 3 },
+            { "value": "b", "state": "out_of_window_past", "index": 4 },
+            { "value": "c", "state": "out_of_window_past", "index": 5 },
+            { "value": "b", "state": "out_of_window_past", "index": 6 },
+            { "value": "b", "state": "in_window", "index": 7 }
+          ],
+          "windowStart": 7,
+          "windowEnd": 7,
+          "maxLength": 3,
+          "currentLength": 1,
+          "charMap": {"b": 1},
+          "highlightedElements": [7]
+        },
+        "jarvisMessage": "Duplicate resolved: removing the leftmost 'b' at index 6 reduces its frequency to 1. Window now contains only the last 'b'.",
+        "codeSnippet": "// Shrink: remove leftmost 'b'\ncharMap.set('b', charMap.get('b') - 1); // 'b': 1\nwindowStart++; // 6 → 7\n// Window valid (no duplicates)",
+        "codeExplanation": "We finish the while loop by removing the leftmost 'b'. Now charMap['b'] == 1, so the window is valid and we can proceed to complete the algorithm."
+      },
+      {
+        "stepId": 16,
+        "description": "Algorithm completed! We found the longest substring without repeating characters.",
+        "expectedAction": "complete_algorithm",
+        "uiState": {
+          "arrayElements": [
+            { "value": "a", "state": "out_of_window_past", "index": 0 },
+            { "value": "b", "state": "out_of_window_past", "index": 1 },
+            { "value": "c", "state": "out_of_window_past", "index": 2 },
+            { "value": "a", "state": "out_of_window_past", "index": 3 },
+            { "value": "b", "state": "out_of_window_past", "index": 4 },
+            { "value": "c", "state": "out_of_window_past", "index": 5 },
+            { "value": "b", "state": "out_of_window_past", "index": 6 },
+            { "value": "b", "state": "in_window", "index": 7 }
+          ],
+          "windowStart": 7,
+          "windowEnd": 7,
+          "maxLength": 3,
+          "currentLength": 1,
+          "charMap": {"b": 1},
+          "highlightedElements": [7]
+        },
+        "jarvisMessage": "🎉 MISSION ACCOMPLISHED! You've mastered the Sliding Window + Hash Map technique!\n\n**Final Result: Maximum Length = 3**\n\n**What we achieved:**\n✅ Found longest valid substring: \"abc\" (length 3)\n✅ Efficiently handled all duplicates with hash map\n✅ Used expand/shrink strategy to explore all possibilities\n✅ Maintained O(n) time complexity with smart window management\n\n**Key Insights:**\n- **Hash Map**: Instant duplicate detection in O(1) time\n- **Expand**: Add characters until duplicate found\n- **Shrink**: Remove from left until duplicate resolved\n- **Track**: Always remember the longest valid substring\n\n**Time Complexity: O(n)** - Each character visited at most twice\n**Space Complexity: O(k)** - Hash map stores at most k unique characters\n\nClick 'Complete Algorithm' to see the full analysis!",
+        "codeSnippet": "// Algorithm complete - return the answer\nreturn maxLength;  // Returns 3\n\n// The winning substring: \"abc\" at indices 0, 1, 2\n// Hash map + sliding window found it efficiently!",
+        "codeExplanation": "🚀 **ALGORITHM MASTERED!** The combination of sliding window + hash map is incredibly powerful!\n\n**Key Insights:**\n1. **Hash map for O(1) lookups**: Instant duplicate detection\n2. **Two-pointer window**: Expand right, shrink left as needed\n3. **Smart shrinking**: Remove characters until duplicate resolved\n4. **Optimal tracking**: Always remember the best solution\n\n**Time Complexity: O(n)** - Each character is processed at most twice (once by windowEnd, once by windowStart)\n\n**Space Complexity: O(k)** - Hash map stores at most k unique characters (where k ≤ 26 for lowercase English letters)\n\n**Why this matters**: Without hash map, we'd need O(n) time to check for duplicates in each window, making it O(n²) overall. The hash map + sliding window reduces this to O(n) - a massive improvement!"
+      }
+    ]
+  },
+  "solution": {
+    "optimal": {
+      "idea": "Use variable-size sliding window with hash map. Expand the window by moving right pointer and track character frequencies. When duplicate found, shrink from left until duplicate resolved. Track maximum valid window length.",
+      "timeComplexity": "O(n)",
+      "spaceComplexity": "O(k)",
+      "walkthrough": [
+        "Initialize windowStart = 0, maxLength = 0, and charMap hash map.",
+        "Use for loop with windowEnd as right pointer to expand the window.",
+        "Add s[windowEnd] to charMap and increment its frequency.",
+        "While charMap has any character with frequency > 1 (duplicate):",
+        "  Remove s[windowStart] from charMap (decrement frequency)",
+        "  Increment windowStart to shrink window from left",
+        "Update maxLength with current valid window size.",
+        "Continue until windowEnd reaches end of string.",
+        "Return maxLength as the longest substring length."
+      ]
+    }
+  },
+  "complexityAnalysis": {
+    "title": "COMPLEXITY ANALYSIS",
+    "overview": "The combination of sliding window + hash map is incredibly powerful! Hash map provides O(1) duplicate detection while the two-pointer window technique ensures we explore all possibilities efficiently without redundant work.",
+    "timeComplexity": {
+      "value": "O(n)",
+      "explanation": "Each character is processed at most twice - once by windowEnd (right pointer) when expanding, and once by windowStart (left pointer) when shrinking. Despite the nested while loop, the amortized time is linear because windowStart can only move forward n times total."
+    },
+    "spaceComplexity": {
+      "value": "O(k)",
+      "explanation": "Hash map stores at most k unique characters, where k is the size of the character set (e.g., k ≤ 26 for lowercase English letters, k ≤ 128 for ASCII). In practice, this is often considered O(1) for fixed character sets."
+    },
+    "whyItMatters": "Without hash map, we'd need O(n) time to check for duplicates in each window, making it O(n²) overall. The hash map enables O(1) duplicate detection, and sliding window avoids redundant recalculations. For a string of length 1000, we go from potentially 500,000 operations to just 2,000 operations maximum!"
+  },
+  "code": {
+    "cpp": "#include <iostream>\n#include <string>\n#include <unordered_map>\n#include <algorithm>\nusing namespace std;\n\nclass Solution {\npublic:\n    int lengthOfLongestSubstring(string s) {\n        // INTUITION: Use sliding window + hash map for duplicate detection\n        int windowStart = 0;\n        int maxLength = 0;\n        unordered_map<char, int> charMap;  // Track character frequencies\n        \n        // INTUITION: Expand window with right pointer\n        for (int windowEnd = 0; windowEnd < s.length(); windowEnd++) {\n            // Add current character to hash map\n            charMap[s[windowEnd]]++;\n            \n            // INTUITION: Shrink window while there are duplicates\n            while (charMap[s[windowEnd]] > 1) {\n                // Remove leftmost character and shrink window\n                charMap[s[windowStart]]--;\n                windowStart++;\n            }\n            \n            // INTUITION: Update maximum length with current valid window\n            maxLength = max(maxLength, windowEnd - windowStart + 1);\n        }\n        \n        // INTUITION: Return the longest valid substring length\n        return maxLength;\n    }\n};\n\nint main() {\n    Solution sol;\n    // Example: \"abcabcbb\"\n    // Expected: 3 (substring \"abc\")\n    cout << sol.lengthOfLongestSubstring(\"abcabcbb\") << endl;\n    cout << sol.lengthOfLongestSubstring(\"bbbbb\") << endl;\n    cout << sol.lengthOfLongestSubstring(\"pwwkew\") << endl;\n    return 0;\n}"
+  }
+}
