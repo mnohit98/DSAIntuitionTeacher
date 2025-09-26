@@ -4,7 +4,7 @@
   "description": "Given a string s and an integer k, return the length of the longest substring containing the same letter you can get after performing at most k character replacements.",
   "aim": "Master the variable-size window with frequency map and the max-frequency heuristic: keep track of the most frequent character in the window; the window is valid if windowLength - maxFreq ≤ k.",
   "moduleId": "slidingWindow",
-  "submoduleId": "sw_variable",
+  "submoduleId": "sw_advanced",
   "difficulty": "Medium",
   "tags": [
     "String",

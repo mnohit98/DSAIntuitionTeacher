@@ -1,0 +1,512 @@
+{
+  "problemId": "p9",
+  "title": "Permutation in String",
+  "description": "Given two strings s1 and s2, return true if s2 contains a permutation of s1.",
+  "aim": "Use a fixed-size window of length |s1| with a frequency map. Track Target Map, Window Map, Matches, and Status as the window slides.",
+  "moduleId": "slidingWindow",
+  "submoduleId": "sw_advanced",
+  "difficulty": "Medium",
+  "tags": ["String", "Sliding Window", "Hash Map", "Frequency", "Two Pointers"],
+  "examples": [
+    { "input": "s1 = \"ab\", s2 = \"eidbaooo\"", "output": "true", "explanation": "s2 contains \"ba\", a permutation of s1" },
+    { "input": "s1 = \"ab\", s2 = \"eidboaoo\"", "output": "false", "explanation": "No window of size 2 matches" }
+  ],
+  "playground": {
+    "initialState": {
+      "array": ["e","i","d","b","a","o","o","o"],
+      "pattern": ["a","b"],
+      "k": 2,
+      "windowStart": null,
+      "windowEnd": null,
+      "patternDisplay": "[ a ] [ b ]",
+      "targetMapStr": "{ a:1, b:1 }",
+      "windowMapStr": "{}",
+      "matches": "0/2",
+      "statusText": "Not found yet"
+    },
+    "steps": [
+      {
+        "stepId": 0,
+        "description": "Initialization: s1=\"ab\", s2=\"eidbaooo\". Set Target Map and empty Window Map. Left=0, Right=0, Matches=0/2.",
+        "expectedAction": "click_initialize",
+        "uiState": {
+          "arrayElements": [
+            {"value":"e","state":"not_yet_reached","index":0},
+            {"value":"i","state":"not_yet_reached","index":1},
+            {"value":"d","state":"not_yet_reached","index":2},
+            {"value":"b","state":"not_yet_reached","index":3},
+            {"value":"a","state":"not_yet_reached","index":4},
+            {"value":"o","state":"not_yet_reached","index":5},
+            {"value":"o","state":"not_yet_reached","index":6},
+            {"value":"o","state":"not_yet_reached","index":7}
+          ],
+          "windowStart": null,
+          "windowEnd": null,
+          "k": 2,
+          "targetMapStr": "{ a:1, b:1 }",
+          "windowMapStr": "{}",
+          "matches": "0/2",
+          "statusText": "❌ Not found yet",
+          "highlightedElements": []
+        },
+        "jarvisMessage": "Click Initialize to set up Target Map from s1 and an empty Window Map.",
+        "codeSnippet": "const need = new Map();\nfor (const ch of s1) need.set(ch, (need.get(ch)||0) + 1);\nconst have = new Map();\nlet matches = 0;\nlet left = 0;",
+        "codeHint": "Prepare frequency maps and counters"
+      },
+      {
+        "stepId": 1,
+        "description": "Step 1 (Add e): Click s2[0] to add into window.",
+        "expectedAction": "add_element_to_window",
+        "expectedElementIndex": 0,
+        "uiState": {
+          "arrayElements": [
+            {"value":"e","state":"in_window","index":0},
+            {"value":"i","state":"not_yet_reached","index":1},
+            {"value":"d","state":"not_yet_reached","index":2},
+            {"value":"b","state":"not_yet_reached","index":3},
+            {"value":"a","state":"not_yet_reached","index":4},
+            {"value":"o","state":"not_yet_reached","index":5},
+            {"value":"o","state":"not_yet_reached","index":6},
+            {"value":"o","state":"not_yet_reached","index":7}
+          ],
+          "windowStart": 0,
+          "windowEnd": 0,
+          "k": 2,
+          "targetMapStr": "{ a:1, b:1 }",
+          "windowMapStr": "{ e:1 }",
+          "matches": "0/2",
+          "statusText": "❌ Not found yet",
+          "highlightedElements": [0]
+        },
+        "jarvisMessage": "Window: \"e\". e is not in Target Map.",
+        "codeSnippet": "have.set('e', (have.get('e')||0)+1);",
+        "codeHint": "Increase have count"
+      },
+      {
+        "stepId": 2,
+        "description": "Step 2 (Add i): Click s2[1] to add into window.",
+        "expectedAction": "add_element_to_window",
+        "expectedElementIndex": 1,
+        "uiState": {
+          "arrayElements": [
+            {"value":"e","state":"in_window","index":0},
+            {"value":"i","state":"in_window","index":1},
+            {"value":"d","state":"not_yet_reached","index":2},
+            {"value":"b","state":"not_yet_reached","index":3},
+            {"value":"a","state":"not_yet_reached","index":4},
+            {"value":"o","state":"not_yet_reached","index":5},
+            {"value":"o","state":"not_yet_reached","index":6},
+            {"value":"o","state":"not_yet_reached","index":7}
+          ],
+          "windowStart": 0,
+          "windowEnd": 1,
+          "k": 2,
+          "targetMapStr": "{ a:1, b:1 }",
+          "windowMapStr": "{ e:1, i:1 }",
+          "matches": "0/2",
+          "statusText": "❌ Not found yet",
+          "highlightedElements": [1]
+        },
+        "jarvisMessage": "Window: \"ei\". Size is 2 but no matches.",
+        "codeSnippet": "have.set('i', (have.get('i')||0)+1);",
+        "codeHint": "Increase have count"
+      },
+      {
+        "stepId": 3,
+        "description": "Step 3 (Shrink from left, Remove e): Window length > |s1|, remove s2[0].",
+        "expectedAction": "shrink_window",
+        "expectedElementIndex": 0,
+        "uiState": {
+          "arrayElements": [
+            {"value":"e","state":"out_of_window_past","index":0},
+            {"value":"i","state":"in_window","index":1},
+            {"value":"d","state":"not_yet_reached","index":2},
+            {"value":"b","state":"not_yet_reached","index":3},
+            {"value":"a","state":"not_yet_reached","index":4},
+            {"value":"o","state":"not_yet_reached","index":5},
+            {"value":"o","state":"not_yet_reached","index":6},
+            {"value":"o","state":"not_yet_reached","index":7}
+          ],
+          "windowStart": 1,
+          "windowEnd": 1,
+          "k": 2,
+          "targetMapStr": "{ a:1, b:1 }",
+          "windowMapStr": "{ i:1 }",
+          "matches": "0/2",
+          "statusText": "❌ Not found yet",
+          "highlightedElements": [0]
+        },
+        "jarvisMessage": "Removed e. Window: \"i\".",
+        "codeSnippet": "have.set('e', (have.get('e')||0)-1); left++; if (need.has('e') && have.get('e') < need.get('e')) { /* matches unchanged since e not in need */ }",
+        "codeHint": "Decrease have and move left"
+      },
+      {
+        "stepId": 4,
+        "description": "Step 4 (Add d): Click s2[2] to add into window.",
+        "expectedAction": "add_element_to_window",
+        "expectedElementIndex": 2,
+        "uiState": {
+          "arrayElements": [
+            {"value":"e","state":"out_of_window_past","index":0},
+            {"value":"i","state":"in_window","index":1},
+            {"value":"d","state":"in_window","index":2},
+            {"value":"b","state":"not_yet_reached","index":3},
+            {"value":"a","state":"not_yet_reached","index":4},
+            {"value":"o","state":"not_yet_reached","index":5},
+            {"value":"o","state":"not_yet_reached","index":6},
+            {"value":"o","state":"not_yet_reached","index":7}
+          ],
+          "windowStart": 1,
+          "windowEnd": 2,
+          "k": 2,
+          "targetMapStr": "{ a:1, b:1 }",
+          "windowMapStr": "{ i:1, d:1 }",
+          "matches": "0/2",
+          "statusText": "❌ Not found yet",
+          "highlightedElements": [2]
+        },
+        "jarvisMessage": "Window: \"id\".",
+        "codeSnippet": "have.set('d', (have.get('d')||0)+1);",
+        "codeHint": "Increase have count"
+      },
+      {
+        "stepId": 5,
+        "description": "Step 5 (Shrink from left, Remove i): Window size > |s1|, remove s2[1].",
+        "expectedAction": "shrink_window",
+        "expectedElementIndex": 1,
+        "uiState": {
+          "arrayElements": [
+            {"value":"e","state":"out_of_window_past","index":0},
+            {"value":"i","state":"out_of_window_past","index":1},
+            {"value":"d","state":"in_window","index":2},
+            {"value":"b","state":"not_yet_reached","index":3},
+            {"value":"a","state":"not_yet_reached","index":4},
+            {"value":"o","state":"not_yet_reached","index":5},
+            {"value":"o","state":"not_yet_reached","index":6},
+            {"value":"o","state":"not_yet_reached","index":7}
+          ],
+          "windowStart": 2,
+          "windowEnd": 2,
+          "k": 2,
+          "targetMapStr": "{ a:1, b:1 }",
+          "windowMapStr": "{ d:1 }",
+          "matches": "0/2",
+          "statusText": "❌ Not found yet",
+          "highlightedElements": [1]
+        },
+        "jarvisMessage": "Removed i. Window: \"d\".",
+        "codeSnippet": "have.set('i', (have.get('i')||0)-1); left++;",
+        "codeHint": "Decrease have and move left"
+      },
+      {
+        "stepId": 6,
+        "description": "Step 6 (Add b): Click s2[3] to add into window.",
+        "expectedAction": "add_element_to_window",
+        "expectedElementIndex": 3,
+        "uiState": {
+          "arrayElements": [
+            {"value":"e","state":"out_of_window_past","index":0},
+            {"value":"i","state":"out_of_window_past","index":1},
+            {"value":"d","state":"in_window","index":2},
+            {"value":"b","state":"in_window","index":3},
+            {"value":"a","state":"not_yet_reached","index":4},
+            {"value":"o","state":"not_yet_reached","index":5},
+            {"value":"o","state":"not_yet_reached","index":6},
+            {"value":"o","state":"not_yet_reached","index":7}
+          ],
+          "windowStart": 2,
+          "windowEnd": 3,
+          "k": 2,
+          "targetMapStr": "{ a:1, b:1 }",
+          "windowMapStr": "{ d:1, b:1 }",
+          "matches": "1/2",
+          "statusText": "❌ Not found yet",
+          "highlightedElements": [3]
+        },
+        "jarvisMessage": "Window: \"db\". b matched 1 of 2.",
+        "codeSnippet": "have.set('b', (have.get('b')||0)+1); if (need.has('b') && have.get('b') === need.get('b')) matches++;",
+        "codeHint": "Track matches when counts meet need"
+      },
+      {
+        "stepId": 7,
+        "description": "Step 7 (Shrink from left, Remove d): Remove s2[2].",
+        "expectedAction": "shrink_window",
+        "expectedElementIndex": 2,
+        "uiState": {
+          "arrayElements": [
+            {"value":"e","state":"out_of_window_past","index":0},
+            {"value":"i","state":"out_of_window_past","index":1},
+            {"value":"d","state":"out_of_window_past","index":2},
+            {"value":"b","state":"in_window","index":3},
+            {"value":"a","state":"not_yet_reached","index":4},
+            {"value":"o","state":"not_yet_reached","index":5},
+            {"value":"o","state":"not_yet_reached","index":6},
+            {"value":"o","state":"not_yet_reached","index":7}
+          ],
+          "windowStart": 3,
+          "windowEnd": 3,
+          "k": 2,
+          "targetMapStr": "{ a:1, b:1 }",
+          "windowMapStr": "{ b:1 }",
+          "matches": "1/2",
+          "statusText": "❌ Not found yet",
+          "highlightedElements": [2]
+        },
+        "jarvisMessage": "Removed d. Window: \"b\".",
+        "codeSnippet": "have.set('d', (have.get('d')||0)-1); left++;",
+        "codeHint": "Decrease have and move left"
+      },
+      {
+        "stepId": 8,
+        "description": "Step 8 (Add a): Click s2[4] to add into window.",
+        "expectedAction": "add_element_to_window",
+        "expectedElementIndex": 4,
+        "uiState": {
+          "arrayElements": [
+            {"value":"e","state":"out_of_window_past","index":0},
+            {"value":"i","state":"out_of_window_past","index":1},
+            {"value":"d","state":"out_of_window_past","index":2},
+            {"value":"b","state":"in_window","index":3},
+            {"value":"a","state":"in_window","index":4},
+            {"value":"o","state":"not_yet_reached","index":5},
+            {"value":"o","state":"not_yet_reached","index":6},
+            {"value":"o","state":"not_yet_reached","index":7}
+          ],
+          "windowStart": 3,
+          "windowEnd": 4,
+          "k": 2,
+          "targetMapStr": "{ a:1, b:1 }",
+          "windowMapStr": "{ b:1, a:1 }",
+          "matches": "2/2",
+          "statusText": "✅ Found!",
+          "highlightedElements": [3,4]
+        },
+        "jarvisMessage": "Window: \"ba\". 2/2 matched → permutation found at [3,4].",
+        "codeSnippet": "have.set('a', (have.get('a')||0)+1); if (need.has('a') && have.get('a') === need.get('a')) matches++; const unique = need.size; const found = matches === unique;",
+        "codeHint": "Check full match when counts meet need"
+      },
+      {
+        "stepId": 9,
+        "description": "Step 9 (Shrink from left, Remove b): Remove s2[3].",
+        "expectedAction": "shrink_window",
+        "expectedElementIndex": 3,
+        "uiState": {
+          "arrayElements": [
+            {"value":"e","state":"out_of_window_past","index":0},
+            {"value":"i","state":"out_of_window_past","index":1},
+            {"value":"d","state":"out_of_window_past","index":2},
+            {"value":"b","state":"out_of_window_past","index":3},
+            {"value":"a","state":"in_window","index":4},
+            {"value":"o","state":"not_yet_reached","index":5},
+            {"value":"o","state":"not_yet_reached","index":6},
+            {"value":"o","state":"not_yet_reached","index":7}
+          ],
+          "windowStart": 4,
+          "windowEnd": 4,
+          "k": 2,
+          "targetMapStr": "{ a:1, b:1 }",
+          "windowMapStr": "{ a:1 }",
+          "matches": "1/2",
+          "statusText": "❌ Not full match",
+          "highlightedElements": [3]
+        },
+        "jarvisMessage": "Removed b. Window: \"a\". 1/2.",
+        "codeSnippet": "have.set('b', (have.get('b')||0)-1); left++; if (need.has('b') && have.get('b') === need.get('b') - 1) matches--;",
+        "codeHint": "Adjust matches when removing"
+      },
+      {
+        "stepId": 10,
+        "description": "Step 10 (Add o): Click s2[5] to add into window.",
+        "expectedAction": "add_element_to_window",
+        "expectedElementIndex": 5,
+        "uiState": {
+          "arrayElements": [
+            {"value":"e","state":"out_of_window_past","index":0},
+            {"value":"i","state":"out_of_window_past","index":1},
+            {"value":"d","state":"out_of_window_past","index":2},
+            {"value":"b","state":"out_of_window_past","index":3},
+            {"value":"a","state":"in_window","index":4},
+            {"value":"o","state":"in_window","index":5},
+            {"value":"o","state":"not_yet_reached","index":6},
+            {"value":"o","state":"not_yet_reached","index":7}
+          ],
+          "windowStart": 4,
+          "windowEnd": 5,
+          "k": 2,
+          "targetMapStr": "{ a:1, b:1 }",
+          "windowMapStr": "{ a:1, o:1 }",
+          "matches": "1/2",
+          "statusText": "❌ Not full match",
+          "highlightedElements": [5]
+        },
+        "jarvisMessage": "Window: \"ao\". Not a full match.",
+        "codeSnippet": "have.set('o', (have.get('o')||0)+1);",
+        "codeHint": "Update have"
+      },
+      {
+        "stepId": 11,
+        "description": "Step 11 (Shrink from left, Remove a): Remove s2[4].",
+        "expectedAction": "shrink_window",
+        "expectedElementIndex": 4,
+        "uiState": {
+          "arrayElements": [
+            {"value":"e","state":"out_of_window_past","index":0},
+            {"value":"i","state":"out_of_window_past","index":1},
+            {"value":"d","state":"out_of_window_past","index":2},
+            {"value":"b","state":"out_of_window_past","index":3},
+            {"value":"a","state":"out_of_window_past","index":4},
+            {"value":"o","state":"in_window","index":5},
+            {"value":"o","state":"not_yet_reached","index":6},
+            {"value":"o","state":"not_yet_reached","index":7}
+          ],
+          "windowStart": 5,
+          "windowEnd": 5,
+          "k": 2,
+          "targetMapStr": "{ a:1, b:1 }",
+          "windowMapStr": "{ o:1 }",
+          "matches": "0/2",
+          "statusText": "❌ Not full match",
+          "highlightedElements": [4]
+        },
+        "jarvisMessage": "Removed a. Window: \"o\".",
+        "codeSnippet": "have.set('a', (have.get('a')||0)-1); left++; if (need.has('a') && have.get('a') === need.get('a') - 1) matches--;",
+        "codeHint": "Adjust matches when removing"
+      },
+      {
+        "stepId": 12,
+        "description": "Step 12 (Add o): Click s2[6] to add into window.",
+        "expectedAction": "add_element_to_window",
+        "expectedElementIndex": 6,
+        "uiState": {
+          "arrayElements": [
+            {"value":"e","state":"out_of_window_past","index":0},
+            {"value":"i","state":"out_of_window_past","index":1},
+            {"value":"d","state":"out_of_window_past","index":2},
+            {"value":"b","state":"out_of_window_past","index":3},
+            {"value":"a","state":"out_of_window_past","index":4},
+            {"value":"o","state":"in_window","index":5},
+            {"value":"o","state":"in_window","index":6},
+            {"value":"o","state":"not_yet_reached","index":7}
+          ],
+          "windowStart": 5,
+          "windowEnd": 6,
+          "k": 2,
+          "targetMapStr": "{ a:1, b:1 }",
+          "windowMapStr": "{ o:2 }",
+          "matches": "0/2",
+          "statusText": "❌ Not full match",
+          "highlightedElements": [6]
+        },
+        "jarvisMessage": "Window: \"oo\".",
+        "codeSnippet": "have.set('o', (have.get('o')||0)+1);",
+        "codeHint": "Update have"
+      },
+      {
+        "stepId": 13,
+        "description": "Step 13 (Shrink from left, Remove o): Remove one o (s2[5]).",
+        "expectedAction": "shrink_window",
+        "expectedElementIndex": 5,
+        "uiState": {
+          "arrayElements": [
+            {"value":"e","state":"out_of_window_past","index":0},
+            {"value":"i","state":"out_of_window_past","index":1},
+            {"value":"d","state":"out_of_window_past","index":2},
+            {"value":"b","state":"out_of_window_past","index":3},
+            {"value":"a","state":"out_of_window_past","index":4},
+            {"value":"o","state":"out_of_window_past","index":5},
+            {"value":"o","state":"in_window","index":6},
+            {"value":"o","state":"not_yet_reached","index":7}
+          ],
+          "windowStart": 6,
+          "windowEnd": 6,
+          "k": 2,
+          "targetMapStr": "{ a:1, b:1 }",
+          "windowMapStr": "{ o:1 }",
+          "matches": "0/2",
+          "statusText": "❌ Not full match",
+          "highlightedElements": [5]
+        },
+        "jarvisMessage": "Removed one o. Window: \"o\".",
+        "codeSnippet": "have.set('o', (have.get('o')||0)-1); left++;",
+        "codeHint": "Maintain window size"
+      },
+      {
+        "stepId": 14,
+        "description": "Step 14 (Add o): Click s2[7] to add into window.",
+        "expectedAction": "add_element_to_window",
+        "expectedElementIndex": 7,
+        "uiState": {
+          "arrayElements": [
+            {"value":"e","state":"out_of_window_past","index":0},
+            {"value":"i","state":"out_of_window_past","index":1},
+            {"value":"d","state":"out_of_window_past","index":2},
+            {"value":"b","state":"out_of_window_past","index":3},
+            {"value":"a","state":"out_of_window_past","index":4},
+            {"value":"o","state":"out_of_window_past","index":5},
+            {"value":"o","state":"in_window","index":6},
+            {"value":"o","state":"in_window","index":7}
+          ],
+          "windowStart": 6,
+          "windowEnd": 7,
+          "k": 2,
+          "targetMapStr": "{ a:1, b:1 }",
+          "windowMapStr": "{ o:2 }",
+          "matches": "0/2",
+          "statusText": "❌ Not full match",
+          "highlightedElements": [7]
+        },
+        "jarvisMessage": "Window: \"oo\". End of array.",
+        "codeSnippet": "have.set('o', (have.get('o')||0)+1);",
+        "codeHint": "Update have"
+      },
+      {
+        "stepId": 15,
+        "description": "✅ End of Algorithm: We found exactly one valid permutation window → \"ba\" at indices [3,4].",
+        "expectedAction": "complete_algorithm",
+        "uiState": {
+          "arrayElements": [
+            {"value":"e","state":"out_of_window_past","index":0},
+            {"value":"i","state":"out_of_window_past","index":1},
+            {"value":"d","state":"out_of_window_past","index":2},
+            {"value":"b","state":"out_of_window_past","index":3},
+            {"value":"a","state":"out_of_window_past","index":4},
+            {"value":"o","state":"out_of_window_past","index":5},
+            {"value":"o","state":"in_window","index":6},
+            {"value":"o","state":"in_window","index":7}
+          ],
+          "windowStart": 6,
+          "windowEnd": 7,
+          "k": 2,
+          "targetMapStr": "{ a:1, b:1 }",
+          "windowMapStr": "{ o:2 }",
+          "matches": "0/2",
+          "statusText": "Final: ✅ Found at [3,4]",
+          "highlightedElements": []
+        },
+        "jarvisMessage": "Finalize the walkthrough.",
+        "codeSnippet": "return true;",
+        "codeExplanation": "We used a fixed-size window with frequency counts and tracked matches to detect a permutation."
+      }
+    ]
+  },
+  "solution": {
+    "optimal": {
+      "idea": "Slide a fixed-size window of |s1| over s2. Maintain a frequency map for the current window and increase/decrease matches when a character count hits/leaves the need count. If matches equals number of unique characters in s1 at any time, a permutation exists.",
+      "timeComplexity": "O(n)",
+      "spaceComplexity": "O(1)",
+      "walkthrough": [
+        "Build need map for s1 and set matches = 0.",
+        "Expand right and update have; when have[ch] equals need[ch], increment matches.",
+        "If window length exceeds |s1|, shrink from left and adjust matches when a have count falls below need.",
+        "Whenever matches equals number of unique keys in need, we found a permutation."
+      ]
+    }
+  },
+  "complexityAnalysis": {
+    "overview": "We maintain counts and a matches counter while moving two pointers.",
+    "timeComplexity": { "value": "O(n)", "explanation": "Right and left each move at most n times over s2; updates are O(1)." },
+    "spaceComplexity": { "value": "O(1)", "explanation": "Need/have maps are bounded by the alphabet size (constant)." }
+  }
+}
+
+

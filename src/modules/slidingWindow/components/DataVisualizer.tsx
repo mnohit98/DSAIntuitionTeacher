@@ -30,6 +30,8 @@ interface Props {
   onElementPress: (index: number) => void;
   expectedIndex?: number;
   showInitializeButton?: boolean;
+  initializeButtonText?: string;
+  initializeButtonSubtext?: string;
   onInitializePress?: () => void;
   showCompleteButton?: boolean;
   onCompletePress?: () => void;
@@ -41,6 +43,8 @@ export default function DataVisualizer({
   onElementPress, 
   expectedIndex, 
   showInitializeButton = false, 
+  initializeButtonText,
+  initializeButtonSubtext,
   onInitializePress,
   showCompleteButton = false,
   onCompletePress
@@ -241,7 +245,7 @@ export default function DataVisualizer({
 
   // Function to render algorithm variables display - flexible and decoupled
   const renderVariablesDisplay = () => {
-    const { windowStart, windowEnd, windowSum, maxSum, result, negativeQueue, k, targetSum, minLength, currentSum, maxLength, currentLength, charMap, distinctCount, fruitMap, basketTypes, maxFruits, zerosCount, maxFreq, freqMapStr, maxSize } = uiState as any;
+    const { windowStart, windowEnd, windowSum, maxSum, result, negativeQueue, k, targetSum, minLength, currentSum, maxLength, currentLength, charMap, distinctCount, fruitMap, basketTypes, maxFruits, zerosCount, maxFreq, freqMapStr, maxSize, targetMapStr, windowMapStr, matches, statusText, patternDisplay, needCount, haveCount, bestAnswerStr, resultCount, foundIndices, stepAction, currentWindowStr, currentChunks, valid } = uiState as any;
     
     // Calculate current window size
     const currentWindowSize = windowStart !== undefined && windowEnd !== undefined 
@@ -256,14 +260,73 @@ export default function DataVisualizer({
     const isP2Problem = negativeQueue !== undefined;
     const isVariableSizeProblem = targetSum !== undefined || minLength !== undefined;
     const isP8ReplacementProblem = freqMapStr !== undefined || maxFreq !== undefined || maxSize !== undefined;
+    const isP9PermutationProblem = (patternDisplay !== undefined) || (matches !== undefined && patternDisplay !== undefined);
+    const isP10MinWindowProblem = (needCount !== undefined) || (haveCount !== undefined) || (bestAnswerStr !== undefined);
+    const isP11ConcatWordsProblem = (foundIndices !== undefined) && (targetMapStr !== undefined) && (patternDisplay === undefined) && (needCount === undefined);
+    const isP12KDistinctProblem = (resultCount !== undefined) || (distinctCount !== undefined && freqMapStr !== undefined);
     const isP4StringProblem = charMap !== undefined && maxLength !== undefined;
     const isP6FruitProblem = fruitMap !== undefined || basketTypes !== undefined || maxFruits !== undefined;
     const isP7OnesProblem = zerosCount !== undefined && maxLength !== undefined;
     
     // Define variables array for flexible rendering
-    let variables;
+    let variables: Array<{ label: string; value: any }> = [];
     
-    if (isP7OnesProblem) {
+    if (isP12KDistinctProblem) {
+      // Subarrays with K Different Integers (exactly K via at-most trick)
+      const fmDisplay = freqMapStr ? `{ ${freqMapStr} }` : '{}';
+      variables = [
+        { label: 'k:', value: k || problemData?.playground?.initialState?.k },
+        { label: 'windowSize:', value: currentWindowSize },
+        { label: 'distinct:', value: distinctCount !== undefined ? distinctCount : '—' },
+        { label: 'result:', value: resultCount !== undefined ? resultCount : 0 },
+        { label: 'freqMap:', value: fmDisplay },
+        { label: 'Status:', value: statusText || '—' },
+      ];
+    } else if (isP10MinWindowProblem) {
+      // Minimum Window Substring (p10) - show need/have and best answer
+      const tDisplay = targetMapStr ? targetMapStr : '{}';
+      const wDisplay = windowMapStr ? windowMapStr : '{}';
+      variables = [
+        { label: 'Target Map:', value: tDisplay },
+        { label: 'Window Map:', value: wDisplay },
+        { label: 'Need:', value: needCount !== undefined ? needCount : '—' },
+        { label: 'Have:', value: haveCount !== undefined ? haveCount : '—' },
+        { label: 'windowSize:', value: currentWindowSize },
+        { label: 'Best Answer:', value: bestAnswerStr || '—' },
+        { label: 'Status:', value: statusText || '—' },
+      ];
+    } else if (isP9PermutationProblem) {
+      // Permutation in String (p9) - show target/window maps, matches, and status
+      const tDisplay = targetMapStr ? targetMapStr : '{}';
+      const wDisplay = windowMapStr ? windowMapStr : '{}';
+      const resultValue = typeof statusText === 'string' && /found/i.test(statusText) ? 'true' : 'false';
+      variables = [
+        { label: 's1:', value: patternDisplay || '[ a ] [ b ]' },
+        { label: 'Target Map:', value: tDisplay },
+        { label: 'Window Map:', value: wDisplay },
+        { label: 'Matches:', value: matches || '—' },
+        { label: 'Status:', value: statusText || '—' },
+        { label: 'result:', value: resultValue },
+        { label: 'windowSize:', value: currentWindowSize },
+      ];
+    } else if (isP11ConcatWordsProblem) {
+      // Substring with Concatenation of All Words (p11)
+      const tDisplay = targetMapStr ? targetMapStr : '{}';
+      const foundDisplay = Array.isArray(foundIndices) ? `[${foundIndices.join(', ')}]` : '[]';
+      const chunksDisplay = currentChunks ? currentChunks : '[]';
+      const validDisplay = typeof valid === 'boolean' ? (valid ? 'true' : 'false') : (valid || '—');
+      variables = [
+        { label: 'Target Map:', value: tDisplay },
+        { label: 'windowSize:', value: currentWindowSize },
+        { label: 'Matches:', value: matches || '—' },
+        { label: 'foundIndices:', value: foundDisplay },
+        { label: 'currentWindowStr:', value: currentWindowStr || '—' },
+        { label: 'currentChunks:', value: chunksDisplay },
+        { label: 'valid:', value: validDisplay },
+        { label: 'stepAction:', value: stepAction || '—' },
+        { label: 'Status:', value: statusText || '—' },
+      ];
+    } else if (isP7OnesProblem) {
       // Max Consecutive Ones III (p7) - track zeros within window
       variables = [
         { label: 'k:', value: k || problemData?.playground?.initialState?.k },
@@ -362,7 +425,13 @@ export default function DataVisualizer({
       maxSum: 'Maximum window sum observed so far in fixed-size problems.',
       k: 'Constraint parameter used by the current problem.',
       maxSize: 'Best (maximum) valid window size found so far.',
-      freqMap: 'Character → count map within the current window (displayed as key:value pairs).'
+      freqMap: 'Character → count map within the current window (displayed as key:value pairs).',
+      'Target Map': 'Required character counts derived from pattern t.',
+      'Window Map': 'Current character counts inside the sliding window.',
+      Need: 'Number of unique required characters to satisfy.',
+      Have: 'How many unique characters are currently satisfied.',
+      'Best Answer': 'Best substring candidate found so far for the objective.',
+      distinct: 'Number of unique keys currently in the window.'
     };
 
     const showTooltip = (labelText: string, value: any) => {
@@ -479,8 +548,8 @@ export default function DataVisualizer({
               onPress={onInitializePress}
               activeOpacity={0.8}
             >
-              <Text style={styles.initializeButtonText}>Initialize Variables</Text>
-              <Text style={styles.initializeButtonSubtext}>Click to set up algorithm variables</Text>
+              <Text style={styles.initializeButtonText}>{initializeButtonText || 'Initialize Variables'}</Text>
+              <Text style={styles.initializeButtonSubtext}>{initializeButtonSubtext || 'Click to set up algorithm variables'}</Text>
             </TouchableOpacity>
           </Animated.View>
         </View>

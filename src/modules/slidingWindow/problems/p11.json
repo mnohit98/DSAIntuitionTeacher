@@ -1,0 +1,305 @@
+{
+  "problemId": "p11",
+  "title": "Substring with Concatenation of All Words",
+  "description": "Find starting indices of substrings in s that are concatenations of all given words exactly once.",
+  "aim": "Practice fixed-size sliding window with word maps.",
+  "moduleId": "slidingWindow",
+  "submoduleId": "sw_advanced",
+  "difficulty": "Hard",
+  "tags": ["String", "Hash Map", "Sliding Window"],
+  "examples": [
+    {
+      "input": "s = \"barfoobarx\", words = [\"foo\",\"bar\"]",
+      "output": "[0,3]",
+      "explanation": "Valid concatenations at indices 0 ('barfoo') and 3 ('foobar')."
+    }
+  ],
+  "playground": {
+    "initialState": {
+      "array": ["b","a","r","f","o","o","b","a","r","x"],
+      "wordLen": 3,
+      "totalWords": 2,
+      "windowSize": 0,
+      "windowStart": null,
+      "windowEnd": null,
+      "targetMapStr": "{ foo:1, bar:1 }",
+      "statusText": "Target map ready, start expanding window",
+      "matches": "0/2",
+      "foundIndices": [],
+      "currentWindowStr": "",
+      "currentChunks": [],
+      "valid": false,
+      "stepAction": "initialize"
+    },
+    "steps": [
+      {
+        "stepId": 0,
+        "description": "Initialize with target words {foo:1, bar:1}, window size = 6.",
+        "expectedAction": "click_initialize",
+        "jarvisMessage": "We start by creating the target frequency map {foo:1, bar:1}. Initialize counters: windowStart and windowEnd are null, windowSize = 0, matches = 0/2, foundIndices = []. No window yet, but all variables are ready to track progress. This prepares the stage for sliding the window across the string.",
+        "codeSnippet": "const target = new Map([['foo',1],['bar',1]]);\nlet windowStart = null, windowEnd = null;\nlet windowSize = 0;\nlet matches = 0;\nlet foundIndices = [];\nlet currentChunks = [];\nlet valid = false;",
+        "codeHint": "Set up the target frequency map and initialize all tracking variables. No actual window yet; this prepares your counters for the algorithm.",
+        "uiState": {
+          "arrayElements": [
+            {"value":"b","state":"not_yet_reached","index":0},
+            {"value":"a","state":"not_yet_reached","index":1},
+            {"value":"r","state":"not_yet_reached","index":2},
+            {"value":"f","state":"not_yet_reached","index":3},
+            {"value":"o","state":"not_yet_reached","index":4},
+            {"value":"o","state":"not_yet_reached","index":5},
+            {"value":"b","state":"not_yet_reached","index":6},
+            {"value":"a","state":"not_yet_reached","index":7},
+            {"value":"r","state":"not_yet_reached","index":8},
+            {"value":"x","state":"not_yet_reached","index":9}
+          ],
+          "windowStart": null,
+          "windowEnd": null,
+          "targetMapStr": "{ foo:1, bar:1 }",
+          "statusText": "Target map ready, start expanding window",
+          "matches": "0/2",
+          "foundIndices": [],
+          "windowSize": 0,
+          "currentWindowStr": "",
+          "currentChunks": [],
+          "valid": false,
+          "stepAction": "initialize",
+          "highlightedElements": []
+        }
+      },
+      {
+        "stepId": 1,
+        "description": "Expand window to include s[0..5] = 'barfoo'.",
+        "expectedAction": "complete_first_window",
+        "jarvisMessage": "Form the first window from index 0 to 5. Window string = 'barfoo'. Split into word-sized chunks ['bar','foo']. Compare each chunk with target map: both 'bar' and 'foo' exist and frequency counts match. Window is valid. Variables updated: windowStart=0, windowEnd=5, currentWindowStr='barfoo', currentChunks=['bar','foo'], matches=2/2, valid=true. No index recorded yet.",
+        "codeSnippet": "let window = s.substring(0,6); // 'barfoo'\nlet chunks = [];\nfor(let i=0;i<6;i+=3){ chunks.push(window.substring(i,i+3)); }\nlet matches = chunks.filter(chunk=>target.has(chunk)).length;\nlet valid = matches === target.size;",
+        "codeHint": "Split the current window into word-length chunks and check each against the target map. Update currentChunks, matches, and valid flag.",
+        "uiState": {
+          "arrayElements": [
+            {"value":"b","state":"in_window","index":0},
+            {"value":"a","state":"in_window","index":1},
+            {"value":"r","state":"in_window","index":2},
+            {"value":"f","state":"in_window","index":3},
+            {"value":"o","state":"in_window","index":4},
+            {"value":"o","state":"in_window","index":5},
+            {"value":"b","state":"not_yet_reached","index":6},
+            {"value":"a","state":"not_yet_reached","index":7},
+            {"value":"r","state":"not_yet_reached","index":8},
+            {"value":"x","state":"not_yet_reached","index":9}
+          ],
+          "windowStart": 0,
+          "windowEnd": 5,
+          "targetMapStr": "{ foo:1, bar:1 }",
+          "statusText": "Window = 'barfoo'. Split into ['bar','foo'] and check.",
+          "matches": "2/2",
+          "foundIndices": [],
+          "windowSize": 6,
+          "currentWindowStr": "barfoo",
+          "currentChunks": ["bar","foo"],
+          "valid": true,
+          "stepAction": "check",
+          "highlightedElements": [0,1,2,3,4,5]
+        }
+      },
+      {
+        "stepId": 2,
+        "description": "'barfoo' is valid → record start index 0.",
+        "expectedAction": "slide_window",
+        "jarvisMessage": "Window 'barfoo' is valid; record index 0 in foundIndices. Slide window by 1 to the right: windowStart=1, windowEnd=6. New window string = 'arfoob'. Update currentChunks by splitting new window into ['arf','oob']. Check against target map: neither chunk matches perfectly, so valid=false. Matches reset to 0.",
+        "codeSnippet": "foundIndices.push(windowStart); // record 0\nwindowStart++; windowEnd++;\nwindow = s.substring(windowStart,windowEnd+1);\nchunks = [];\nfor(let i=0;i<windowSize;i+=wordLen){ chunks.push(window.substring(i,i+wordLen)); }\nmatches = chunks.filter(chunk=>target.has(chunk)).length;\nvalid = matches === target.size;",
+        "codeHint": "After recording a valid window, slide the window one step right and update variables: windowStart, windowEnd, currentChunks, matches, and valid flag.",
+        "uiState": {
+          "arrayElements": [
+            {"value":"b","state":"out_of_window_past","index":0},
+            {"value":"a","state":"in_window","index":1},
+            {"value":"r","state":"in_window","index":2},
+            {"value":"f","state":"in_window","index":3},
+            {"value":"o","state":"in_window","index":4},
+            {"value":"o","state":"in_window","index":5},
+            {"value":"b","state":"in_window","index":6},
+            {"value":"a","state":"not_yet_reached","index":7},
+            {"value":"r","state":"not_yet_reached","index":8},
+            {"value":"x","state":"not_yet_reached","index":9}
+          ],
+          "windowStart": 1,
+          "windowEnd": 6,
+          "targetMapStr": "{ foo:1, bar:1 }",
+          "statusText": "✅ Match at 0. Slide right to window 'arfoob'.",
+          "matches": "2/2",
+          "foundIndices": [0],
+          "windowSize": 6,
+          "currentWindowStr": "arfoob",
+          "currentChunks": ["arf","oob"],
+          "valid": false,
+          "stepAction": "record",
+          "highlightedElements": [6]
+        }
+      },
+      {
+        "stepId": 3,
+        "description": "Window [1..6] = 'arfoob' → invalid (chunk 'arf' not in target).",
+        "expectedAction": "slide_window",
+        "jarvisMessage": "Current window 'arfoob' split into ['arf','oob']. Compare with target: 'arf' is not in target map → window invalid. Variables: windowStart=1→2, windowEnd=6→7, currentChunks updated to ['rfo','oba'], matches=0/2, valid=false. Highlight the newly entered element at index 7 for clarity.",
+        "codeSnippet": "windowStart++; windowEnd++;\nwindow = s.substring(windowStart,windowEnd+1);\nchunks = [];\nfor(let i=0;i<windowSize;i+=wordLen){ chunks.push(window.substring(i,i+wordLen)); }\nmatches = chunks.filter(chunk=>target.has(chunk)).length;\nvalid = matches === target.size;",
+        "codeHint": "Slide the window again. Update windowStart/windowEnd, recompute currentChunks, matches, and valid flag. Highlight new element for visualization.",
+        "uiState": {
+          "arrayElements": [
+            {"value":"b","state":"out_of_window_past","index":0},
+            {"value":"a","state":"out_of_window_past","index":1},
+            {"value":"r","state":"in_window","index":2},
+            {"value":"f","state":"in_window","index":3},
+            {"value":"o","state":"in_window","index":4},
+            {"value":"o","state":"in_window","index":5},
+            {"value":"b","state":"in_window","index":6},
+            {"value":"a","state":"in_window","index":7},
+            {"value":"r","state":"not_yet_reached","index":8},
+            {"value":"x","state":"not_yet_reached","index":9}
+          ],
+          "windowStart": 2,
+          "windowEnd": 7,
+          "targetMapStr": "{ foo:1, bar:1 }",
+          "statusText": "Invalid window. Slide right to 'rfooba'.",
+          "matches": "0/2",
+          "foundIndices": [0],
+          "windowSize": 6,
+          "currentWindowStr": "rfooba",
+          "currentChunks": ["rfo","oba"],
+          "valid": false,
+          "stepAction": "slide",
+          "highlightedElements": [7]
+        }
+      },
+      {
+        "stepId": 4,
+        "description": "Window [3..8] = 'foobar' → valid (both chunks in target).",
+        "expectedAction": "slide_window",
+        "jarvisMessage": "Window 'foobar' split into ['foo','bar']. Both chunks exist in target with correct frequencies → window valid. Variables: windowStart=3, windowEnd=8, currentWindowStr='foobar', currentChunks=['foo','bar'], matches=2/2, valid=true. Prepare to record index.",
+        "codeSnippet": "chunks = [];\nfor(let i=0;i<windowSize;i+=wordLen){ chunks.push(window.substring(i,i+wordLen)); }\nmatches = chunks.filter(chunk=>target.has(chunk)).length;\nvalid = matches === target.size;",
+        "codeHint": "Check if all chunks in the window match the target frequency map. If yes, mark window valid.",
+        "uiState": {
+          "arrayElements": [
+            {"value":"b","state":"out_of_window_past","index":0},
+            {"value":"a","state":"out_of_window_past","index":1},
+            {"value":"r","state":"out_of_window_past","index":2},
+            {"value":"f","state":"in_window","index":3},
+            {"value":"o","state":"in_window","index":4},
+            {"value":"o","state":"in_window","index":5},
+            {"value":"b","state":"in_window","index":6},
+            {"value":"a","state":"in_window","index":7},
+            {"value":"r","state":"in_window","index":8},
+            {"value":"x","state":"not_yet_reached","index":9}
+          ],
+          "windowStart": 3,
+          "windowEnd": 8,
+          "targetMapStr": "{ foo:1, bar:1 }",
+          "statusText": "Check window 'foobar'.",
+          "matches": "0/2",
+          "foundIndices": [0],
+          "windowSize": 6,
+          "currentWindowStr": "foobar",
+          "currentChunks": ["foo","bar"],
+          "valid": true,
+          "stepAction": "check",
+          "highlightedElements": [8]
+        }
+      },
+      {
+        "stepId": 5,
+        "description": "'foobar' is valid → record start index 3 and slide.",
+        "expectedAction": "slide_window",
+        "jarvisMessage": "Record index 3 in foundIndices. Slide window one step to right: windowStart=4, windowEnd=9. New window string = 'oobarx'. Split into chunks ['oob','arx']. Neither matches target → valid=false, matches=0/2. Variables updated to reflect new window state.",
+        "codeSnippet": "foundIndices.push(windowStart); // record 3\nwindowStart++; windowEnd++;\nwindow = s.substring(windowStart,windowEnd+1);\nchunks = [];\nfor(let i=0;i<windowSize;i+=wordLen){ chunks.push(window.substring(i,i+wordLen)); }\nmatches = chunks.filter(chunk=>target.has(chunk)).length;\nvalid = matches === target.size;",
+        "codeHint": "After recording a valid window, slide right and recompute variables for the new window. Check validity again.",
+        "uiState": {
+          "arrayElements": [
+            {"value":"b","state":"out_of_window_past","index":0},
+            {"value":"a","state":"out_of_window_past","index":1},
+            {"value":"r","state":"out_of_window_past","index":2},
+            {"value":"f","state":"out_of_window_past","index":3},
+            {"value":"o","state":"in_window","index":4},
+            {"value":"o","state":"in_window","index":5},
+            {"value":"b","state":"in_window","index":6},
+            {"value":"a","state":"in_window","index":7},
+            {"value":"r","state":"in_window","index":8},
+            {"value":"x","state":"in_window","index":9}
+          ],
+          "windowStart": 4,
+          "windowEnd": 9,
+          "targetMapStr": "{ foo:1, bar:1 }",
+          "statusText": "✅ Match at 3. Slide right to window 'oobarx'.",
+          "matches": "2/2",
+          "foundIndices": [0,3],
+          "windowSize": 6,
+          "currentWindowStr": "oobarx",
+          "currentChunks": ["oob","arx"],
+          "valid": false,
+          "stepAction": "record",
+          "highlightedElements": [9]
+        }
+      },
+      {
+        "stepId": 6,
+        "description": "Window [4..9] = 'oobarx' → invalid. End reached.",
+        "expectedAction": "complete_algorithm",
+        "jarvisMessage": "Final window 'oobarx' split into ['oob','arx']. No chunks match target → window invalid. End of string reached. Algorithm finished. Final foundIndices = [0,3]. All state variables reflect last window: windowStart=4, windowEnd=9, currentWindowStr='oobarx', currentChunks=['oob','arx'], matches=0/2, valid=false.",
+        "codeSnippet": "// Final check done\n// Result = foundIndices\nreturn foundIndices;",
+        "codeHint": "Algorithm completes when end of string is reached. Use the last computed variables to confirm state before returning results.",
+        "uiState": {
+          "arrayElements": [
+            {"value":"b","state":"out_of_window_past","index":0},
+            {"value":"a","state":"out_of_window_past","index":1},
+            {"value":"r","state":"out_of_window_past","index":2},
+            {"value":"f","state":"out_of_window_past","index":3},
+            {"value":"o","state":"in_window","index":4},
+            {"value":"o","state":"in_window","index":5},
+            {"value":"b","state":"in_window","index":6},
+            {"value":"a","state":"in_window","index":7},
+            {"value":"r","state":"in_window","index":8},
+            {"value":"x","state":"in_window","index":9}
+          ],
+          "windowStart": 4,
+          "windowEnd": 9,
+          "targetMapStr": "{ foo:1, bar:1 }",
+          "statusText": "Algorithm finished. Result = [0,3]",
+          "matches": "0/2",
+          "foundIndices": [0,3],
+          "windowSize": 6,
+          "currentWindowStr": "oobarx",
+          "currentChunks": ["oob","arx"],
+          "valid": false,
+          "stepAction": "end",
+          "highlightedElements": [4,5,6,7,8,9]
+        }
+      }
+    ]
+  },
+  "solution": {
+    "optimal": {
+      "idea": "Use a fixed-size sliding window equal to total length of all words. For each start index, split the window into word-sized chunks and validate against the target frequency map.",
+      "timeComplexity": "O(n * wordLen)",
+      "spaceComplexity": "O(m)",
+      "walkthrough": [
+        "Build target frequency map of all words.",
+        "Set window length = wordLen * totalWords.",
+        "Slide window across string; at each step, extract substring of window length.",
+        "Split substring into word-sized chunks and count frequencies.",
+        "If counts match target map → record starting index.",
+        "Continue sliding until end of string."
+      ]
+    }
+  },
+  "complexityAnalysis": {
+    "title": "COMPLEXITY ANALYSIS",
+    "overview": "Each window requires splitting and checking against the target map. The check takes O(windowSize / wordLen), making the total O(n * wordLen).",
+    "timeComplexity": {
+      "value": "O(n * wordLen)",
+      "explanation": "For each of the n possible starts, we split window into totalWords chunks. Each chunk comparison is O(wordLen)."
+    },
+    "spaceComplexity": {
+      "value": "O(m)",
+      "explanation": "We store target map and temporary map of at most m = totalWords entries."
+    }
+  },
+  "code": {
+    "cpp": "#include <bits/stdc++.h>\nusing namespace std;\n\n/*\nProblem: Substring with Concatenation of All Words\nGiven a string s and a list of words (all words same length), \nfind all starting indices where a substring is formed by concatenating all words exactly once.\n*/\n\nclass Solution {\npublic:\n    vector<int> findSubstring(string s, vector<string>& words) {\n        vector<int> result;\n\n        // Edge case: if no words, answer is empty\n        if (words.empty()) return result;\n\n        // Length of each word (since all are the same length)\n        int wordLen = words[0].size();\n\n        // Number of words\n        int totalWords = words.size();\n\n        // Total length of the window (all words concatenated)\n        int windowSize = wordLen * totalWords;\n\n        // If s is shorter than required window, no solution\n        if (s.size() < windowSize) return result;\n\n        // Build frequency map for target words\n        unordered_map<string,int> target;\n        for (auto &w : words) target[w]++;\n\n        // Sliding through every possible starting index\n        // (we only need to go until s.size() - windowSize)\n        for (int i = 0; i + windowSize <= (int)s.size(); i++) {\n            \n            // Take a substring (window) of size equal to concatenation of all words\n            string window = s.substr(i, windowSize);\n\n            // Map to track words we see in this window\n            unordered_map<string,int> seen;\n            bool valid = true;\n\n            // Now split this window into chunks of wordLen\n            for (int j = 0; j < windowSize; j += wordLen) {\n                string chunk = window.substr(j, wordLen);\n\n                // If chunk is not even in our word list, invalid window\n                if (!target.count(chunk)) { \n                    valid = false; \n                    break; \n                }\n\n                // Otherwise count it\n                seen[chunk]++;\n\n                // If we see this word more times than allowed, invalid window\n                if (seen[chunk] > target[chunk]) { \n                    valid = false; \n                    break; \n                }\n            }\n\n            // If after checking all chunks the window is valid, store index\n            if (valid) result.push_back(i);\n        }\n\n        return result;\n    }\n};"
+  }
+}

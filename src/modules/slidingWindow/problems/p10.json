@@ -1,0 +1,640 @@
+{
+  "problemId": "p10",
+  "title": "Minimum Window Substring",
+  "description": "Given two strings s and t, return the minimum window substring of s such that every character in t (including duplicates) is included in the window. If no such substring exists, return an empty string.",
+  "aim": "Practice the variable-size window with two pointers and frequency maps to track when all required characters are satisfied, and shrink to find the minimum window.",
+  "moduleId": "slidingWindow",
+  "submoduleId": "sw_advanced",
+  "difficulty": "Hard",
+  "tags": ["String", "Sliding Window", "Two Pointers", "Hash Map", "Greedy"],
+  "examples": [
+    {
+      "input": "s = \"ADOBEBANCX\", t = \"ABC\"",
+      "output": "BANC",
+      "explanation": "The minimum window in s which contains all the characters of t is \"BANC\" (indices 5–8)."
+    }
+  ],
+  "playground": {
+    "initialState": {
+      "array": ["A","D","O","B","E","B","A","N","C","X"],
+      "k": 3,
+      "windowStart": null,
+      "windowEnd": null,
+      "targetMapStr": "{ A:1, B:1, C:1 }",
+      "windowMapStr": "{}",
+      "matches": "0/3",
+      "statusText": "Initialize",
+      "bestAnswerStr": "—",
+      "needCount": 3,
+      "haveCount": 0
+    },
+    "steps": [
+      {
+        "stepId": 0,
+        "description": "Initialize: Build Target Map from t = \"ABC\". Set empty Window Map. need = 3 unique chars, have = 0. Left = 0, Right = 0.",
+        "expectedAction": "click_initialize",
+        "uiState": {
+          "arrayElements": [
+            {"value":"A","state":"not_yet_reached","index":0},
+            {"value":"D","state":"not_yet_reached","index":1},
+            {"value":"O","state":"not_yet_reached","index":2},
+            {"value":"B","state":"not_yet_reached","index":3},
+            {"value":"E","state":"not_yet_reached","index":4},
+            {"value":"B","state":"not_yet_reached","index":5},
+            {"value":"A","state":"not_yet_reached","index":6},
+            {"value":"N","state":"not_yet_reached","index":7},
+            {"value":"C","state":"not_yet_reached","index":8},
+            {"value":"X","state":"not_yet_reached","index":9}
+          ],
+          "windowStart": null,
+          "windowEnd": null,
+          "k": 3,
+          "targetMapStr": "{ A:1, B:1, C:1 }",
+          "windowMapStr": "{}",
+          "matches": "0/3",
+          "statusText": "Click Initialize",
+          "needCount": 3,
+          "haveCount": 0,
+          "bestAnswerStr": "—",
+          "highlightedElements": []
+        },
+        "jarvisMessage": "Click Initialize to set up Target Map and counters: need = 3 (A,B,C), have = 0.",
+        "codeSnippet": "const need = new Map([['A',1],['B',1],['C',1]]);\nconst have = new Map();\nlet needCount = need.size;\nlet haveCount = 0;\nlet left = 0;\nlet best = [0, Infinity]; // [start, length]",
+        "codeHint": "Prepare maps and counters"
+      },
+      {
+        "stepId": 1,
+        "description": "Add s[0]=A: A satisfied → have = 1.",
+        "expectedAction": "add_element_to_window",
+        "expectedElementIndex": 0,
+        "uiState": {
+          "arrayElements": [
+            {"value":"A","state":"in_window","index":0},
+            {"value":"D","state":"not_yet_reached","index":1},
+            {"value":"O","state":"not_yet_reached","index":2},
+            {"value":"B","state":"not_yet_reached","index":3},
+            {"value":"E","state":"not_yet_reached","index":4},
+            {"value":"B","state":"not_yet_reached","index":5},
+            {"value":"A","state":"not_yet_reached","index":6},
+            {"value":"N","state":"not_yet_reached","index":7},
+            {"value":"C","state":"not_yet_reached","index":8},
+            {"value":"X","state":"not_yet_reached","index":9}
+          ],
+          "windowStart": 0,
+          "windowEnd": 0,
+          "targetMapStr": "{ A:1, B:1, C:1 }",
+          "windowMapStr": "{ A:1 }",
+          "matches": "1/3",
+          "statusText": "Valid? not yet",
+          "needCount": 3,
+          "haveCount": 1,
+          "bestAnswerStr": "—",
+          "highlightedElements": [0]
+        },
+        "jarvisMessage": "Window: \"A\". A met its required count; have = 1.",
+        "codeSnippet": "have.set('A',(have.get('A')||0)+1); if (have.get('A')===need.get('A')) haveCount++;",
+        "codeHint": "Update have and haveCount"
+      },
+      {
+        "stepId": 2,
+        "description": "Add s[1]=D: D not required.",
+        "expectedAction": "add_element_to_window",
+        "expectedElementIndex": 1,
+        "uiState": {
+          "arrayElements": [
+            {"value":"A","state":"in_window","index":0},
+            {"value":"D","state":"in_window","index":1},
+            {"value":"O","state":"not_yet_reached","index":2},
+            {"value":"B","state":"not_yet_reached","index":3},
+            {"value":"E","state":"not_yet_reached","index":4},
+            {"value":"B","state":"not_yet_reached","index":5},
+            {"value":"A","state":"not_yet_reached","index":6},
+            {"value":"N","state":"not_yet_reached","index":7},
+            {"value":"C","state":"not_yet_reached","index":8},
+            {"value":"X","state":"not_yet_reached","index":9}
+          ],
+          "windowStart": 0,
+          "windowEnd": 1,
+          "targetMapStr": "{ A:1, B:1, C:1 }",
+          "windowMapStr": "{ A:1, D:1 }",
+          "matches": "1/3",
+          "statusText": "Expand right",
+          "needCount": 3,
+          "haveCount": 1,
+          "bestAnswerStr": "—",
+          "highlightedElements": [1]
+        },
+        "jarvisMessage": "Window: \"AD\". Still not valid.",
+        "codeSnippet": "have.set('D',(have.get('D')||0)+1);",
+        "codeHint": "Track non-required chars too"
+      },
+      {
+        "stepId": 3,
+        "description": "Add s[2]=O: O not required.",
+        "expectedAction": "add_element_to_window",
+        "expectedElementIndex": 2,
+        "uiState": {
+          "arrayElements": [
+            {"value":"A","state":"in_window","index":0},
+            {"value":"D","state":"in_window","index":1},
+            {"value":"O","state":"in_window","index":2},
+            {"value":"B","state":"not_yet_reached","index":3},
+            {"value":"E","state":"not_yet_reached","index":4},
+            {"value":"B","state":"not_yet_reached","index":5},
+            {"value":"A","state":"not_yet_reached","index":6},
+            {"value":"N","state":"not_yet_reached","index":7},
+            {"value":"C","state":"not_yet_reached","index":8},
+            {"value":"X","state":"not_yet_reached","index":9}
+          ],
+          "windowStart": 0,
+          "windowEnd": 2,
+          "targetMapStr": "{ A:1, B:1, C:1 }",
+          "windowMapStr": "{ A:1, D:1, O:1 }",
+          "matches": "1/3",
+          "statusText": "Expand right",
+          "needCount": 3,
+          "haveCount": 1,
+          "bestAnswerStr": "—",
+          "highlightedElements": [2]
+        },
+        "jarvisMessage": "Window: \"ADO\".",
+        "codeSnippet": "have.set('O',(have.get('O')||0)+1);",
+        "codeHint": "Keep expanding"
+      },
+      {
+        "stepId": 4,
+        "description": "Add s[3]=B: B satisfied → have = 2.",
+        "expectedAction": "add_element_to_window",
+        "expectedElementIndex": 3,
+        "uiState": {
+          "arrayElements": [
+            {"value":"A","state":"in_window","index":0},
+            {"value":"D","state":"in_window","index":1},
+            {"value":"O","state":"in_window","index":2},
+            {"value":"B","state":"in_window","index":3},
+            {"value":"E","state":"not_yet_reached","index":4},
+            {"value":"B","state":"not_yet_reached","index":5},
+            {"value":"A","state":"not_yet_reached","index":6},
+            {"value":"N","state":"not_yet_reached","index":7},
+            {"value":"C","state":"not_yet_reached","index":8},
+            {"value":"X","state":"not_yet_reached","index":9}
+          ],
+          "windowStart": 0,
+          "windowEnd": 3,
+          "targetMapStr": "{ A:1, B:1, C:1 }",
+          "windowMapStr": "{ A:1, D:1, O:1, B:1 }",
+          "matches": "2/3",
+          "statusText": "Expand right",
+          "needCount": 3,
+          "haveCount": 2,
+          "bestAnswerStr": "—",
+          "highlightedElements": [3]
+        },
+        "jarvisMessage": "Window: \"ADOB\". have = 2 (A,B).",
+        "codeSnippet": "have.set('B',(have.get('B')||0)+1); if (have.get('B')===need.get('B')) haveCount++;",
+        "codeHint": "Update haveCount when equal"
+      },
+      {
+        "stepId": 5,
+        "description": "Add s[4]=E.",
+        "expectedAction": "add_element_to_window",
+        "expectedElementIndex": 4,
+        "uiState": {
+          "arrayElements": [
+            {"value":"A","state":"in_window","index":0},
+            {"value":"D","state":"in_window","index":1},
+            {"value":"O","state":"in_window","index":2},
+            {"value":"B","state":"in_window","index":3},
+            {"value":"E","state":"in_window","index":4},
+            {"value":"B","state":"not_yet_reached","index":5},
+            {"value":"A","state":"not_yet_reached","index":6},
+            {"value":"N","state":"not_yet_reached","index":7},
+            {"value":"C","state":"not_yet_reached","index":8},
+            {"value":"X","state":"not_yet_reached","index":9}
+          ],
+          "windowStart": 0,
+          "windowEnd": 4,
+          "targetMapStr": "{ A:1, B:1, C:1 }",
+          "windowMapStr": "{ A:1, D:1, O:1, B:1, E:1 }",
+          "matches": "2/3",
+          "statusText": "Still not valid",
+          "needCount": 3,
+          "haveCount": 2,
+          "bestAnswerStr": "—",
+          "highlightedElements": [4]
+        },
+        "jarvisMessage": "Window: \"ADOBE\".",
+        "codeSnippet": "have.set('E',(have.get('E')||0)+1);",
+        "codeHint": "Keep expanding"
+      },
+      {
+        "stepId": 6,
+        "description": "Add s[5]=B.",
+        "expectedAction": "add_element_to_window",
+        "expectedElementIndex": 5,
+        "uiState": {
+          "arrayElements": [
+            {"value":"A","state":"in_window","index":0},
+            {"value":"D","state":"in_window","index":1},
+            {"value":"O","state":"in_window","index":2},
+            {"value":"B","state":"in_window","index":3},
+            {"value":"E","state":"in_window","index":4},
+            {"value":"B","state":"in_window","index":5},
+            {"value":"A","state":"not_yet_reached","index":6},
+            {"value":"N","state":"not_yet_reached","index":7},
+            {"value":"C","state":"not_yet_reached","index":8},
+            {"value":"X","state":"not_yet_reached","index":9}
+          ],
+          "windowStart": 0,
+          "windowEnd": 5,
+          "targetMapStr": "{ A:1, B:1, C:1 }",
+          "windowMapStr": "{ A:1, D:1, O:1, B:2, E:1 }",
+          "matches": "2/3",
+          "statusText": "Expand right",
+          "needCount": 3,
+          "haveCount": 2,
+          "bestAnswerStr": "—",
+          "highlightedElements": [5]
+        },
+        "jarvisMessage": "Added another B.",
+        "codeSnippet": "have.set('B',(have.get('B')||0)+1);",
+        "codeHint": "Extra B doesn't change haveCount"
+      },
+      {
+        "stepId": 7,
+        "description": "Add s[6]=A.",
+        "expectedAction": "add_element_to_window",
+        "expectedElementIndex": 6,
+        "uiState": {
+          "arrayElements": [
+            {"value":"A","state":"in_window","index":0},
+            {"value":"D","state":"in_window","index":1},
+            {"value":"O","state":"in_window","index":2},
+            {"value":"B","state":"in_window","index":3},
+            {"value":"E","state":"in_window","index":4},
+            {"value":"B","state":"in_window","index":5},
+            {"value":"A","state":"in_window","index":6},
+            {"value":"N","state":"not_yet_reached","index":7},
+            {"value":"C","state":"not_yet_reached","index":8},
+            {"value":"X","state":"not_yet_reached","index":9}
+          ],
+          "windowStart": 0,
+          "windowEnd": 6,
+          "targetMapStr": "{ A:1, B:1, C:1 }",
+          "windowMapStr": "{ A:2, D:1, O:1, B:2, E:1 }",
+          "matches": "2/3",
+          "statusText": "Expand right",
+          "needCount": 3,
+          "haveCount": 2,
+          "bestAnswerStr": "—",
+          "highlightedElements": [6]
+        },
+        "jarvisMessage": "Added A (extra). Still missing C.",
+        "codeSnippet": "have.set('A',(have.get('A')||0)+1);",
+        "codeHint": "Continue expansion"
+      },
+      {
+        "stepId": 8,
+        "description": "Add s[7]=N.",
+        "expectedAction": "add_element_to_window",
+        "expectedElementIndex": 7,
+        "uiState": {
+          "arrayElements": [
+            {"value":"A","state":"in_window","index":0},
+            {"value":"D","state":"in_window","index":1},
+            {"value":"O","state":"in_window","index":2},
+            {"value":"B","state":"in_window","index":3},
+            {"value":"E","state":"in_window","index":4},
+            {"value":"B","state":"in_window","index":5},
+            {"value":"A","state":"in_window","index":6},
+            {"value":"N","state":"in_window","index":7},
+            {"value":"C","state":"not_yet_reached","index":8},
+            {"value":"X","state":"not_yet_reached","index":9}
+          ],
+          "windowStart": 0,
+          "windowEnd": 7,
+          "targetMapStr": "{ A:1, B:1, C:1 }",
+          "windowMapStr": "{ A:2, D:1, O:1, B:2, E:1, N:1 }",
+          "matches": "2/3",
+          "statusText": "Expand right",
+          "needCount": 3,
+          "haveCount": 2,
+          "bestAnswerStr": "—",
+          "highlightedElements": [7]
+        },
+        "jarvisMessage": "Added N. Still missing C.",
+        "codeSnippet": "have.set('N',(have.get('N')||0)+1);",
+        "codeHint": "Continue expansion"
+      },
+      {
+        "stepId": 9,
+        "description": "Add s[8]=C → all requirements met. Record best = 'ADOBEBANC' (len=9).",
+        "expectedAction": "add_element_to_window",
+        "expectedElementIndex": 8,
+        "uiState": {
+          "arrayElements": [
+            {"value":"A","state":"in_window","index":0},
+            {"value":"D","state":"in_window","index":1},
+            {"value":"O","state":"in_window","index":2},
+            {"value":"B","state":"in_window","index":3},
+            {"value":"E","state":"in_window","index":4},
+            {"value":"B","state":"in_window","index":5},
+            {"value":"A","state":"in_window","index":6},
+            {"value":"N","state":"in_window","index":7},
+            {"value":"C","state":"in_window","index":8},
+            {"value":"X","state":"not_yet_reached","index":9}
+          ],
+          "windowStart": 0,
+          "windowEnd": 8,
+          "targetMapStr": "{ A:1, B:1, C:1 }",
+          "windowMapStr": "{ A:2, D:1, O:1, B:2, E:1, N:1, C:1 }",
+          "matches": "3/3",
+          "statusText": "✅ Valid window",
+          "needCount": 3,
+          "haveCount": 3,
+          "bestAnswerStr": "ADOBEBANC",
+          "highlightedElements": [8]
+        },
+        "jarvisMessage": "All requirements met. Record best. Now shrink from the left to minimize.",
+        "codeSnippet": "have.set('C',(have.get('C')||0)+1); if (have.get('C')===need.get('C')) haveCount++; if (haveCount===needCount) best = best[1] < 9 ? best : [0,9];",
+        "codeHint": "Check validity and best"
+      },
+      {
+        "stepId": 10,
+        "description": "Shrink: remove A at index 0 → still valid. Update best to 'DOBEBANC' (len=8).",
+        "expectedAction": "shrink_window",
+        "expectedElementIndex": 0,
+        "uiState": {
+          "arrayElements": [
+            {"value":"A","state":"out_of_window_past","index":0},
+            {"value":"D","state":"in_window","index":1},
+            {"value":"O","state":"in_window","index":2},
+            {"value":"B","state":"in_window","index":3},
+            {"value":"E","state":"in_window","index":4},
+            {"value":"B","state":"in_window","index":5},
+            {"value":"A","state":"in_window","index":6},
+            {"value":"N","state":"in_window","index":7},
+            {"value":"C","state":"in_window","index":8},
+            {"value":"X","state":"not_yet_reached","index":9}
+          ],
+          "windowStart": 1,
+          "windowEnd": 8,
+          "targetMapStr": "{ A:1, B:1, C:1 }",
+          "windowMapStr": "{ A:1, D:1, O:1, B:2, E:1, N:1, C:1 }",
+          "matches": "3/3",
+          "statusText": "Still valid, keep shrinking",
+          "needCount": 3,
+          "haveCount": 3,
+          "bestAnswerStr": "DOBEBANC",
+          "highlightedElements": [0]
+        },
+        "jarvisMessage": "Removed A; window remains valid. Best updated.",
+        "codeSnippet": "if (need.has('A') && have.get('A')===need.get('A')) haveCount--; have.set('A', (have.get('A')||0)-1); left++; if (haveCount===needCount) best = best[1] <= (8-1+1) ? best : [1,8-1+1];",
+        "codeHint": "Update best after each successful shrink"
+      },
+      {
+        "stepId": 11,
+        "description": "Shrink: remove D at index 1 → still valid. Best = 'OBEBANC' (len=7).",
+        "expectedAction": "shrink_window",
+        "expectedElementIndex": 1,
+        "uiState": {
+          "arrayElements": [
+            {"value":"A","state":"out_of_window_past","index":0},
+            {"value":"D","state":"out_of_window_past","index":1},
+            {"value":"O","state":"in_window","index":2},
+            {"value":"B","state":"in_window","index":3},
+            {"value":"E","state":"in_window","index":4},
+            {"value":"B","state":"in_window","index":5},
+            {"value":"A","state":"in_window","index":6},
+            {"value":"N","state":"in_window","index":7},
+            {"value":"C","state":"in_window","index":8},
+            {"value":"X","state":"not_yet_reached","index":9}
+          ],
+          "windowStart": 2,
+          "windowEnd": 8,
+          "targetMapStr": "{ A:1, B:1, C:1 }",
+          "windowMapStr": "{ A:1, O:1, B:2, E:1, N:1, C:1 }",
+          "matches": "3/3",
+          "statusText": "Still valid, keep shrinking",
+          "needCount": 3,
+          "haveCount": 3,
+          "bestAnswerStr": "OBEBANC",
+          "highlightedElements": [1]
+        },
+        "jarvisMessage": "Removed D; still valid. Best updated.",
+        "codeSnippet": "have.set('D', (have.get('D')||0)-1); left++; if (haveCount===needCount) best = best[1] <= (8-2+1) ? best : [2,8-2+1];",
+        "codeHint": "Keep shrinking while valid"
+      },
+      {
+        "stepId": 12,
+        "description": "Shrink: remove O at index 2 → still valid. Best = 'BEBANC' (len=6).",
+        "expectedAction": "shrink_window",
+        "expectedElementIndex": 2,
+        "uiState": {
+          "arrayElements": [
+            {"value":"A","state":"out_of_window_past","index":0},
+            {"value":"D","state":"out_of_window_past","index":1},
+            {"value":"O","state":"out_of_window_past","index":2},
+            {"value":"B","state":"in_window","index":3},
+            {"value":"E","state":"in_window","index":4},
+            {"value":"B","state":"in_window","index":5},
+            {"value":"A","state":"in_window","index":6},
+            {"value":"N","state":"in_window","index":7},
+            {"value":"C","state":"in_window","index":8},
+            {"value":"X","state":"not_yet_reached","index":9}
+          ],
+          "windowStart": 3,
+          "windowEnd": 8,
+          "targetMapStr": "{ A:1, B:1, C:1 }",
+          "windowMapStr": "{ A:1, B:2, E:1, N:1, C:1 }",
+          "matches": "3/3",
+          "statusText": "Still valid, keep shrinking",
+          "needCount": 3,
+          "haveCount": 3,
+          "bestAnswerStr": "BEBANC",
+          "highlightedElements": [2]
+        },
+        "jarvisMessage": "Removed O; still valid. Best updated.",
+        "codeSnippet": "have.set('O', (have.get('O')||0)-1); left++; if (haveCount===needCount) best = best[1] <= (8-3+1) ? best : [3,8-3+1];",
+        "codeHint": "Shrink toward a minimal window"
+      },
+      {
+        "stepId": 13,
+        "description": "Shrink: remove B at index 3 → still valid (another B remains). Best = 'EBANC' (len=5).",
+        "expectedAction": "shrink_window",
+        "expectedElementIndex": 3,
+        "uiState": {
+          "arrayElements": [
+            {"value":"A","state":"out_of_window_past","index":0},
+            {"value":"D","state":"out_of_window_past","index":1},
+            {"value":"O","state":"out_of_window_past","index":2},
+            {"value":"B","state":"out_of_window_past","index":3},
+            {"value":"E","state":"in_window","index":4},
+            {"value":"B","state":"in_window","index":5},
+            {"value":"A","state":"in_window","index":6},
+            {"value":"N","state":"in_window","index":7},
+            {"value":"C","state":"in_window","index":8},
+            {"value":"X","state":"not_yet_reached","index":9}
+          ],
+          "windowStart": 4,
+          "windowEnd": 8,
+          "targetMapStr": "{ A:1, B:1, C:1 }",
+          "windowMapStr": "{ A:1, B:1, E:1, N:1, C:1 }",
+          "matches": "3/3",
+          "statusText": "Still valid, keep shrinking",
+          "needCount": 3,
+          "haveCount": 3,
+          "bestAnswerStr": "EBANC",
+          "highlightedElements": [3]
+        },
+        "jarvisMessage": "Removed B; still valid thanks to the other B.",
+        "codeSnippet": "if (need.has('B') && have.get('B')===need.get('B')) haveCount--; have.set('B', have.get('B')-1); left++; if (haveCount===needCount) best = best[1] <= (8-4+1) ? best : [4,8-4+1];",
+        "codeHint": "Only decrement haveCount when a need char drops below"
+      },
+      {
+        "stepId": 14,
+        "description": "Shrink: remove E at index 4 → still valid. Best = 'BANC' (len=4).",
+        "expectedAction": "shrink_window",
+        "expectedElementIndex": 4,
+        "uiState": {
+          "arrayElements": [
+            {"value":"A","state":"out_of_window_past","index":0},
+            {"value":"D","state":"out_of_window_past","index":1},
+            {"value":"O","state":"out_of_window_past","index":2},
+            {"value":"B","state":"out_of_window_past","index":3},
+            {"value":"E","state":"out_of_window_past","index":4},
+            {"value":"B","state":"in_window","index":5},
+            {"value":"A","state":"in_window","index":6},
+            {"value":"N","state":"in_window","index":7},
+            {"value":"C","state":"in_window","index":8},
+            {"value":"X","state":"not_yet_reached","index":9}
+          ],
+          "windowStart": 5,
+          "windowEnd": 8,
+          "targetMapStr": "{ A:1, B:1, C:1 }",
+          "windowMapStr": "{ A:1, B:1, N:1, C:1 }",
+          "matches": "3/3",
+          "statusText": "✅ Valid minimal so far",
+          "needCount": 3,
+          "haveCount": 3,
+          "bestAnswerStr": "BANC",
+          "highlightedElements": [4]
+        },
+        "jarvisMessage": "Removed E; window still valid. Best updated to 'BANC'.",
+        "codeSnippet": "have.set('E', (have.get('E')||0)-1); left++; if (haveCount===needCount) best = best[1] <= (8-5+1) ? best : [5,8-5+1];",
+        "codeHint": "Best is now length 4"
+      },
+      {
+        "stepId": 15,
+        "description": "Shrink: remove B at index 5 → lose B → invalid. Keep best = 'BANC'.",
+        "expectedAction": "shrink_window",
+        "expectedElementIndex": 5,
+        "uiState": {
+          "arrayElements": [
+            {"value":"A","state":"out_of_window_past","index":0},
+            {"value":"D","state":"out_of_window_past","index":1},
+            {"value":"O","state":"out_of_window_past","index":2},
+            {"value":"B","state":"out_of_window_past","index":3},
+            {"value":"E","state":"out_of_window_past","index":4},
+            {"value":"B","state":"out_of_window_past","index":5},
+            {"value":"A","state":"in_window","index":6},
+            {"value":"N","state":"in_window","index":7},
+            {"value":"C","state":"in_window","index":8},
+            {"value":"X","state":"not_yet_reached","index":9}
+          ],
+          "windowStart": 6,
+          "windowEnd": 8,
+          "targetMapStr": "{ A:1, B:1, C:1 }",
+          "windowMapStr": "{ A:1, N:1, C:1, B:0 }",
+          "matches": "2/3",
+          "statusText": "Lost B → invalid",
+          "needCount": 3,
+          "haveCount": 2,
+          "bestAnswerStr": "BANC",
+          "highlightedElements": [5]
+        },
+        "jarvisMessage": "Removing B breaks validity. Stop shrinking and resume expansion.",
+        "codeSnippet": "if (need.has('B') && have.get('B')===1) haveCount--; have.set('B', (have.get('B')||0)-1); left++;",
+        "codeHint": "We will expand right now"
+      },
+      {
+        "stepId": 16,
+        "description": "Add s[9]=X → not required. Window remains invalid.",
+        "expectedAction": "add_element_to_window",
+        "expectedElementIndex": 9,
+        "uiState": {
+          "arrayElements": [
+            {"value":"A","state":"out_of_window_past","index":0},
+            {"value":"D","state":"out_of_window_past","index":1},
+            {"value":"O","state":"out_of_window_past","index":2},
+            {"value":"B","state":"out_of_window_past","index":3},
+            {"value":"E","state":"out_of_window_past","index":4},
+            {"value":"B","state":"out_of_window_past","index":5},
+            {"value":"A","state":"in_window","index":6},
+            {"value":"N","state":"in_window","index":7},
+            {"value":"C","state":"in_window","index":8},
+            {"value":"X","state":"in_window","index":9}
+          ],
+          "windowStart": 6,
+          "windowEnd": 9,
+          "targetMapStr": "{ A:1, B:1, C:1 }",
+          "windowMapStr": "{ A:1, N:1, C:1, X:1, B:0 }",
+          "matches": "2/3",
+          "statusText": "Expand right",
+          "needCount": 3,
+          "haveCount": 2,
+          "bestAnswerStr": "BANC",
+          "highlightedElements": [9]
+        },
+        "jarvisMessage": "Added X. No change in validity.",
+        "codeSnippet": "have.set('X',(have.get('X')||0)+1);",
+        "codeHint": "We've reached the end"
+      },
+      {
+        "stepId": 17,
+        "description": "Finalize: the global minimum found is 'BANC' (indices 5–8).",
+        "expectedAction": "complete_algorithm",
+        "uiState": {
+          "arrayElements": [
+            {"value":"B","state":"in_window","index":5},
+            {"value":"A","state":"in_window","index":6},
+            {"value":"N","state":"in_window","index":7},
+            {"value":"C","state":"in_window","index":8}
+          ],
+          "windowStart": 5,
+          "windowEnd": 8,
+          "targetMapStr": "{ A:1, B:1, C:1 }",
+          "windowMapStr": "{ B:1, A:1, N:1, C:1 }",
+          "matches": "3/3",
+          "statusText": "✅ Minimum found",
+          "needCount": 3,
+          "haveCount": 3,
+          "bestAnswerStr": "BANC",
+          "highlightedElements": [5,6,7,8]
+        },
+        "jarvisMessage": "Return the minimum window substring 'BANC'.",
+        "codeSnippet": "return s.substring(5, 8+1); // 'BANC'",
+        "codeExplanation": "We expand until valid (haveCount == needCount), then shrink to minimize while valid, tracking the best (shortest) window."
+      }
+    ]
+  },
+  "solution": {
+    "optimal": {
+      "idea": "Use a variable-size window with two pointers. Maintain frequency counts for the need (from t) and the current window (have). Track haveCount, the number of unique characters whose counts meet need. When haveCount == needCount, shrink from the left to minimize and update the best answer.",
+      "timeComplexity": "O(n + m)",
+      "spaceComplexity": "O(m)",
+      "walkthrough": [
+        "Build need map from t and set needCount = unique keys in t.",
+        "Expand right pointer over s; update have counts; when a char meets its need, increment haveCount.",
+        "When haveCount == needCount, try to shrink from the left while maintaining validity; update the best (shortest) window.",
+        "Return the best window substring after processing all characters."
+      ]
+    }
+  },
+  "complexityAnalysis": {
+    "title": "COMPLEXITY ANALYSIS",
+    "overview": "Each character is visited at most twice (entering and leaving the window). Frequency maps keep updates constant-time.",
+    "timeComplexity": { "value": "O(n + m)", "explanation": "We traverse s once and build need from t; each pointer moves forward at most n times." },
+    "spaceComplexity": { "value": "O(m)", "explanation": "We store counts for up to m unique characters from t (bounded alphabet)." }
+  }
+}

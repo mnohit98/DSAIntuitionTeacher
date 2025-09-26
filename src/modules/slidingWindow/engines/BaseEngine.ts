@@ -26,10 +26,27 @@ export interface UIState {
   highlightedElements: number[];
   algorithmStepsMessage?: string;
   complexityAnalysis?: string;
+  // Advanced string/frequency problems (p8, p9)
+  maxFreq?: number;
+  freqMapStr?: string;
+  maxSize?: number;
+  // p9 specific display fields
+  targetMapStr?: string;
+  windowMapStr?: string;
+  matches?: string;
+  statusText?: string;
+  // optional pretty row for s1 pattern display
+  patternDisplay?: string;
+  // p11 substring concatenation specific
+  foundIndices?: number[];
+  stepAction?: string;
+  currentWindowStr?: string;
+  currentChunks?: string;
+  valid?: boolean | string;
 }
 
 export interface ArrayElement {
-  value: number;
+  value: string | number;
   state: 'not_yet_reached' | 'in_window' | 'out_of_window_past';
   index: number;
 }

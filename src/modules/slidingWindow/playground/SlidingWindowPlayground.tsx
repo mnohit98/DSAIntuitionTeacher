@@ -175,7 +175,13 @@ export default function SlidingWindowPlayground({ problemData }: Props) {
     : undefined;
 
   // Check if we should show Initialize button based on current step
-  const showInitializeButton = step?.expectedAction === 'click_initialize';
+  const showInitializeButton = step?.expectedAction === 'click_initialize' || step?.expectedAction === 'reinitialize_k_minus_1';
+  const initializeLabel = step?.expectedAction === 'reinitialize_k_minus_1'
+    ? 'Re-initialize for atMost(K-1)'
+    : 'Initialize Variables';
+  const initializeSubtext = step?.expectedAction === 'reinitialize_k_minus_1'
+    ? 'Reset pointers and freqMap for K-1 pass'
+    : 'Click to set up algorithm variables';
   
   // Check if we should show Complete Algorithm button
   const showCompleteButton = step?.expectedAction === 'complete_algorithm';
@@ -229,7 +235,9 @@ export default function SlidingWindowPlayground({ problemData }: Props) {
             onElementPress={(index: number) => handleUserAction('click_element', index)}
             expectedIndex={expectedIndex}
             showInitializeButton={showInitializeButton}
-            onInitializePress={() => handleUserAction('click_initialize')}
+            initializeButtonText={initializeLabel}
+            initializeButtonSubtext={initializeSubtext}
+            onInitializePress={() => handleUserAction(step?.expectedAction === 'reinitialize_k_minus_1' ? 'reinitialize_k_minus_1' : 'click_initialize')}
             showCompleteButton={showCompleteButton}
             onCompletePress={() => handleUserAction('complete_algorithm', undefined)}
           />
